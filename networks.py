@@ -50,6 +50,12 @@ def train_model(epochs, tr_data, tr_labels, va_data, va_labels, save_dir, chkdir
     # Create new model
     model = make_model()
 
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    if not os.path.exists(chkdir):
+        os.makedirs(chkdir)
+
     # Proceed training of a saved model
     # model = keras.models.load_model(save_dir)
 
