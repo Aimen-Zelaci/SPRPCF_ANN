@@ -262,25 +262,16 @@ def generate_and_save_data(model, training):
             ones = sum(int(o >= 1.0) for o in p[:6])
             zeros = sum(int(z < 0.1) for z in p)
             if (zeros == 0 and ones == 0):
-                # For relatively small data size
-                f = open(r'\gen_data\data.tsv', 'a+')
-                f.write('{}\t\t{}\t\t{}\t\t{}\t\t{}\t\t{}\t\t{}\n'.format(p[0], p[1], p[2], p[3], p[4], p[5], p[6]))
+                f = open(r'\gen_data\data.csv', 'a+')
+                f.write('{},{},{},{},{},{},{}\n'.format(p[0], p[1], p[2], p[3], p[4], p[5], p[6]))
                 f.close()
 
 def shape_wgan_data(tr_data, tr_labels):
     BUFFER_SIZE = int(len(tr_data))
-    dataset = []
-
     # Place the labels and inputs in one vector
-    for x, y in zip(tr_data, tr_labels):
-        temp = sp.array(sp.zeros(7))
-        for i in range(6):
-            temp[i] = x[i]
-        temp[-1] = y
-        dataset.append(temp)
+    dataset = sp.concatenate(tr_data, tr_labels, axis=1)
+    train_dataset = tf.data.Dataset.from_tensor_slices(dataset).shuffle(BUFFER_SIZE).batch(BATCH_SIZE)
 
-    tr_data = sp.array([x for x in dataset])
-    train_dataset = tf.data.Dataset.from_tensor_slices(tr_data).shuffle(BUFFER_SIZE).batch(BATCH_SIZE)
     return train_dataset
 
 
