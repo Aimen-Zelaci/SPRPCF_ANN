@@ -94,20 +94,20 @@ def train_model(epochs, tr_data, tr_labels, va_data, va_labels, save_dir, chkdir
     MSE = sp.square(sp.subtract(va_labels, predictions)).mean()
 
     ### Plot predictions vs validation ########
-    plt.scatter(va_labels, predictions)  #
-    plt.plot(va_labels, va_labels, 'r')  #
-    plt.grid()  #
-    plt.title("epochs {}; "  #
-              "length of dataset {}\n ; "  # 
-              "TR LOSS {}\n; Test MSE {}"  #
-              .format(epochs,  #
-                      int(len(tr_data)),  #
-                      loss[-1], MSE))  #
-    plt.show()  #
+    plt.scatter(va_labels, predictions)       #
+    plt.plot(va_labels, va_labels, 'r')       #
+    plt.grid()                                #
+    plt.title('epochs {}; '                   #
+              'length of dataset {}\n ; '     # 
+              'TR LOSS {}\n; Test MSE {}'     #
+              .format(epochs,                 #
+                      int(len(tr_data)),      #
+                      loss[-1], MSE))         #
+    plt.show()                                #
     ### TR loss vs epochs #####################
-    plt.plot(epochsArr, loss, 'r')  #
-    plt.grid()  #
-    plt.show()  #
+    plt.plot(epochsArr, loss, 'r')            #
+    plt.grid()                                #
+    plt.show()                                #
     ############# Graphs ######################
     ###########################################
 
@@ -214,19 +214,19 @@ generator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5, beta_2=0.9)
 
 # Save model's checkpoints as we iterate
 checkpoint_dir = './training_checkpoints'
-checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
+checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
 checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
                                  discriminator_optimizer=critic_optimizer,
                                  generator=generator,
                                  discriminator=critic)
 
 # Critic Tensorboard loss summary
-critic_logdir = r"\ganlogs\scalars\{}".format(time.time())
+critic_logdir = r'\ganlogs\scalars\{}'.format(time.time())
 train_loss = tf.keras.metrics.Mean('train_loss', dtype=tf.float32)
 critic_summary_writer = tf.compat.v2.summary.create_file_writer(critic_logdir)
 
 # Generator TensorBoard loss summary
-gen_logdir = r"\ganlogs\scalars\{}".format(time.time())
+gen_logdir = r'\ganlogs\scalars\{}'.format(time.time())
 train_loss_gen = tf.keras.metrics.Mean('train_loss', dtype=tf.float32)
 gen_summary_writer = tf.compat.v2.summary.create_file_writer(gen_logdir)
 
@@ -276,7 +276,7 @@ def generate_and_save_data(model, training):
             zeros = sum(int(z < 0.1) for z in p)
             if (zeros == 0 and ones == 0):
                 f = open(r'\gen_data\data.tsv', 'a+')
-                f.write("{}\t\t{}\t\t{}\t\t{}\t\t{}\t\t{}\t\t{}\n".format(p[0], p[1], p[2], p[3], p[4], p[5], p[6]))
+                f.write('{}\t\t{}\t\t{}\t\t{}\t\t{}\t\t{}\t\t{}\n'.format(p[0], p[1], p[2], p[3], p[4], p[5], p[6]))
                 f.close()
 
 
