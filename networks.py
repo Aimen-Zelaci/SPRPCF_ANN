@@ -94,20 +94,20 @@ def train_model(epochs, tr_data, tr_labels, va_data, va_labels, save_dir, chkdir
     MSE = sp.square(sp.subtract(va_labels, predictions)).mean()
 
     ### Plot predictions vs validation ########
-    plt.scatter(va_labels, predictions)  #
-    plt.plot(va_labels, va_labels, 'r')  #
-    plt.grid()  #
-    plt.title("epochs {}; "  #
-              "length of dataset {}\n ; "  # 
-              "TR LOSS {}\n; Test MSE {}"  #
-              .format(epochs,  #
-                      int(len(tr_data)),  #
-                      loss[-1], MSE))  #
-    plt.show()  #
+    plt.scatter(va_labels, predictions)       #
+    plt.plot(va_labels, va_labels, 'r')       #
+    plt.grid()                                #
+    plt.title("epochs {}; "                   #
+              "length of dataset {}\n ; "     # 
+              "TR LOSS {}\n; Test MSE {}"     #
+              .format(epochs,                 #
+                      int(len(tr_data)),      #
+                      loss[-1], MSE))         #
+    plt.show()                                #
     ### TR loss vs epochs #####################
-    plt.plot(epochsArr, loss, 'r')  #
-    plt.grid()  #
-    plt.show()  #
+    plt.plot(epochsArr, loss, 'r')            #
+    plt.grid()                                #
+    plt.show()                                #
     ############# Graphs ######################
     ###########################################
 
