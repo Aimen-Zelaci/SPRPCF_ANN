@@ -133,8 +133,6 @@ BATCH_SIZE = 12
 EPOCHS = 2000
 noise_dim = 7
 num_examples_to_generate = 8
-seed = tf.random.normal([num_examples_to_generate, noise_dim])
-
 
 def make_generator_model():
     model = tf.keras.Sequential()
@@ -267,8 +265,9 @@ def train_gen():
     generator_optimizer.apply_gradients(zip(gradients_of_generator, generator.trainable_variables))
 
 
-def generate_and_save_data(model, test_input, training):
-    predictions = model(test_input, training=False)
+def generate_and_save_data(model, training):
+    seed = tf.random.normal([num_examples_to_generate, noise_dim])
+    predictions = model(seed, training=False)
     if (training == False):
         for p in predictions:
 
