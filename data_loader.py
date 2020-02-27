@@ -118,7 +118,7 @@ def load_data(model):
 
 
 # Augment data
-def augment_data(tr_data, tr_labels, size,fname):
+def augment_data(tr_data, tr_labels, size, fname):
     generated_data = sp.genfromtxt(fname)
     random.shuffle(generated_data)
 
@@ -140,6 +140,7 @@ def augment_data(tr_data, tr_labels, size,fname):
     tr_labels = sp.array([y.reshape(1, ) for y in tr_labels]).reshape(int(len(tr_data)))
 
     return [tr_data, tr_labels]
+
 
 # Plot wgan progress
 def plot_wgan(epoch, fname):
