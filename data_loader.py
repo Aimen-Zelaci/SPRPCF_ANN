@@ -73,8 +73,8 @@ def load_data(model):
     analytes = [1.33, 1.34, 1.35]
     dataset = []
 
-    for param, lmbda, loss in zip(configs, lmbdas, losses):
-        dataset += shape_data(param, analytes, loss, lmbda)
+    for config, lmbda, loss in zip(configs, lmbdas, losses):
+        dataset += shape_data(config, analytes, loss, lmbda)
     dataset = [(x.reshape(6, 1), y.reshape(1, 1)) for x, y in dataset]
     trn_data = dataset[:NUM_DATA_POINTS * NUM_ANALYTES * NUM_CONFIGS]
 
