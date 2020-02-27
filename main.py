@@ -4,6 +4,8 @@ import networks
 # Size of data augmentation
 AUGMENT_SIZE = 1000
 
+EPOCHS = 2000
+
 # Load Original data
 tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_loader.load_data('keras')
 
@@ -16,4 +18,4 @@ save_dir = r'\trained-nets\last.h5'
 chkdir = r'\trained-weights\last.hdf5'
 
 if __name__ == '__main__':
-    networks.train_model(2000, tr_data, tr_labels, va_data, va_labels, save_dir, chkdir)
+    networks.train_model(EPOCHS, tr_data, tr_labels, va_data, va_labels, save_dir, chkdir)
