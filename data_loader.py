@@ -31,8 +31,8 @@ def augment_data(tr_data, tr_labels, size, fname):
     gen_y = generated_data[:size, -1]
 
     # Concatenate arrays
-    tr_labels += sp.concatenate(tr_labels, gen_y, axis=0)
-    tr_data += sp.concatenate(tr_data, gen_x, axis=0)
+    tr_labels = sp.concatenate(tr_labels, gen_y, axis=0)
+    tr_data = sp.concatenate(tr_data, gen_x, axis=0)
 
     # Assert shape
     tr_data = sp.array([x.reshape(6, ) for x in tr_data]).reshape(int(len(tr_data)), 6)
