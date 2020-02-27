@@ -39,7 +39,7 @@ for j in [5, 3, 7, 4, 6, 8, 2, 1, 9]:
     losses.append(y)
 
 
-def shape_data(configs, analytes, losses, lmbdas):
+def shape_data(config, analytes, losses, lmbdas):
     analytes = [100 * analyte for analyte in analytes]
     x_shaped = sp.array(sp.zeros(NUM_ANALYTES * 6 * 16)).reshape(NUM_ANALYTES * 16, 6)
     y = sp.array(sp.zeros(NUM_ANALYTES * NUM_DATA_POINTS)).reshape(NUM_ANALYTES * NUM_DATA_POINTS, 1)
@@ -53,7 +53,7 @@ def shape_data(configs, analytes, losses, lmbdas):
             temp[0] = firstIndex
             temp[1] = lmbdas[j]
             for i in range(4):
-                temp[i + 2] = configs[i]
+                temp[i + 2] = config[i]
             temp.reshape(1, 6)
             x_shaped[j] = temp
             loss = losses[j]
