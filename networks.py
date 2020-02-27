@@ -19,29 +19,29 @@ tf.compat.v1.enable_eager_execution()
 
 def make_model():
     model = tf.keras.Sequential()
+
+    # INPUT layer
     model.add(layers.Dense(50, input_shape=(6,)))
     model.add(layers.ReLU())
 
+    # Hidden layers
+    model.add(layers.Dense(50))
+    model.add(layers.BatchNormalization())
+    model.add(layers.ReLU())
+    model.add(layers.Dense(50))
+    model.add(layers.BatchNormalization())
+    model.add(layers.ReLU())
+    model.add(layers.Dense(50))
+    model.add(layers.BatchNormalization())
+    model.add(layers.ReLU())
+    model.add(layers.Dense(50))
+    model.add(layers.BatchNormalization())
+    model.add(layers.ReLU())
     model.add(layers.Dense(50))
     model.add(layers.BatchNormalization())
     model.add(layers.ReLU())
 
-    model.add(layers.Dense(50))
-    model.add(layers.BatchNormalization())
-    model.add(layers.ReLU())
-
-    model.add(layers.Dense(50))
-    model.add(layers.BatchNormalization())
-    model.add(layers.ReLU())
-
-    model.add(layers.Dense(50))
-    model.add(layers.BatchNormalization())
-    model.add(layers.ReLU())
-
-    model.add(layers.Dense(50))
-    model.add(layers.BatchNormalization())
-    model.add(layers.ReLU())
-
+    # OUTPUT layer
     model.add(layers.Dense(1))
     model.add(layers.ReLU())
 
@@ -138,26 +138,27 @@ seed = tf.random.normal([num_examples_to_generate, noise_dim])
 
 def make_generator_model():
     model = tf.keras.Sequential()
+
+    # INPUT layer
     model.add(layers.Dense(BATCH_SIZE * (2 ** 2), input_shape=(7,)))
     model.add(layers.BatchNormalization())
     model.add(layers.ReLU())
 
+    # Hidden layers
+    model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
+    model.add(layers.BatchNormalization())
+    model.add(layers.ReLU())
+    model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
+    model.add(layers.BatchNormalization())
+    model.add(layers.ReLU())
+    model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
+    model.add(layers.BatchNormalization())
+    model.add(layers.ReLU())
     model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
     model.add(layers.BatchNormalization())
     model.add(layers.ReLU())
 
-    model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
-    model.add(layers.BatchNormalization())
-    model.add(layers.ReLU())
-
-    model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
-    model.add(layers.BatchNormalization())
-    model.add(layers.ReLU())
-
-    model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
-    model.add(layers.BatchNormalization())
-    model.add(layers.ReLU())
-
+    # OUTPUT layer
     model.add(layers.Dense(7))
     model.add(layers.ReLU())
 
@@ -166,8 +167,12 @@ def make_generator_model():
 
 def make_critic_model():
     model = tf.keras.Sequential()
+
+    # INPUT layer
     model.add(layers.Dense(BATCH_SIZE * (2 ** 2), input_shape=(7,)))
     model.add(layers.LeakyReLU())
+
+    # Hidden layers
     model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
     model.add(layers.LeakyReLU())
     model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
@@ -176,6 +181,8 @@ def make_critic_model():
     model.add(layers.LeakyReLU())
     model.add(layers.Dense(BATCH_SIZE * (2 ** 0)))
     model.add(layers.LeakyReLU())
+
+    # OUTPUT layer
     model.add(layers.Dense(1, activation='linear'))
 
     return model
