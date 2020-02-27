@@ -7,7 +7,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from time import time
 import os
-import data_loader
+import data_handler
 
 # Enable Tensorflow eager execution. This line must be at the top of the script.
 tf.compat.v1.enable_eager_execution()
@@ -262,9 +262,7 @@ def generate_and_save_data(model, training):
             ones = sum(int(o >= 1.0) for o in p[:6])
             zeros = sum(int(z < 0.1) for z in p)
             if (zeros == 0 and ones == 0):
-                f = open(r'\gen_data\data.csv', 'a+')
-                f.write('{},{},{},{},{},{},{}\n'.format(p[0], p[1], p[2], p[3], p[4], p[5], p[6]))
-                f.close()
+                sp.savetxt(r'gen_data.txt', p.reshape(1,7), delimiter=',')
 
 def shape_wgan_data(tr_data, tr_labels):
     BUFFER_SIZE = int(len(tr_data))
@@ -295,7 +293,7 @@ def train_wgan(tr_data, tr_labels, epochs):
         # generate_and_save_data(generator,seed,training=False)
         # Plot generated data vs wavelength each 200 epoch
         if (epoch + 1) % 200 == 0:
-            data_loader.plot_wgan(epoch + 1)
+            data_handler.plot_wgan(epoch + 1)
             checkpoint.save(file_prefix=checkpoint_prefix)
 
         print('Time for epoch {} is {} sec'.format(epoch + 1, time.time() - start))
