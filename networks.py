@@ -115,12 +115,13 @@ def train_model(epochs, tr_data, tr_labels, va_data, va_labels, save_dir, chkdir
     ############# Graphs ######################
     ###########################################
 
-def load_model(dir):
-    if ('load_weights'):
-        model = make_model()
+def load_model(load_type,dir):
+    model = make_model()
+
+    if load_type == 'load_weights':
         model.load_weights(dir)
 
-    if ('load_model'):
+    if load_type == 'load_model':
         model = keras.models.load_model(dir)
 
     return model
