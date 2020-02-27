@@ -70,11 +70,11 @@ def train_model(epochs, tr_data, tr_labels, va_data, va_labels, save_dir, chkdir
     lr = 1e-4
     batch_size = 8
 
-    if (data_size >= 2000):
+    if data_size >= 2000:
         lr = 2e-4
         batch_size = 16
 
-    if (data_size >= 3000):
+    if data_size >= 3000:
         lr = 20e-4 / 8
         batch_size = 20
 

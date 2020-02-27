@@ -86,7 +86,7 @@ def load_data(model):
     test_labels = []
 
     # Shape data for Keras requirements
-    if (model == 'keras'):
+    if model == 'keras':
         # Training data
         for x, y in trn_data:
             train_data.append(x)
