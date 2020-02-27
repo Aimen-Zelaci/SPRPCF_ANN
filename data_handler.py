@@ -2,7 +2,7 @@ import scipy as sp
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def load_data(fname):
+def load_data(fname='data.xlsx'):
     data =pd.read_excel(fname)
     df = data.values
     x = df[:, :6]
@@ -22,7 +22,7 @@ def load_data(fname):
     return [tr_data, tr_labels, va_data, va_labels, test_data, test_labels]
 
 # Augment data
-def augment_data(tr_data, tr_labels, size, fname):
+def augment_data(tr_data, tr_labels, size=1000, fname='gen_data.txt'):
     generated_data = pd.read_csv(fname).values
 
     gen_x = generated_data[:size, :6]

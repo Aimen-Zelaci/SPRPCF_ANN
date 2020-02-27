@@ -7,7 +7,7 @@ AUGMENT_SIZE = 1000
 EPOCHS = 2000
 
 # Load Original data
-tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_data('keras')
+tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_data(fname='data.xlsx')
 
 # Augment data
 fname = r'\gen_data.txt'
