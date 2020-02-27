@@ -6,7 +6,7 @@ import os
 NUM_ANALYTES = 3
 NUM_DATA_POINTS = 16
 
-params = [
+configs = [
     # Training configs
     [1.5, 2.5, 7.5, 3.5],
     [2.4, 2.5, 5.5, 1.5],
@@ -26,7 +26,7 @@ losses = []
 
 for j in [5, 3, 7, 4, 6, 8, 2, 1, 9]:
     for i in [3, 4, 5]:
-        BASE_FOLDER = r'\config{}'.format(str(j))
+        BASE_FOLDER = r'\data\config{}'.format(str(j))
         BASE_NAME = r'13{}.tsv'.format(str(i))
         fname = os.path.join(BASE_FOLDER, BASE_NAME)
         # For relatively small data size
@@ -39,9 +39,9 @@ for j in [5, 3, 7, 4, 6, 8, 2, 1, 9]:
     losses.append(y)
 
 
-def shape_data(params, analytes, losses, lmbdas):
+def shape_data(configs, analytes, losses, lmbdas):
     analytes = [100 * analyte for analyte in analytes]
-    x_shaped = sp.array([sp.zeros(NUM_ANALYTES * 6 * 16)]).reshape(NUM_ANALYTES * 16, 6)
+    x_shaped = sp.array(sp.zeros(NUM_ANALYTES * 6 * 16)).reshape(NUM_ANALYTES * 16, 6)
     y = sp.array(sp.zeros(NUM_ANALYTES * NUM_DATA_POINTS)).reshape(NUM_ANALYTES * NUM_DATA_POINTS, 1)
     k = NUM_DATA_POINTS
     j = 0
@@ -53,7 +53,7 @@ def shape_data(params, analytes, losses, lmbdas):
             temp[0] = firstIndex
             temp[1] = lmbdas[j]
             for i in range(4):
-                temp[i + 2] = params[i]
+                temp[i + 2] = configs[i]
             temp.reshape(1, 6)
             x_shaped[j] = temp
             loss = losses[j]
@@ -70,9 +70,11 @@ def load_data(model):
     # Number of training configurations
     NUM_CONFIGS = 7
 
+    analytes = [1.33, 1.34, 1.35]
     dataset = []
-    for param, lmbda, loss in zip(params, lmbdas, losses):
-        dataset += shape_data(param, [1.33, 1.34, 1.35], loss, lmbda)
+
+    for param, lmbda, loss in zip(configs, lmbdas, losses):
+        dataset += shape_data(param, analytes, loss, lmbda)
     dataset = [(x.reshape(6, 1), y.reshape(1, 1)) for x, y in dataset]
     trn_data = dataset[:NUM_DATA_POINTS * NUM_ANALYTES * NUM_CONFIGS]
 
