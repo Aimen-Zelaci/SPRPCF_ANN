@@ -29,7 +29,8 @@ for j in [5, 3, 7, 4, 6, 8, 2, 1, 9]:
         BASE_FOLDER = r'\config{}'.format(str(j))
         BASE_NAME = r'13{}.tsv'.format(str(i))
         fname = os.path.join(BASE_FOLDER, BASE_NAME)
-        data = sp.genfromtxt(fname, delimiter="\t")
+        # For relatively small data size
+        data = sp.genfromtxt(fname, delimiter='\t')
         x = data[:, 0]
         y = data[:, 1]
         y = y * (10 ** 7)
@@ -62,8 +63,8 @@ def shape_data(params, analytes, losses, lmbdas):
         aIndex += 1
     x_shaped = x_shaped / 10
     data = [(x, y) for x, y in zip(x_shaped, y)]
-    return data
 
+    return data
 
 def load_data(model):
     # Number of training configurations
@@ -116,7 +117,6 @@ def load_data(model):
     else:
         return dataset
 
-
 # Augment data
 def augment_data(tr_data, tr_labels, size, fname):
     generated_data = sp.genfromtxt(fname)
@@ -141,9 +141,9 @@ def augment_data(tr_data, tr_labels, size, fname):
 
     return [tr_data, tr_labels]
 
-
 # Plot wgan progress
 def plot_wgan(epoch, fname):
+    # For relatively small data size
     data = sp.genfromtxt(fname)
     if len(data) == 0:
         return 0

@@ -12,7 +12,6 @@ import data_loader
 # Enable Tensorflow eager execution. This line must be at the top of the script.
 tf.compat.v1.enable_eager_execution()
 
-
 ############################### ANN MODEL ##########################################
 ####################################################################################
 ####################################################################################
@@ -46,7 +45,6 @@ def make_model():
     model.add(layers.ReLU())
 
     return model
-
 
 def train_model(epochs, tr_data, tr_labels, va_data, va_labels, save_dir, chkdir):
     # Create new model
@@ -111,7 +109,6 @@ def train_model(epochs, tr_data, tr_labels, va_data, va_labels, save_dir, chkdir
     ############# Graphs ######################
     ###########################################
 
-
 def load_model(dir):
     if ('load_weights'):
         model = make_model()
@@ -126,7 +123,7 @@ def load_model(dir):
     ####################################################################################
     ####################################################################################
 
-
+# WGAN parameters
 n_critic = 5
 grad_penalty_weight = 10
 BATCH_SIZE = 12
@@ -162,7 +159,6 @@ def make_generator_model():
 
     return model
 
-
 def make_critic_model():
     model = tf.keras.Sequential()
 
@@ -185,18 +181,14 @@ def make_critic_model():
 
     return model
 
-
 critic = make_critic_model()
 generator = make_generator_model()
-
 
 def critic_loss(real_output, fake_output):
     return -(tf.reduce_mean(real_output) - tf.reduce_mean(fake_output))
 
-
 def generator_loss(fake_output):
     return -tf.reduce_mean(fake_output)
-
 
 def gradient_penalty(x_real, x_fake):
     alpha = tf.compat.v1.random_uniform(shape=[BATCH_SIZE, 7], minval=0., maxval=1.)
@@ -206,7 +198,6 @@ def gradient_penalty(x_real, x_fake):
     slopes = tf.sqrt(tf.reduce_sum(tf.square(gradients)))
     gp = tf.reduce_mean((slopes - 1.) ** 2)
     return gp
-
 
 # WGAN optimizers
 critic_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5, beta_2=0.9)
@@ -230,7 +221,6 @@ gen_logdir = r'\ganlogs\scalars\{}'.format(time.time())
 train_loss_gen = tf.keras.metrics.Mean('train_loss', dtype=tf.float32)
 gen_summary_writer = tf.compat.v2.summary.create_file_writer(gen_logdir)
 
-
 @tf.function
 def train_critic(data):
     noise = tf.random.normal([BATCH_SIZE, noise_dim])
@@ -250,7 +240,6 @@ def train_critic(data):
     gradients_of_critic = disc_tape.gradient(disc_loss, critic.trainable_variables)
     critic_optimizer.apply_gradients(zip(gradients_of_critic, critic.trainable_variables))
 
-
 @tf.function
 def train_gen():
     noise = tf.random.normal([BATCH_SIZE, noise_dim])
@@ -264,21 +253,19 @@ def train_gen():
     gradients_of_generator = gen_tape.gradient(gen_loss, generator.trainable_variables)
     generator_optimizer.apply_gradients(zip(gradients_of_generator, generator.trainable_variables))
 
-
 def generate_and_save_data(model, training):
     seed = tf.random.normal([num_examples_to_generate, noise_dim])
     predictions = model(seed, training=False)
     if (training == False):
         for p in predictions:
-
             # Noise filter
             ones = sum(int(o >= 1.0) for o in p[:6])
             zeros = sum(int(z < 0.1) for z in p)
             if (zeros == 0 and ones == 0):
+                # For relatively small data size
                 f = open(r'\gen_data\data.tsv', 'a+')
                 f.write('{}\t\t{}\t\t{}\t\t{}\t\t{}\t\t{}\t\t{}\n'.format(p[0], p[1], p[2], p[3], p[4], p[5], p[6]))
                 f.close()
-
 
 def shape_wgan_data(tr_data, tr_labels):
     BUFFER_SIZE = int(len(tr_data))
