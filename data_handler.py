@@ -1,6 +1,5 @@
 import scipy as sp
 import pandas as pd
-import random
 import matplotlib.pyplot as plt
 
 def load_data(fname):
@@ -25,7 +24,6 @@ def load_data(fname):
 # Augment data
 def augment_data(tr_data, tr_labels, size, fname):
     generated_data = pd.read_csv(fname).values
-    random.shuffle(generated_data)
 
     gen_x = generated_data[:size, :6]
     gen_y = generated_data[:size, -1]
