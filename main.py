@@ -11,8 +11,10 @@ AUGMENT_SIZE = 1000
 # THEIR PCF DATA
 tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_pcf_data()
 
-# Augment data
-#tr_data, tr_labels = data_handler.augment_data(tr_data, tr_labels, AUGMENT_SIZE, fname='gen_data.txt')
+# Augment data after training the wgan
+# To augment our data use fname = 'gen_data.txt'
+# To augment their data use fname = 'gen_data_pcf.txt'
+#tr_data, tr_labels = data_handler.augment_data(tr_data, tr_labels, AUGMENT_SIZE, fname='gen_data_pcf.txt')
 
 # Save / Checkpoint directory
 save_dir = r'.\trained-nets\model1.h5'
