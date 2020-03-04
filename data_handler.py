@@ -23,17 +23,14 @@ def load_data(fname='data.xlsx'):
 
     analytes = df[:,0]
     analytes = (analytes*100)%10
-
-    diameters = df[:,3:6]
-    diameters = diameters/10
-    x = df[:, 0:3]
-
+    x = df[:, 1:6]
+    
     x = x.reshape(432,5)
     analytes = analytes.reshape(432,1)
+    
     x = sp.concatenate((analytes, x), axis=1)
     x /= 10
 
-    x = sp.concatenate((x,diameters), axis=1)
     y = df[:, -1]
     y = y * (10**8)
     y = sp.log10(y)
