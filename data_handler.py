@@ -2,22 +2,53 @@ import scipy as sp
 import pandas as pd
 import matplotlib.pyplot as plt
 
+def load_pcf_data(fname='pcf_data1.xlsx'):
+    df_1 = pd.read_excel(fname)
+    datafile_1 = df_1.values
+
+    tr_data = datafile_1[:1000,2:6].reshape(1000,4)
+    tr_labels = datafile_1[:1000,-1].reshape(1000,1)
+
+    va_data = datafile_1[1000:1050,2:6].reshape(50,4)
+    va_labels = datafile_1[1000:1050, -1].reshape(50, 1)
+
+    test_data =datafile_1[1050:,2:6]
+    test_labels =datafile_1[1050:,-1]
+
+    return [tr_data, tr_labels, va_data, va_labels, test_data, test_labels]
+
 def load_data(fname='data.xlsx'):
     data =pd.read_excel(fname)
     df = data.values
-    x = df[:, :6]
-    x = x / 10
+
+    analytes = df[:,0]
+    analytes = (analytes*100)%10
+
+    diameters = df[:,3:6]
+    diameters = diameters/10
+    x = df[:, 0:3]
+
+    x = x.reshape(432,5)
+    analytes = analytes.reshape(432,1)
+    x = sp.concatenate((analytes, x), axis=1)
+    x /= 10
+
+    x = sp.concatenate((x,diameters), axis=1)
     y = df[:, -1]
+    y = y * (10**8)
     y = sp.log10(y)
+    #Assert shape
+    x = x.reshape(432,6)
+    y = y.reshape(432,1)
 
-    tr_data = x[:337]
-    tr_labels = y[:337]
+    tr_data = x[:336]
+    tr_labels = y[:336]
 
-    va_data = x[336:385]
-    va_labels = y[336:385]
+    va_data = x[336:384]
+    va_labels = y[336:384]
 
-    test_data = x[385:]
-    test_labels = y[385:]
+    test_data = x[384:]
+    test_labels = y[384:]
 
     return [tr_data, tr_labels, va_data, va_labels, test_data, test_labels]
 
@@ -25,12 +56,19 @@ def load_data(fname='data.xlsx'):
 def augment_data(tr_data, tr_labels, size=1000, fname='gen_data.txt'):
     generated_data = pd.read_csv(fname).values
 
-    gen_x = generated_data[:size, :6]
-    gen_y = generated_data[:size, -1]
+    #OUR data
+    if(fname=='gen_data'):
+        gen_x = generated_data[:size, :6]
+        gen_y = generated_data[:size, -1]
+
+    #THEIR data
+    if(fname=='gen_data_pcf'):
+        gen_x = generated_data[:size, :4]
+        gen_y = generated_data[:size, -1]
 
     # Concatenate arrays
-    tr_labels = sp.concatenate(tr_labels, gen_y, axis=0)
-    tr_data = sp.concatenate(tr_data, gen_x, axis=0)
+    tr_labels = sp.concatenate((tr_labels, gen_y), axis=0)
+    tr_data = sp.concatenate((tr_data, gen_x), axis=0)
 
     # Assert shape
     tr_data = sp.array([x.reshape(6, ) for x in tr_data]).reshape(int(len(tr_data)), 6)
@@ -40,11 +78,11 @@ def augment_data(tr_data, tr_labels, size=1000, fname='gen_data.txt'):
 
 # Plot wgan progress
 def plot_wgan(epoch, fname):
-
     real_data_fname = r'data.xlsx'
-    x_real, y_real ,_,__,_,__ = load_data(real_data_fname)
+    x_real, y_real ,_,__,___,____ = load_data(real_data_fname)
 
     data = pd.read_csv(fname).values
+
     if len(data) == 0:
         return 0
 

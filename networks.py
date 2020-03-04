@@ -5,7 +5,7 @@ from tensorflow.keras import layers
 import scipy as sp
 import tensorflow as tf
 import matplotlib.pyplot as plt
-from time import time
+import time
 import os
 import data_handler
 
@@ -50,53 +50,43 @@ def train_model(epochs, tr_data, tr_labels, va_data, va_labels, save_dir, chkdir
     # Create new model
     model = make_model()
 
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
-
-    if not os.path.exists(chkdir):
-        os.makedirs(chkdir)
-
     # Proceed training of a saved model
     # model = keras.models.load_model(save_dir)
 
     # TensorBoard log directory
-    logdir = r'\logs\1000\scalars\{}'.format(time())
+    logdir = r'.\logs\scalars\{}'.format(time.time())
 
     # CALLBACKS
     # TensorBoard
     tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
+
     # Save the best va_loss file
     checkpointer = keras.callbacks.ModelCheckpoint(filepath=chkdir, verbose=1,
                                                    save_best_only=True)
-    # Train
+
     data_size = int(len(tr_data))
     # Learning rate / Minibatch size
     lr = 1e-4
     batch_size = 8
-
     if data_size >= 2000:
         lr = 2e-4
         batch_size = 16
-
     if data_size >= 3000:
         lr = 20e-4 / 8
         batch_size = 20
-
     # Define optimizers
     Adam = keras.optimizers.Adam(learning_rate=lr, beta_1=0.9, beta_2=0.999)
     RMSprop = keras.optimizers.RMSprop(learning_rate=1e-2, rho=0.9)
-
+    # Train
     model.compile(optimizer=Adam, loss='mean_squared_error', batch_size=batch_size)
     hist = model.fit(tr_data, tr_labels, epochs=epochs, verbose=2,
                      validation_data=(va_data, va_labels), callbacks=[tensorboard_callback, checkpointer])
-
     # Post training
     model.save(save_dir)
     loss = hist.history['loss']
     epochsArr = sp.arange(epochs)
     predictions = model.predict([va_data])
     MSE = sp.square(sp.subtract(va_labels, predictions)).mean()
-
     ### Plot predictions vs validation ########
     plt.scatter(va_labels, predictions)       #
     plt.plot(va_labels, va_labels, 'r')       #
@@ -133,36 +123,34 @@ def load_model(load_type,dir):
 # WGAN parameters
 n_critic = 5
 grad_penalty_weight = 10
-BATCH_SIZE = 12
+BATCH_SIZE = 10
 EPOCHS = 2000
-noise_dim = 7
+noise_dim = 5
+num_critic_input = 5
 num_examples_to_generate = 8
 
 def make_generator_model():
     model = tf.keras.Sequential()
 
     # INPUT layer
-    model.add(layers.Dense(BATCH_SIZE * (2 ** 2), input_shape=(7,)))
+    model.add(layers.Dense(BATCH_SIZE * (2 ** 2), input_shape=(noise_dim,)))
     model.add(layers.BatchNormalization())
-    model.add(layers.ReLU())
+    model.add(layers.LeakyReLU())
 
     # Hidden layers
     model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
     model.add(layers.BatchNormalization())
-    model.add(layers.ReLU())
+    model.add(layers.LeakyReLU())
     model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
     model.add(layers.BatchNormalization())
-    model.add(layers.ReLU())
+    model.add(layers.LeakyReLU())
     model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
     model.add(layers.BatchNormalization())
-    model.add(layers.ReLU())
-    model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
-    model.add(layers.BatchNormalization())
-    model.add(layers.ReLU())
+    model.add(layers.LeakyReLU())
+
 
     # OUTPUT layer
-    model.add(layers.Dense(7))
-    model.add(layers.ReLU())
+    model.add(layers.Dense(noise_dim, activation='linear'))
 
     return model
 
@@ -170,12 +158,10 @@ def make_critic_model():
     model = tf.keras.Sequential()
 
     # INPUT layer
-    model.add(layers.Dense(BATCH_SIZE * (2 ** 2), input_shape=(7,)))
+    model.add(layers.Dense(BATCH_SIZE * (2 ** 2), input_shape=(num_critic_input,)))
     model.add(layers.LeakyReLU())
 
     # Hidden layers
-    model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
-    model.add(layers.LeakyReLU())
     model.add(layers.Dense(BATCH_SIZE * (2 ** 2)))
     model.add(layers.LeakyReLU())
     model.add(layers.Dense(BATCH_SIZE * (2 ** 1)))
@@ -198,7 +184,7 @@ def generator_loss(fake_output):
     return -tf.reduce_mean(fake_output)
 
 def gradient_penalty(x_real, x_fake):
-    alpha = tf.compat.v1.random_uniform(shape=[BATCH_SIZE, 7], minval=0., maxval=1.)
+    alpha = tf.compat.v1.random_uniform(shape=[BATCH_SIZE, num_critic_input], minval=0., maxval=1.)
     diff = x_real - x_fake
     interpolates = x_real + (alpha * diff)
     gradients = tf.gradients(critic(interpolates), [interpolates])[0]
@@ -219,12 +205,12 @@ checkpoint = tf.train.Checkpoint(generator_optimizer=generator_optimizer,
                                  discriminator=critic)
 
 # Critic Tensorboard loss summary
-critic_logdir = r'\ganlogs\scalars\{}'.format(time.time())
+critic_logdir = r'.\ganlogs\scalars\{}'.format(time.time())
 train_loss = tf.keras.metrics.Mean('train_loss', dtype=tf.float32)
 critic_summary_writer = tf.compat.v2.summary.create_file_writer(critic_logdir)
 
 # Generator TensorBoard loss summary
-gen_logdir = r'\ganlogs\scalars\{}'.format(time.time())
+gen_logdir = r'.\ganlogs\scalars\{}'.format(time.time())
 train_loss_gen = tf.keras.metrics.Mean('train_loss', dtype=tf.float32)
 gen_summary_writer = tf.compat.v2.summary.create_file_writer(gen_logdir)
 
@@ -260,27 +246,32 @@ def train_gen():
     gradients_of_generator = gen_tape.gradient(gen_loss, generator.trainable_variables)
     generator_optimizer.apply_gradients(zip(gradients_of_generator, generator.trainable_variables))
 
-def generate_and_save_data(model, training):
+def generate_and_save_data(training):
     seed = tf.random.normal([num_examples_to_generate, noise_dim])
-    predictions = model(seed, training=False)
+    predictions = generator(seed, training=training)
     if (training == False):
         for p in predictions:
+            print(p)
             # Noise filter
             ones = sum(int(o >= 1.0) for o in p[:6])
             zeros = sum(int(z < 0.1) for z in p)
-            if (zeros == 0 and ones == 0):
-                sp.savetxt(r'gen_data.txt', p.reshape(1,7), delimiter=',')
+            #sp.savetxt(r'gen_data_pcf.txt', p, delimiter=',')
+            file = open('gen_data_pcf.txt','a+')
+            file.write('{},{},{},{},{}\n'.format(p[0],p[1],p[2],p[3],p[4]))
+            file.close()
 
 def shape_wgan_data(tr_data, tr_labels):
     BUFFER_SIZE = int(len(tr_data))
     # Place the labels and inputs in one vector
-    dataset = sp.concatenate(tr_data, tr_labels, axis=1)
+    dataset = sp.concatenate((tr_data, tr_labels), axis=1)
+    print(dataset[-1])
     train_dataset = tf.data.Dataset.from_tensor_slices(dataset).shuffle(BUFFER_SIZE).batch(BATCH_SIZE)
 
     return train_dataset
 
-
 def train_wgan(tr_data, tr_labels, epochs):
+    #Continue training
+    #checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
     dataset = shape_wgan_data(tr_data, tr_labels)
     for epoch in range(epochs):
         start = time.time()
@@ -300,7 +291,7 @@ def train_wgan(tr_data, tr_labels, epochs):
         # generate_and_save_data(generator,seed,training=False)
         # Plot generated data vs wavelength each 200 epoch
         if (epoch + 1) % 200 == 0:
-            data_handler.plot_wgan(epoch + 1)
+            #data_handler.plot_wgan(epoch + 1)
             checkpoint.save(file_prefix=checkpoint_prefix)
 
         print('Time for epoch {} is {} sec'.format(epoch + 1, time.time() - start))
