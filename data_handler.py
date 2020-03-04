@@ -56,13 +56,13 @@ def augment_data(tr_data, tr_labels, size=1000, fname='gen_data.txt'):
     #OUR data
     if(fname=='gen_data'):
         gen_x = generated_data[:size, :6]
-        gen_y = generated_data[:size, -1]
-
+       
     #THEIR data
     if(fname=='gen_data_pcf'):
         gen_x = generated_data[:size, :4]
-        gen_y = generated_data[:size, -1]
-
+        
+    gen_y = generated_data[:size, -1]
+    
     # Concatenate arrays
     tr_labels = sp.concatenate((tr_labels, gen_y), axis=0)
     tr_data = sp.concatenate((tr_data, gen_x), axis=0)
