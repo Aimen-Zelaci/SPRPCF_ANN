@@ -1,0 +1,89 @@
+\documentclass[draft, a4, 10pt, onecolumn]{IEEEtran}
+
+\usepackage{color,soul}
+
+\begin{document}
+
+\title{\hl{On the use of Generative adversarial neural networks for computing photonic crystal fiber optical properties}}
+
+\author{Zelaci Aimen, Ahmet Yaşlı, Cem Kalyoncu, and Hüseyin Ademgil}
+
+\maketitle
+	
+\begin{abstract}
+Photonic crystal fibers (PCF) for specific applications are designed and optimized by both industry experts and researches. However, the potential number of combinations possible for a single application is huge. This issue combined by the speed of PCF numerical simulation techniques causes the task to take significant amount of time. As stated in the previous works, artificial neural networks (ANN) can predict the result of numerical simulations much faster. However, there are two issues with the methods proposed previously. Namely, the required number of samples for training and generality of the designed network. In this paper, we have proposed the use of generative adversarial networks (GAN) to fabricate additional data to be used in training and a unique ANN design that can work with wider range of configurations.
+\end{abstract}
+
+\section{Introduction}
+
+\hl{Importance of PCF and SPR, written by AY or HA}
+
+\hl{Importance of ANN, deep neural networks, GAN}
+
+\hl{Literature survey}
+
+\hl{Short explanation of GAN/ANN}
+
+This paper is organized as follows. Section \ref{sec:prop} details the use of GAN to generate additional training samples for ANN as well as the proposed neural network architecture. Photonic crystal fiber design that is used for testing is described in details in section \ref{sec:pcf}. Detailed analysis of the experimental results are discussed in section \ref{sec:exp}. Finally, concluding remarks are made in section \ref{sec:conc}.
+
+\section{Proposed method}
+\label{sec:prop}
+
+\hl{Details of the overall architecture}
+
+\subsection{Artificial neural network design}
+\label{ssec:ann}
+
+\hl{Particulars of ANN design}
+
+\hl{Explanations for Adam optimizer and batch normalization} 
+
+\subsection{Generative Adversarial networks}
+\label{ssec:gan}
+
+\hl{Explain GAN}
+
+\hl{Explain how GAN is used in this design}
+
+
+
+\section{Photonic crystal fiber design}
+\label{sec:pcf}
+
+\hl{PCF design details, written by AY}
+
+\section{Experiments}
+\label{sec:exp}
+
+\subsection{Experimental setup}
+
+\hl{Details of the dataset, machine that is used to run simulations}
+
+\hl{Metrics used in the comparisons}
+
+
+\subsection{Performance of ANN}
+
+\hl{Performance of ANN design alone, compared to the other method}
+
+\subsection{Performance boost of GAN}
+
+\hl{Experiments regarding to the GAN}
+
+\subsection{Computational performance}
+
+\hl{Training and execution time of ANN versus simulation method}
+
+
+\section{Conclusion}
+\label{sec:conc}
+
+\hl{about the improved speed}
+
+\hl{reduced amount of training samples}
+
+\hl{increased generality of the system}
+
+Machine learning approaches has an inherit strength on top of classical simulation methods: they could model hidden parameters in a system which we have no knowledge about. Therefore, not only ANN can improve the speed of PCF simulation, but also accuracy of the simulations. However, this final claim requires further analysis and experimentation.
+	
+\end{document}

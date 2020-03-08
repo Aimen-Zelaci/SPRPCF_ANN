@@ -1,0 +1,3 @@
+docs/**/*.log
+docs/**/*.synctex.gz
+docs/**/*.aux
