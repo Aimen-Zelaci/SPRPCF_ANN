@@ -1,6 +1,10 @@
 \documentclass[draft, a4, 10pt, onecolumn]{IEEEtran}
 
 \usepackage{color,soul}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[english]{babel}
+\usepackage{graphicx}
 
 \begin{document}
 
@@ -33,17 +37,13 @@ This paper is organized as follows. Section \ref{sec:prop} details the use of GA
 
 \subsection{Artificial neural network design}
 \label{ssec:ann}
-
-\hl{Particulars of ANN design}
-
-\hl{Explanations for Adam optimizer and batch normalization} 
+The ANN model is a fully-connected feed-forward MLP (Multi Layer Perceptron), consisting of an input layer, an output layer, and 5 hidden layers, 50 neurons for each hidden layer. Taking ReLU (Rectified Linear Unit) as the activation function, Adam (Diederik P. Kingma, Jimmy Ba, 22 Dec 2014 ) as the optimizer and the mean suqared error as the loss/cost function. To reduce overfitting we use the Early stopping method [reference], that is by saving checkpoints where the best validation mean squared error occurred as we iterate. To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm was used [reference]. 
 
 \subsection{Generative Adversarial networks}
 \label{ssec:gan}
 
-\hl{Explain GAN}
-
-\hl{Explain how GAN is used in this design}
+GANs consist of two neural networks, as shown in figure (3). The first of which called a discriminator, that gives an estimate of the probability that a given input is real or generated (fake). Whereas the second network is referred to as the generator, which outputs data samples from a random noise vector called a latent variable usually given the symbol $z$ supplied at its input. The error between the discriminator’s output and the actual labels (The real data samples vectors all labeled as 1: the probability of being real) would then be measured by the means of a chosen metric. Introduced by Arjovsky et al [reference] the Wasserstein distance metric (or the earth mover distance) proved to be very effective, instead of discriminating whether an input is real or generated, the discriminator provides a criticism of how far the generated data from the real data is, hence the discriminator network is referred to as the critic in the WGANs. Throughout this paper we will use yet the improved WGAN, the WGAN with Gradient penalty [reference]. The improved WGAN converges in a stable manner with least efforts made to tune the hyper- parameters of both networks constituting the GAN, which can be very daunting.
+GANs power emerges from the fact that discover insights or structures embedded within the data, which enables it generate it samples within an acceptable error. Therefore, in this work we will try to supplement our original training with the generated samples to improve the ANN model accuracy on predicting the confinement loss of the PCF. 
 
 
 
@@ -57,14 +57,75 @@ This paper is organized as follows. Section \ref{sec:prop} details the use of GA
 
 \subsection{Experimental setup}
 
-\hl{Details of the dataset, machine that is used to run simulations}
+A labeled data-set of only 432 samples was collected in this work, through simulations using FV-FEM. The length of the data-set made the task of building ANN model look quiet impossible, however the results were satisfying to some extent. The data-set consists of the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$, taken as our independent variables. The labels are the confinement loss of the PCF. The set consists of nine different configurations of the geometric properties ($ \Lambda $, d1, d2, d3), for each configuration the confinement loss was calculated for 3 different analytes (Water (n=1.33), Ethanol (n=1.35) and several commercial hydrocarbon mixtures (n=1.36) [35]). Seven configurations were randomly selected for training both the WGAN-GP and the ANN, one configuration was held out for validation, and the last configuration for testing. This data was preprocessed before fed in the networks. The indices of refraction  are very close, which made it quiet difficult for the neural networks to differentiate between them, after many trials, the best choice was to take only the tens digit of ${134, 135, 136}$, giving ${4, 5, 6}$. Finally, we transform the confinement loss to the log scale.
 
 \hl{Metrics used in the comparisons}
 
 
 \subsection{Performance of ANN}
 
-\hl{Performance of ANN design alone, compared to the other method}
+We train the ANN model for more than 2000 epochs, starting from the original data-set. Then we augment the data by 1000 generated samples from our WGAN-GP, which will be demonstrated in the next section. The following table summarizes the hyper-parameters chosen for the ANN model:\\
+\begin{tabular}{||c c c c c||}
+\hline
+Length of the training data-set & Learning rate&Batch size & $\beta_{1}$ & $\beta_{2}$\\ [0.5ex] 
+\hline\hline
+336 & $ 1\times10^{-04} $ & 12 & 0.9 & 0.999 \\
+\hline
+\hline\hline
+1000+336 & $ 1\times10^{-04} $ & 12 & 0.9 & 0.999 \\
+\hline
+\hline\hline
+2000 + 336 & $ 2\times10^{-04} $ & 16 & 0.9 & 0.999 \\
+\hline
+\hline\hline
+3000 + 336 & $ 2.5\times10^{-04} $ & 16  & 0.9 & 0.999 \\
+\hline
+\end{tabular}\\
+	 \newline
+	 The MSE on the training sets ranged from 0.0030 to 0.0050. For all data sets the MSE on the training sets decreased in an acceptable manner, as shown in the following figure.
+\begin{figure}[h]
+    \begin{tikzpicture}[scale=.6]
+		\begin{axis}[
+		xlabel=$Epochs$, % \hertz requires SIunits
+		ylabel=$Training \space MSE$,
+		title={Training MSE of the ANN model},
+		grid=both,
+		minor grid style={gray!25},
+		major grid style={gray!25},
+		width=1.1\linewidth,
+		no marks]
+		\addplot[line width=1pt,solid,color=blue] %
+		table{tr_loss_ann.txt};
+		\end{axis}
+	\end{tikzpicture}
+	\caption{}
+\end{figure}\\
+    \newline
+    Next, we plot the predictions the ANN model made after training using only the original data-set.
+    \newpage
+\begin{figure}[h]
+			\begin{tikzpicture}[scale=.6]
+			\begin{axis}[
+			xlabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $, % \hertz requires SIunits
+			ylabel=$Predicted $ $ loss $ $ in $ $ Log(db/cm) $,
+			title={Length of the training dataset = 336 + 0},
+			grid=both,
+			minor grid style={gray!25},
+			major grid style={gray!25},
+			width=1.1\linewidth]
+			\addplot[
+			only marks,
+			mark size=2.9pt, mark=o, color=red, fill=red] %
+			table{dataset_336.txt};
+			\addlegendentry{$Predicted$}
+			\addplot[line width=1pt,solid,color=blue]  %
+			table{y.txt};
+			\addlegendentry{$Actual$}
+			\end{axis}
+			\end{tikzpicture}
+			\caption{}
+\end{figure}
+As you can see, the ANN made somewhat good predictions of the low values of the confinement loss. A close inspection into the data samples collected shows that points are concentrated in the low values interval, i.e the ANN picked up the pattern quiet easily. However, in the higher values interval, the ANN could not see a pattern because points are distant from each other to some extent, even though we transformed the confinement loss to the log scale to actually minimize these distances.
 
 \subsection{Performance boost of GAN}
 
