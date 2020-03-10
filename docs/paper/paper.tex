@@ -5,24 +5,26 @@
 \usepackage{pgfplots}
 \usepackage[english]{babel}
 \usepackage{graphicx}
+\usepackage{subcaption}
 
 \begin{document}
 
 \title{\hl{On the use of Generative adversarial neural networks for computing photonic crystal fiber optical properties}}
 
-\author{Zelaci Aimen, Ahmet Yaşlı, Cem Kalyoncu, and Hüseyin Ademgil}
+\author{Aimen Zelaci, Ahmet Yaşlı, Cem Kalyoncu, and Hüseyin Ademgil}
 
 \maketitle
 	
 \begin{abstract}
-Photonic crystal fibers (PCF) for specific applications are designed and optimized by both industry experts and researches. However, the potential number of combinations possible for a single application is huge. This issue combined by the speed of PCF numerical simulation techniques causes the task to take significant amount of time. As stated in the previous works, artificial neural networks (ANN) can predict the result of numerical simulations much faster. However, there are two issues with the methods proposed previously. Namely, the required number of samples for training and generality of the designed network. In this paper, we have proposed the use of generative adversarial networks (GAN) to fabricate additional data to be used in training and a unique ANN design that can work with wider range of configurations.
+Photonic crystal fibers (PCF) for specific applications are designed and optimized by both industry experts and researches. However, the potential number of combinations possible for a single application is huge. This issue combined by the speed of PCF numerical simulation techniques causes the task to take significant amount of time. As stated in the previous works, artificial neural networks (ANN) can predict the result of numerical simulations much faster. However, there are two issues with the methods proposed previously. Namely, the required number of samples for training and generality of the designed network. In this paper, we have proposed the use of generative adversarial networks (GAN) to augment the real data set to then train a  ANN model.
+
 \end{abstract}
 
 \section{Introduction}
 
 \hl{Importance of PCF and SPR, written by AY or HA}
 
-\hl{Importance of ANN, deep neural networks, GAN}
+Machine learning techniques are coming to the forefront of many fields. Especially deep learning [ref], surpassing human performance in a variety of fields, namely automatic speech recognition, image recognition, natural language processing, drug discovery and toxicology. However, this flexibility does not stop here because Artificial Neural Networks can compute any function at all (Universality theorem)[ref]. No matter what the function is, there is to be a ANN so that for every possible vector X, the value f(X) (or some close approximation) is output from the network [ref]. This fact propelled researchers to widen the applications of ANNs even further, including the study of nanophotonic structures [ref], optimization of photonic crystal nanocavities [ref], and more recently in a similar work to this paper, computing optical properties of a photonic crystal fiber [ref]. Perhaps one of the challenges that deep learning models face is that they benefit from large amounts of data to train, which is quite costly to acquire [ref]. One of the solutions to overcome this issue is to artificially expand the original real data set by the means of generative networks. Introduced by Goodfellow et al., Generative Adversarial Networks (GANs) [ref], proved to be very impressive in tasks such as synthetic data generation [ref], Synthetically Augment data for deep learning based image segmentation [ref]. GANs power comes from the fact that they discover insights and structures within distributions that allows them to make good approximations to the real data set. In this paper we focus on determining one of the propagation features of a multi-channel Photonic Crystal Fiber (PCF) sensor based on Surface Plasmon Resonance (SPR), that is the confinement loss, by using an Artificial Neural Network model, and a special kind generative networks to expand our limited data set for the purpose of  improving the accuracy of our ANN model. Our aim to eventually surpass the simulations performed using Full-Vectorial Finite Element Method (FV-FEM) to design, optimise and evaluate the sensor performance. A time comparison between the performance of the ANN and classic simulation techniques has been made here [ref]. Furtheremore, a time comparaison is also made in this paper in section $4$.
 
 \hl{Literature survey}
 
@@ -33,20 +35,19 @@ This paper is organized as follows. Section \ref{sec:prop} details the use of GA
 \section{Proposed method}
 \label{sec:prop}
 
-\hl{Details of the overall architecture}
+We will first train ANN model to predict the confinement loss of a SPR based PCF using the original data set collected. Then we will augment the original training data set with generated samples by the GAN, to improve the performance of the ANN model.
+Previous works [ref, ref], demonstrated that random data augmentation actually had weakened the performance of the model. Hence, active researches are ongoing to find ways to optimally sample the generated data [ref], in other words to filter out the "good" generated data after training the GAN. In this paper, we will use a simple if-statement to discard values that fall out of our desired ranges for both the independent variables($n_{analyte}, \lambda, \Lambda, d1, d2, d3$), and the confinement loss. In the following sub-sections we discuss the networks architectures.
 
 \subsection{Artificial neural network design}
 \label{ssec:ann}
-The ANN model is a fully-connected feed-forward MLP (Multi Layer Perceptron), consisting of an input layer, an output layer, and 5 hidden layers, 50 neurons for each hidden layer. Taking ReLU (Rectified Linear Unit) as the activation function, Adam (Diederik P. Kingma, Jimmy Ba, 22 Dec 2014 ) as the optimizer and the mean suqared error as the loss/cost function. To reduce overfitting we use the Early stopping method [reference], that is by saving checkpoints where the best validation mean squared error occurred as we iterate. To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm was used [reference]. 
+The ANN model is a fully-connected feed-forward MLP (Multi Layer Perceptron), consisting of an input layer, an output layer, and 5 hidden layers, 50 neurons for each hidden layer. Taking ReLU (Rectified Linear Unit) as the activation function, Adam [ref] as the optimizer and the mean squared error as the loss/cost function. To reduce overfitting we use the Early stopping method [reference], that is by saving checkpoints where the best validation mean squared error occurred as we iterate. To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm was used [ref].
 
-\subsection{Generative Adversarial networks}
+\subsection{Generative Adversarial network design}
 \label{ssec:gan}
 
-GANs consist of two neural networks, as shown in figure (3). The first of which called a discriminator, that gives an estimate of the probability that a given input is real or generated (fake). Whereas the second network is referred to as the generator, which outputs data samples from a random noise vector called a latent variable usually given the symbol $z$ supplied at its input. The error between the discriminator’s output and the actual labels (The real data samples vectors all labeled as 1: the probability of being real) would then be measured by the means of a chosen metric. Introduced by Arjovsky et al [reference] the Wasserstein distance metric (or the earth mover distance) proved to be very effective, instead of discriminating whether an input is real or generated, the discriminator provides a criticism of how far the generated data from the real data is, hence the discriminator network is referred to as the critic in the WGANs. Throughout this paper we will use yet the improved WGAN, the WGAN with Gradient penalty [reference]. The improved WGAN converges in a stable manner with least efforts made to tune the hyper- parameters of both networks constituting the GAN, which can be very daunting.
-GANs power emerges from the fact that discover insights or structures embedded within the data, which enables it generate it samples within an acceptable error. Therefore, in this work we will try to supplement our original training with the generated samples to improve the ANN model accuracy on predicting the confinement loss of the PCF. 
-
-
-
+GANs consist of two neural networks, as shown in figure (num). The first of which called a discriminator, that gives an estimate of the probability that a given input is real or generated (fake). Whereas the second network is referred to as the generator, which outputs data samples from a random noise vector called a latent variable usually given the symbol $z$ supplied at its input. The error between the discriminator’s output and the actual labels (The real data samples vectors all labeled as 1: the probability of being real) would then be measured by the means of a chosen metric. Introduced by Arjovsky et al [reference] the Wasserstein distance metric (or the earth mover distance) proved to be very effective, instead of discriminating whether an input is real or generated, the discriminator provides a criticism of how far the generated data from the real data is, hence the discriminator network is referred to as the critic in the WGANs. Throughout this paper we will use yet the improved WGAN, the WGAN with Gradient penalty [reference]. The improved WGAN converges in a stable manner with least efforts made to tune the hyper- parameters of both networks constituting the GAN, which can be very daunting.
+The WGAN-GP architecture chosen in this work is as follows: both the Critic and the generator networks are a fully-connected feed-forward MLP, having 4 hidden layers, with $ minibatchsize\times2^{number of layers} $ neurons for each hidden layer in the critic network, whereas $ minibatchsize\times2^{2} $ neurons for each hidden layer in the generator network. The input vector for the Critic network consists of the $six$ parameters discussed earlier for the ANN model, in addition the corresponding loss value, giving a total of seven inputs. The generator is supplied with random noise vector having a dimension of $7$, and outputs a vector that resembles that of the input to the critic network. LeakyReLU and ReLU were chosen as the activation functions for the Critic and Generator respectively and Adam as the optimizer for both networks. Finally Batch Normalization technique was applied to the Generator.
+\newpage
 \section{Photonic crystal fiber design}
 \label{sec:pcf}
 
@@ -81,12 +82,12 @@ Length of the training data-set & Learning rate&Batch size & $\beta_{1}$ & $\bet
 3000 + 336 & $ 2.5\times10^{-04} $ & 16  & 0.9 & 0.999 \\
 \hline
 \end{tabular}\\
-	 \newline
-	 The MSE on the training sets ranged from 0.0030 to 0.0050. For all data sets the MSE on the training sets decreased in an acceptable manner, as shown in the following figure.
+\newpage
+The MSE on the training sets ranged from 0.0030 to 0.0050. For all data sets the MSE on the training sets decreased in an acceptable manner, as shown in the following figure.
 \begin{figure}[h]
     \begin{tikzpicture}[scale=.6]
 		\begin{axis}[
-		xlabel=$Epochs$, % \hertz requires SIunits
+		xlabel=$Epochs$, 
 		ylabel=$Training \space MSE$,
 		title={Training MSE of the ANN model},
 		grid=both,
@@ -106,7 +107,7 @@ Length of the training data-set & Learning rate&Batch size & $\beta_{1}$ & $\bet
 \begin{figure}[h]
 			\begin{tikzpicture}[scale=.6]
 			\begin{axis}[
-			xlabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $, % \hertz requires SIunits
+			xlabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $, 
 			ylabel=$Predicted $ $ loss $ $ in $ $ Log(db/cm) $,
 			title={Length of the training dataset = 336 + 0},
 			grid=both,
@@ -129,8 +130,162 @@ As you can see, the ANN made somewhat good predictions of the low values of the 
 
 \subsection{Performance boost of GAN}
 
-\hl{Experiments regarding to the GAN}
+During training the metric used to monitor the WGAN-GP is the loss function of the Critic network. Its convergence signals the ending of the training phase, shown in figure(num).
+In this sub-section we discuss the results of augmenting the real data set with Synthetic data. Figure(num) demonstrates the predictions made by the ANN model after training with different sizes of the Synthetic data set.
+This might seem paradoxical to what we mentioned earlier, that ANN model benefit from large amounts of data. There are several reasons that is driving our ANN model predictions in the wrong way. Even though our WGAN-GP seemed well trained, there still a domain gap between the real data and the generated data, or the expansion of data is growing in the wrong direction to that of entirely containing the real data. Furthermore, the generated data might lack realism. Or the sampling strategy adopted is poor[ref, ref, ref]. After all, with 1000 generated data samples the ANN model made quiet accurate predictions with which we are satisfied, that is we have achieved we set out to accomplish at the beginning, to train an ANN model and make accurate prediction on a never-seen-before data.
 
+\begin{figure}[ht]
+    \begin{subfigure}{.5\textwidth}
+			\begin{tikzpicture}
+			\begin{axis}[
+			xlabel=$Epochs$, 
+			ylabel=$ Training $ $ MSE $,
+			title={Training loss function of the Critic network},
+			grid=both,
+			minor grid style={gray!25},
+			major grid style={gray!25},
+			width=1.1\linewidth]
+			\addplot[line width=1pt,solid,color=blue]  %
+			table{wgan_tr_loss.txt};
+			\end{axis}
+			\end{tikzpicture}
+\end{subfigure}
+    \begin{subfigure}{.5\textwidth}
+			\begin{tikzpicture}
+			\begin{axis}[
+			xlabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $, 
+			ylabel=$Predicted $ $ loss $ $ in $ $ Log(db/cm) $,
+			title={Length of the training dataset = 336 + 1000},
+			grid=both,
+			minor grid style={gray!25},
+			major grid style={gray!25},
+			width=1.1\linewidth]
+			\addplot[
+			only marks,
+			mark size=2.9pt, mark=o, color=red, fill=red] %
+			table{dataset_1000.txt};
+			\addlegendentry{$Predicted$}
+			\addplot[line width=1pt,solid,color=blue]  %
+			table{y.txt};
+			\addlegendentry{$Actual$}
+			\end{axis}
+			\end{tikzpicture}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+			\begin{tikzpicture}
+			\begin{axis}[
+			xlabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $, % \hertz requires SIunits
+			ylabel=$Predicted $ $ loss $ $ in $ $ Log(db/cm) $,
+			title={Length of the training dataset = 336 + 2000},
+			grid=both,
+			minor grid style={gray!25},
+			major grid style={gray!25},
+			width=1.1\linewidth]
+			\addplot[
+			only marks,
+			mark size=2.9pt, mark=o, color=red, fill=red] %
+			table{dataset_2000.txt};
+			\addlegendentry{$Predicted$}
+			\addplot[line width=1pt,solid,color=blue]  %
+			table{y.txt};
+			\addlegendentry{$Actual$}
+			\end{axis}
+			\end{tikzpicture}
+\end{subfigure}
+\begin{subfigure}{.5\textwidth}
+			\begin{tikzpicture}
+			\begin{axis}[
+			xlabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $, % \hertz requires SIunits
+			ylabel=$Predicted $ $ loss $ $ in $ $ Log(db/cm) $,
+			title={Length of the training dataset = 336 + 3000},
+			grid=both,
+			minor grid style={gray!25},
+			major grid style={gray!25},
+			width=1.1\linewidth]
+			\addplot[
+			only marks,
+			mark size=2.9pt, mark=o, color=red, fill=red] %
+			table{dataset_3000.txt};
+			\addlegendentry{$Predicted$}
+			\addplot[line width=1pt,solid,color=blue]  %
+			table{y.txt};
+			\addlegendentry{$Actual$}
+			\end{axis}
+			\end{tikzpicture}
+\end{subfigure}
+\caption{}
+\end{figure}
+\newpage
+It can readily be seen that by augmenting with 1000 samples the ANN model made the best predictions, which then can be better viewed when we plot the confinement loss of the PCF versus the wavelength($\lambda$) in figure(num).
+\begin{figure}
+    \begin{subfigure}{.5\textwidth}
+			\begin{tikzpicture}
+			\begin{axis}[
+			title={$n_{analyte=1.33}$},
+			xlabel=$Wavelength(\lambda) $  $ in $  $ nm $, 
+			ylabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $,
+			grid=both,
+			minor grid style={gray!25},
+			major grid style={gray!25},
+			width=1.1\linewidth]
+			\addplot[
+			only marks,
+			mark size=2.9pt, mark=o, color=red, fill=red] %
+			table[x={X},y={Y_REAL}]{133.txt};
+			\addlegendentry{$Actual$}
+			\addplot[smooth, 
+			line width=1pt,solid,color=blue]  %
+			table[x={X},y={Predictions}]{133.txt};
+			\addlegendentry{$Predictions$}
+			\end{axis}
+			\end{tikzpicture}
+\end{subfigure}
+ \begin{subfigure}{.5\textwidth}
+			\begin{tikzpicture}
+			\begin{axis}[
+			title={$n_{analyte=1.34}$},
+			xlabel=$Wavelength(\lambda) $  $ in $  $ nm $, 
+			ylabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $,
+			grid=both,
+			minor grid style={gray!25},
+			major grid style={gray!25},
+			width=1.1\linewidth]
+			\addplot[
+			only marks,
+			mark size=2.9pt, mark=o, color=red, fill=red] %
+			table[x={X},y={Y_REAL}]{134.txt};
+			\addlegendentry{$Actual$}
+			\addplot[smooth,
+			line width=1pt,solid,color=blue]  %
+			table[x={X},y={Predictions}]{134.txt};
+			\addlegendentry{$Predictions$}
+			\end{axis}
+			\end{tikzpicture}
+\end{subfigure}
+ \begin{subfigure}{.5\textwidth}
+			\begin{tikzpicture}
+			\begin{axis}[
+			title={$n_{analyte=1.35}$},
+		    xlabel=$Wavelength(\lambda) $  $ in $  $ nm $, 
+			ylabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $,
+			grid=both,
+			minor grid style={gray!25},
+			major grid style={gray!25},
+			width=1.1\linewidth]
+			\addplot[
+			only marks,
+			mark size=2.9pt, mark=o, color=red, fill=red] %
+			table[x={X},y={Y_REAL}]{135.txt};
+			\addlegendentry{$Actual$}
+			\addplot[smooth,line width=1pt,solid,color=blue]  %
+			table[x={X},y={Predictions}]{135.txt};
+			\addlegendentry{$Predictions$}
+			\end{axis}
+			\end{tikzpicture}
+\end{subfigure}
+\caption{}
+\end{figure}
+\newpage
 \subsection{Computational performance}
 
 \hl{Training and execution time of ANN versus simulation method}
