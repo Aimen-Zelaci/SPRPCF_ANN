@@ -5,3 +5,4 @@ ganlogs/
 .\\ganlogs\\*
 __pycache__
 training_checkpoints
+.idea

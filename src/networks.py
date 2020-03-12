@@ -93,9 +93,7 @@ def train_model(model,epochs, tr_data, tr_labels, va_data, va_labels, save_dir, 
     ############# Graphs ######################
     ###########################################
 
-def load_model(load_type,dir):
-    model = make_model()
-
+def load_model(model,load_type,dir):
     if load_type == 'load_weights':
         model.load_weights(dir)
 

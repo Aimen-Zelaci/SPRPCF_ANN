@@ -21,6 +21,8 @@ save_dir = r'.\trained-nets\model1.h5'
 chkdir = r'.\trained-weights\weights1.hdf5'
 
 if __name__ == '__main__':
+    # PLEASE TRAIN the ANN and WGAN seperately !
+
     # TRAIN WGAN
     wgan = Wgan(BATCH_SIZE = 12,
                 noise_dim = 7,
@@ -47,6 +49,10 @@ if __name__ == '__main__':
                          save_dir=save_dir,
                          chkdir=chkdir)
     # TEST
+    # LOAD_TYPE = load the whole model or load the best checkpoint(load weights)
+    ann_model = networks.load_model(model=ann_model,
+                                    load_type='load_weights',
+                                    dir=r'.\trained-weights\weights1')
     networks.test_model(model=ann_model,
                         test_data=test_data,
                         test_labels=test_labels)
