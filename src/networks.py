@@ -8,7 +8,10 @@ import matplotlib.pyplot as plt
 import time
 import os
 from scipy.interpolate import UnivariateSpline
+from tensorflow.python.client import device_lib
 
+# Print CPUs / GPUs available
+print(device_lib.list_local_devices())
 # Enable Tensorflow eager execution. This line must be at the top of the script.
 tf.compat.v1.enable_eager_execution()
 
