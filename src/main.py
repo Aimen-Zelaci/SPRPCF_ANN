@@ -1,5 +1,5 @@
-from src import networks, data_handler
-from src.networks import Wgan
+import networks, data_handler
+from networks import Wgan
 
 # Size of data augmentation
 AUGMENT_SIZE = 1000
