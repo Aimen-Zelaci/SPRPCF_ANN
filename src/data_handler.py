@@ -54,31 +54,28 @@ def load_data(fname='.\data\data.xlsx'):
     return [tr_data, tr_labels, va_data, va_labels, test_data, test_labels]
 
 # Augment data
-def augment_data(tr_data, tr_labels, size=1000, fname='.\gen_data\gen_data.txt'):
+def augment_data(tr_data, tr_labels, size, fname='.\gen_data\gen_data.txt'):
 
-    #generated_data = pd.read_csv(fname).values
-    generated_data = sp.genfromtxt('fname', delimiter='\t\t')
+    generated_data = pd.read_csv(fname).values
+
+    start_slice = size-1000
+    print(len(tr_data))
 
     if(size == 0):
         return [tr_data, tr_labels]
 
     #OUR data
-    if(fname=='gen_data'):
-        gen_x = generated_data[:size, :6]
+    gen_x = generated_data[start_slice:size, :6].reshape(1000,6)
 
     #THEIR data
     if(fname=='gen_data_pcf'):
-        gen_x = generated_data[:size, :4]
+        gen_x = generated_data[start_slice:size, :4].reshape(1000,4)
 
-    gen_y = generated_data[:size, -1]
+    gen_y = generated_data[start_slice:size, -1].reshape(1000,1)
 
     # Concatenate arrays
     tr_labels = sp.concatenate((tr_labels, gen_y), axis=0)
     tr_data = sp.concatenate((tr_data, gen_x), axis=0)
-
-    # Assert shape
-    tr_data = sp.array([x.reshape(6, ) for x in tr_data]).reshape(int(len(tr_data)), 6)
-    tr_labels = sp.array([y.reshape(1, ) for y in tr_labels]).reshape(int(len(tr_data)))
 
     return [tr_data, tr_labels]
 

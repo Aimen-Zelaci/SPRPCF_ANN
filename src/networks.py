@@ -74,27 +74,10 @@ def train_model(model,epochs, tr_data, tr_labels, va_data, va_labels, save_dir, 
                      validation_data=(va_data, va_labels), callbacks=[tensorboard_callback, checkpointer])
     # Post training
     model.save(save_dir)
-    loss = hist.history['loss']
-    epochsArr = sp.arange(epochs)
-    predictions = model.predict([va_data])
-    MSE = sp.square(sp.subtract(va_labels, predictions)).mean()
-    ### Plot predictions vs validation ########
-    plt.scatter(va_labels, predictions)       #
-    plt.plot(va_labels, va_labels, 'r')       #
-    plt.grid()                                #
-    plt.title('epochs {}; '                   #
-              'length of dataset {}\n ; '     #
-              'TR LOSS {}\n; Test MSE {}'     #
-              .format(epochs,                 #
-                      int(len(tr_data)),      #
-                      loss[-1], MSE))         #
-    plt.show()                                #
-    ### TR loss vs epochs #####################
-    plt.plot(epochsArr, loss, 'r')            #
-    plt.grid()                                #
-    plt.show()                                #
-    ############# Graphs ######################
-    ###########################################
+    #loss = hist.history['loss']
+    #epochsArr = sp.arange(epochs)
+    #predictions = model.predict([va_data])
+    #MSE = sp.square(sp.subtract(va_labels, predictions)).mean()
 
 def load_model(model,load_type,dir):
     if load_type == 'load_weights':
@@ -300,19 +283,20 @@ class Wgan(object):
 
             print('Time for epoch {} is {} sec'.format(epoch + 1, time.time() - start))
 
-    def generate_and_save_data(self,training, generator):
-        seed = tf.random.normal([self.num_examples_to_generate, self.noise_dim])
-        predictions = generator(seed, training=training)
-        if (training == False):
-            for p in predictions:
-                # Noise filter
-                ones = sum(int(o >= 1.0) for o in p[:6])
-                zeros = sum(int(z < 0.1) for z in p)
-                # sp.savetxt(r'gen_data_pcf.txt', p, delimiter=',')
-                if(ones == 0 and zeros == 0):
-                    file = open('gen_data_pcf.txt', 'a+')
-                    file.write('{},{},{},{},{}\n'.format(p[0], p[1], p[2], p[3], p[4]))
-                    file.close()
+    def generate_and_save_data(self,iterations,training, generator):
+        for _ in range(iterations):
+            seed = tf.random.normal([self.num_examples_to_generate, self.noise_dim])
+            predictions = generator(seed, training=training)
+            if (training == False):
+                for p in predictions:
+                    # Noise filter
+                    ones = sum(int(o >= 1.0) for o in p[:6])
+                    zeros = sum(int(z < 0.1) for z in p)
+                    # sp.savetxt(r'gen_data_pcf.txt', p, delimiter=',')
+                    if(ones == 0 and zeros == 0):
+                        file = open(r'.\gen_data\gen_data2.txt', 'a+')
+                        file.write('{},{},{},{},{}\n'.format(p[0], p[1], p[2], p[3], p[4], p[5], p[6]))
+                        file.close()
 
     @staticmethod
     def critic_loss(real_output, fake_output):

@@ -24,7 +24,7 @@ chkdir = r'.\trained-weights\weights1.hdf5'
 if __name__ == '__main__':
     # PLEASE TRAIN the ANN and WGAN seperately !
 
-    # TRAIN WGAN
+    # 1. TRAIN WGAN
     start = time.time()
     wgan = Wgan(BATCH_SIZE = 12,
                 noise_dim = 7,
@@ -34,10 +34,20 @@ if __name__ == '__main__':
                 num_examples_to_generate = 8)
     generator = wgan.make_generator_model(num_layers=4)
     critic = wgan.make_critic_model(num_layers=4)
-    wgan.train_wgan(tr_data,tr_labels,epochs = 2000, generator=generator, critic=critic)
-    print('Training time for the wgan is: {} sec'.format(time.time() - start))
 
-    # TRAIN ANN MODEL
+    wgan.train_wgan(tr_data,tr_labels,epochs = 2000, generator=generator, critic=critic)
+
+    print('Training run time for the wgan is: {} sec'.format(time.time() - start))
+
+    # 2. GENERATE DATA
+    #########################################################################################
+    start = time.time()                                                                     #
+    # WILL SAVE TO gen_data\gen_data2.txt // Data already generated in gen_data\gen_data.txt#
+    wgan.generate_and_save_data(iterations = 1000,training=False, generator=generator)      #
+    print('Generation run time is: {} sec'.format(time.time() - start))                     #
+    #########################################################################################
+
+    # 3. TRAIN ANN MODEL/Augment data
     ann_model = networks.make_model(num_layers=5,
                                     num_inputs=6,
                                     num_outputs=1,
@@ -53,17 +63,17 @@ if __name__ == '__main__':
                              va_data=va_data,
                              va_labels=va_labels,
                              save_dir=r'.\trained-nets\model{}.h5'.format(augment_size),
-                             chkdir=r'.\trained-weights\weights.hdf5'.format(augment_size)
+                             chkdir=r'.\trained-weights\weights{}.hdf5'.format(augment_size)
                              )
-        print('Training time for data set length {} is : {} sec'.format(336+augment_size, time.time() - start))
+        print('Training run time for data set length {} is : {} sec'.format(336+augment_size, time.time() - start))
 
-    # TEST
+    # 4. TEST
     # LOAD_TYPE = load the whole model or load the best checkpoint(load weights)
     start = time.time()
     ann_model = networks.load_model(model=ann_model,
                                     load_type='load_weights',
-                                    dir=r'.\trained-weights\weights1')
+                                    dir=r'.\trained-weights\weights1000')
     networks.test_model(model=ann_model,
                         test_data=test_data,
                         test_labels=test_labels)
-    print('Test time is: {}'.format(time.time() - start))
+    print('Test run time of the ANN model is: {}'.format(time.time() - start))
