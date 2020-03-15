@@ -2,9 +2,6 @@ import networks, data_handler
 from networks import Wgan
 import time
 
-# Size of data augmentation
-AUGMENT_SIZE = 1000
-
 # Load Original data
 # OUR SPR PHOTONIC SENSOR
 tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_data(fname='.\data\data.xlsx')
@@ -37,14 +34,14 @@ if __name__ == '__main__':
 
     wgan.train_wgan(tr_data,tr_labels,epochs = 2000, generator=generator, critic=critic)
 
-    print('Training run time for the wgan is: {} sec'.format(time.time() - start))
+    print('\n*****\nTraining run time for the wgan is: {} sec\n****\n'.format(time.time() - start))
 
     # 2. GENERATE DATA
     #########################################################################################
     start = time.time()                                                                     #
     # WILL SAVE TO gen_data\gen_data2.txt // Data already generated in gen_data\gen_data.txt#
-    wgan.generate_and_save_data(iterations = 1000,training=False, generator=generator)      #
-    print('Generation run time is: {} sec'.format(time.time() - start))                     #
+    wgan.generate_and_save_data(iterations = 1000,training=False, generator=generator)       #
+    print('\n*****\nGeneration run time is: {} sec\n*****'.format(time.time() - start))
     #########################################################################################
 
     # 3. TRAIN ANN MODEL/Augment data
@@ -55,6 +52,7 @@ if __name__ == '__main__':
 
     for augment_size in [0,1000,2000,3000]:
         tr_data, tr_labels = data_handler.augment_data(tr_data, tr_labels, augment_size, fname='.\gen_data\gen_data.txt')
+        print('\n\n Training on {} samples \n\n'.format(int(len(tr_data))))
         start = time.time()
         networks.train_model(model = ann_model,
                              epochs=2000,
@@ -65,15 +63,15 @@ if __name__ == '__main__':
                              save_dir=r'.\trained-nets\model{}.h5'.format(augment_size),
                              chkdir=r'.\trained-weights\weights{}.hdf5'.format(augment_size)
                              )
-        print('Training run time for data set length {} is : {} sec'.format(336+augment_size, time.time() - start))
+        print('\n*****\nTraining run time for data set length {} is : {} sec\n*****'.format(336+augment_size, time.time() - start))
 
     # 4. TEST
     # LOAD_TYPE = load the whole model or load the best checkpoint(load weights)
     start = time.time()
     ann_model = networks.load_model(model=ann_model,
                                     load_type='load_weights',
-                                    dir=r'.\trained-weights\weights1000')
+                                    dir=r'.\trained-weights\weights1000.hdf5')
     networks.test_model(model=ann_model,
                         test_data=test_data,
                         test_labels=test_labels)
-    print('Test run time of the ANN model is: {}'.format(time.time() - start))
+    print('\n*****\nTest run time of the ANN model is: {}\n*****\n'.format(time.time() - start))

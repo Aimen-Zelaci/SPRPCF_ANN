@@ -51,7 +51,7 @@ def train_model(model,epochs, tr_data, tr_labels, va_data, va_labels, save_dir, 
     tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
 
     # Save the best va_loss file
-    checkpointer = keras.callbacks.ModelCheckpoint(filepath=chkdir, verbose=1,
+    checkpointer = keras.callbacks.ModelCheckpoint(filepath=chkdir, verbose=0,
                                                    save_best_only=True)
 
     data_size = int(len(tr_data))
@@ -70,8 +70,8 @@ def train_model(model,epochs, tr_data, tr_labels, va_data, va_labels, save_dir, 
     RMSprop = keras.optimizers.RMSprop(learning_rate=1e-2, rho=0.9)
     # Train
     model.compile(optimizer=Adam, loss='mean_squared_error', batch_size=batch_size)
-    hist = model.fit(tr_data, tr_labels, epochs=epochs, verbose=2,
-                     validation_data=(va_data, va_labels), callbacks=[tensorboard_callback, checkpointer])
+    hist = model.fit(tr_data, tr_labels, epochs=epochs, verbose=0,
+                     validation_data=(va_data, va_labels), callbacks=[checkpointer])
     # Post training
     model.save(save_dir)
     #loss = hist.history['loss']
@@ -94,7 +94,7 @@ def test_model(model, test_data, test_labels, len_tr_data=0):
 
     plt.scatter(test_labels, predictions, label='Predictions', c='red', alpha=0.5)
     plt.plot(test_labels, test_labels, label='Actual', c='green', alpha=0.7)
-    legend = plt.legend(loc='left center', shadow=True, fontsize='large')
+    legend = plt.legend(loc='upper left', shadow=True, fontsize='large')
     legend.get_frame().set_facecolor('C7')
     plt.ylabel('Prediction Log10(loss)')
     plt.xlabel('Actual Log10(loss)')
@@ -104,15 +104,13 @@ def test_model(model, test_data, test_labels, len_tr_data=0):
 
     wavelength = sp.arange(500,820,20)
     for i in [0,16,32]:
-        print(len(predictions[i:i+16]))
-        print(len(wavelength))
         spl = UnivariateSpline(wavelength, predictions[i:i+16])
         wavelength_smoothed = sp.linspace(500,820,500)
         pr_smoothed = spl(wavelength_smoothed)
         spl.set_smoothing_factor(0.5)
         plt.plot(wavelength_smoothed, pr_smoothed, label='Predictions', c='black', lw=2)
         plt.scatter(wavelength, test_labels[i:i+16], label='Actual', c='red', alpha=0.7,marker='o')
-        legend = plt.legend(loc='left center', shadow=True, fontsize='large')
+        legend = plt.legend(loc='upper left', shadow=True, fontsize='large')
         legend.get_frame().set_facecolor('C7')
         plt.ylabel('Confinment loss in Log10(db/cm)')
         plt.xlabel('Wavelegth in nm')
@@ -234,7 +232,6 @@ class Wgan(object):
         BUFFER_SIZE = int(len(tr_data))
         # Place the labels and inputs in one vector
         dataset = sp.concatenate((tr_data, tr_labels), axis=1)
-        print(dataset[-1])
         train_dataset = tf.data.Dataset.from_tensor_slices(dataset).shuffle(BUFFER_SIZE).batch(self.BATCH_SIZE)
 
         return train_dataset

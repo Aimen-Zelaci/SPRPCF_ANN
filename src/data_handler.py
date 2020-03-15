@@ -59,7 +59,6 @@ def augment_data(tr_data, tr_labels, size, fname='.\gen_data\gen_data.txt'):
     generated_data = pd.read_csv(fname).values
 
     start_slice = size-1000
-    print(len(tr_data))
 
     if(size == 0):
         return [tr_data, tr_labels]
