@@ -28,10 +28,10 @@ def load_data(fname='.\data\data.xlsx'):
     analytes = df[:,0]
     analytes = (analytes*100)%10
     x = df[:, 1:6]
-    
+
     x = x.reshape(432,5)
     analytes = analytes.reshape(432,1)
-    
+
     x = sp.concatenate((analytes, x), axis=1)
     x /= 10
 
@@ -55,18 +55,23 @@ def load_data(fname='.\data\data.xlsx'):
 
 # Augment data
 def augment_data(tr_data, tr_labels, size=1000, fname='.\gen_data\gen_data.txt'):
-    generated_data = pd.read_csv(fname).values
+
+    #generated_data = pd.read_csv(fname).values
+    generated_data = sp.genfromtxt('fname', delimiter='\t\t')
+
+    if(size == 0):
+        return [tr_data, tr_labels]
 
     #OUR data
     if(fname=='gen_data'):
         gen_x = generated_data[:size, :6]
-       
+
     #THEIR data
     if(fname=='gen_data_pcf'):
         gen_x = generated_data[:size, :4]
-        
+
     gen_y = generated_data[:size, -1]
-    
+
     # Concatenate arrays
     tr_labels = sp.concatenate((tr_labels, gen_y), axis=0)
     tr_data = sp.concatenate((tr_data, gen_x), axis=0)
