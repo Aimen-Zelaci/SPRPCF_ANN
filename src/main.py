@@ -34,7 +34,7 @@ if __name__ == '__main__':
                 num_examples_to_generate = 8)
     generator = wgan.make_generator_model(num_layers=4)
     critic = wgan.make_critic_model(num_layers=4)
-    #wgan.train_wgan(tr_data,tr_labels,epochs = 200, generator=generator, critic=critic)
+    wgan.train_wgan(tr_data,tr_labels,epochs = 2000, generator=generator, critic=critic)
     print('Training time for the wgan is: {} sec'.format(time.time() - start))
 
     # TRAIN ANN MODEL

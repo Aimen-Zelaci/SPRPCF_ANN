@@ -83,7 +83,7 @@ def train_model(model,epochs, tr_data, tr_labels, va_data, va_labels, save_dir, 
     plt.plot(va_labels, va_labels, 'r')       #
     plt.grid()                                #
     plt.title('epochs {}; '                   #
-              'length of dataset {}\n ; '     # 
+              'length of dataset {}\n ; '     #
               'TR LOSS {}\n; Test MSE {}'     #
               .format(epochs,                 #
                       int(len(tr_data)),      #
@@ -176,10 +176,11 @@ class Wgan(object):
         for _ in range(num_layers):
             model.add(layers.Dense(self.BATCH_SIZE * (2 ** 2)))
             model.add(layers.BatchNormalization())
-            model.add(layers.LeakyReLU())
+            model.add(layers.ReLU())
 
         # OUTPUT layer
-        model.add(layers.Dense(self.noise_dim, activation='relu'))
+        model.add(layers.Dense(self.noise_dim))
+        model.add(layers.ReLU())
 
         return model
 
