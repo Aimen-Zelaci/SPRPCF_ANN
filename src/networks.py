@@ -274,13 +274,19 @@ class Wgan(object):
             # Generate and save data
             # generate_and_save_data(generator,seed,training=False)
             # Plot generated data vs wavelength each 200 epoch
-            if (epoch + 1) % 200 == 0:
+            if (epoch + 1) % 2 == 0:
                 # data_handler.plot_wgan(epoch + 1)
                 checkpoint.save(file_prefix=checkpoint_prefix)
 
             print('Time for epoch {} is {} sec'.format(epoch + 1, time.time() - start))
 
-    def generate_and_save_data(self,iterations,training, generator):
+    def generate_and_save_data(self,iterations,training, generator, critic):
+        checkpoint_dir = './training_checkpoints'
+        checkpoint = tf.train.Checkpoint(generator_optimizer=self.generator_optimizer,
+                                         discriminator_optimizer=self.critic_optimizer,
+                                         generator=generator,
+                                         discriminator=critic)
+        checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
         for _ in range(iterations):
             seed = tf.random.normal([self.num_examples_to_generate, self.noise_dim])
             predictions = generator(seed, training=training)

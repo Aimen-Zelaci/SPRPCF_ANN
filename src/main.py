@@ -40,7 +40,7 @@ if __name__ == '__main__':
     #########################################################################################
     start = time.time()                                                                     #
     # WILL SAVE TO gen_data\gen_data2.txt // Data already generated in gen_data\gen_data.txt#
-    wgan.generate_and_save_data(iterations = 1000,training=False, generator=generator)       #
+    wgan.generate_and_save_data(iterations = 1000,training=False, generator=generator, critic=critic)       #
     print('\n*****\nGeneration run time is: {} sec\n*****'.format(time.time() - start))
     #########################################################################################
 
