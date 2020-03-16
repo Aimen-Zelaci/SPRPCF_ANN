@@ -71,7 +71,8 @@ if __name__ == '__main__':
     ann_model = networks.load_model(model=ann_model,
                                     load_type='load_weights',
                                     dir=r'.\trained-weights\weights1000.hdf5')
-    networks.test_model(model=ann_model,
+    predictions = networks.test_model(model=ann_model,
                         test_data=test_data,
-                        test_labels=test_labels)
+                        test_labels=test_labels,
+                        plot = False)
     print('\n*****\nTest run time of the ANN model is: {}\n*****\n'.format(time.time() - start))
