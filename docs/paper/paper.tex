@@ -319,34 +319,34 @@ In this work we fixed the number of epochs and executed training using Tensorflo
 \begin{table}[h]
 \begin{tabular}{lllll}
     & data set size & mini batch size & Time elapsed (sec) \\
-Mini batches    &336 + 0 & 8 & 136 & \\
-    &336 + 1000 & 8 & 388 & \\
-    &336 + 2000 & 16 & 563  & \\ 
-    &336 + 3000 & 20 & 958  & \\
+Mini batches    &336 + 0 & 8 & 214 & \\
+    &336 + 1000 & 8 & 744 & \\
+    &336 + 2000 & 16 & 685  & \\ 
+    &336 + 3000 & 20 & 861  & \\
 \end{tabular}
 \begin{tabular}{lllll}
    & data set size & Time elapsed (sec) \\
-Full batch    &336 + 0 &  96 & \\
-    &336 + 1000 &  162 & \\
-    &336 + 2000 &  165 & \\ 
-    &336 + 3000 &  263 & \\
+Full batch    &336 + 0 &  23 & \\
+    &336 + 1000 &  34 & \\
+    &336 + 2000 &  45 & \\ 
+    &336 + 3000 &  57 & \\
 \end{tabular}
-\caption{Training performance using Tensorflow/Keras}
+\caption{Training performance using Tensorflow(Keras)}
 \end{table}
 \begin{table}[h]
 \begin{tabular}{lllll}
  & data set size & mini batch size & Time elapsed (sec) \\
-Mini batches    & 336 + 0 & 8 & 359 & \\
-    & 336 + 1000 & 8 & 1348  & \\
-    & 336 + 2000 & 16 & 1379  & \\ 
-    & 336 + 3000 & 20 & 1504 & \\
+Mini batches    & 336 + 0 & 8 & 1315 & \\
+    & 336 + 1000 & 8 & 6453  & \\
+    & 336 + 2000 & 16 & 4751  & \\ 
+    & 336 + 3000 & 20 & 5132 & \\
 \end{tabular}
 \begin{tabular}{lllll}
    &data set size & Time (sec) \\
-   Full batch &336 + 0 &  14  & \\
-    & 336 + 1000 &  57  & \\
-    & 336 + 2000 &  107  & \\ 
-    & 336 + 3000 &  195  & \\
+   Full batch &336 + 0 &  36  & \\
+    & 336 + 1000 &  98  & \\
+    & 336 + 2000 &  195  & \\ 
+    & 336 + 3000 &  336  & \\
 \end{tabular}
 \caption{Training performance using Pytorch}
 \end{table}
