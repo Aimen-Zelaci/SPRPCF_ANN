@@ -23,7 +23,7 @@
 \maketitle
 	
 \begin{abstract}
-Our aim is to surpass the performance of the simulations conducted using Full-Vectorial Finite Element Method (FV-FEM) to design, optimise and evaluate a Surface Plasmon Reasonance (SPR) based Photonic Crystal Fiber (PCF) sensor performance, using deep learning models. By these simulation techniques one must calculate the confinement loss for a specific wavelength and a particular set of geometric properties of the PCF sensor, then repeat the process for different analytes. In order to find the best fit distribution we have to make as much calculations per wavelength as possible to ensure the correct location of the peak value of the confinement loss. Simulation methods are not only time costing and daunting, consuming hours to days, but also inaccurate sometimes. In contrast, a deep neural network model astonishingly performs calculations in under a second, quiet accurately.
+Our aim is to propose a deep learning approach that surpasses simulations conducted using Full-Vectorial Finite Element Method (FV-FEM) used to design, optimise and evaluate a Surface Plasmon Reasonance (SPR) based Photonic Crystal Fiber (PCF) sensor performance. Through these simulation techniques one must calculate the confinement loss for a specific wavelength and a particular set of geometric properties of the PCF sensor, then repeat the process for different analytes. To eventually find the best set of geometric properties that maximises the distance between the confinement loss distributions of different analytes, and thus find the most sensible PCF sensor. In order to find these distributions we have to make as much calculations per wavelength as possible to ensure the correct location of the peak value of the confinement loss. Simulation methods are not only time costing and daunting, consuming hours to days, but also inaccurate sometimes. In contrast, a deep neural network model astonishingly performs these calculations in milliseconds to seconds, quiet accurately, when it is well trained with an accurate data set.
 
 \end{abstract}
 
@@ -48,13 +48,66 @@ Previous works [10, 11], demonstrated that random data augmentation actually had
 
 \subsection{Artificial neural network design}
 \label{ssec:ann}
-The ANN model is a fully-connected feed-forward MLP (Multi Layer Perceptron), consisting of an input layer, an output layer, 5 hidden layers, and 50 neurons for each hidden layer. Taking ReLU (Rectified Linear Unit) as the activation function, Adam [13] as the optimizer and the mean squared error as the loss/cost function. To reduce over fitting we use the Early stopping method, by saving checkpoints where the best validation mean squared error occurred as we iterate before the model starts to over fit. To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm [14] was used.
+The ANN model is a fully-connected feed-forward MLP (Multi Layer Perceptron). Table(num) summarizes the details of the model consisting of an input layer. To reduce over fitting we use the Early stopping method, by saving checkpoints where the best validation mean squared error occurred as we iterate before the model starts to over fit. To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm [14] was used.
+
+\begin{table}[h]
+\centering
+\scalebox{1.1}{
+    \begin{tabular}{|l|l|}
+    \hline
+Number of hidden layers & 5  \\
+\hline
+Number of neurons per hidden layers & 50  \\
+\hline
+Activation function & Rectified Linear Unit (ReLU)  \\
+\hline
+Optimizer & Adam[13]  \\
+\hline
+Loss function& Mean Squared Error (MSE) \\
+\hline
+    \end{tabular}
+}
+\caption{Detailes of the ANN model}
+\end{table}
 
 \subsection{Generative Adversarial network design}
 \label{ssec:gan}
 
-GANs consist of two neural networks, as shown in figure (num). The first of which called a discriminator, that gives an estimate of the probability that a given input is real or generated (fake). Whereas the second network is referred to as the generator, which outputs data samples from a random noise vector called a latent variable usually given the symbol $z$ supplied at its input. The error between the discriminator's output and the actual labels (The real data samples vectors all labelled as 1: the probability of being real) would then be measured by the means of a chosen metric. Introduced by Arjovsky et al [15] the Wasserstein distance metric (or the earth mover distance) proved to be very effective, instead of discriminating whether an input is real or generated, the discriminator provides a criticism of how far the generated data from the real data is, hence the discriminator network is referred to as the critic in the WGANs. Throughout this paper we will use yet the improved WGAN, the WGAN with Gradient penalty [16]. The improved WGAN converges in a stable manner with least efforts made to tune the hyper- parameters of both networks constituting the GAN, which can be very daunting.
-The WGAN-GP architecture chosen in this work is as follows: both the Critic and the generator networks are a fully-connected feed-forward MLP, having 4 hidden layers, with $ minibatchsize\times2^{number of layers} $ neurons for each hidden layer in the critic network, whereas $ minibatchsize\times2^{2} $ neurons for each hidden layer in the generator network. The input vector for the Critic network consists of the six parameters discussed earlier for the ANN model, in addition the corresponding loss value, giving a total of seven inputs. The generator is supplied with random noise vector having a dimension of $7$, and outputs a vector that resembles that of the input to the critic network. LeakyReLU and ReLU were chosen as the activation functions for the Critic and Generator respectively and Adam as the optimizer for both networks. Finally Batch Normalization technique was applied to the Generator.
+GANs consist of two neural networks, as shown in figure (num). The first of which called a discriminator, that gives an estimate of the probability that a given input is real or generated (fake). Whereas the second network is referred to as the generator, which outputs data samples from a random noise vector called a latent variable usually given the symbol $z$ supplied at its input. The error at the discriminator's output would then be measured by the means of a chosen metric. Introduced by Arjovsky et al [15] the Wasserstein distance metric (or the earth mover distance) proved to be very effective, instead of discriminating whether an input is real or generated, the discriminator provides a criticism of how far the generated data from the real data is, hence the discriminator network is referred to as the critic in the WGANs. Throughout this paper we will use yet the improved WGAN, the WGAN with Gradient penalty [16]. The improved WGAN converges in a stable manner with least efforts made to tune the hyper- parameters of both networks constituting the GAN, which can be very daunting.
+In this work, both the Critic and the generator are fully connected feed forward MLP models. Tables(num, num) summarize the details of both networks. The input vector to the Critic network consists of the six parameters discussed earlier for the ANN model, in addition to the corresponding confinement loss value, giving a total of seven inputs. The generator is supplied with random noise vector having a dimension of $7$, and outputs a vector that resembles that of the input to the Critic.
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|l|}
+\hline
+Number of hidden layers & 4  \\
+\hline
+Number of neurons per hidden layers & $ minibatchsize\times2^{number of layers} $  \\
+\hline
+Activation function & Leaky Rectified Linear Unit (LeakyReLU)  \\
+\hline
+Optimizer & Adam[13]  \\
+\hline
+    \end{tabular}
+\caption{Details of the Critic model}    
+\end{table}
+
+\begin{table}[h]
+\centering
+ \begin{tabular}{|l|l|}
+    \hline
+Number of hidden layers & 4  \\
+\hline
+Number of neurons per hidden layers & $ minibatchsize\times2^{2} $  \\
+\hline
+Activation function & Rectified Linear Unit (ReLU)  \\
+\hline
+Optimizer & Adam[13]  \\
+\hline
+Normalization & Batch Normalization[14] \\
+\hline
+    \end{tabular}
+\caption{Details of the Generator model}
+\end{table}
 
 \section{Photonic crystal fiber design}
 \label{sec:pcf}
@@ -73,21 +126,21 @@ A labelled data-set of only 432 samples was collected in this work, through simu
 
 \subsection{Performance of ANN}
 
-We train the ANN model for more than 2000 epochs, starting from the original data-set. Then we augment the data by 1000 generated samples from our WGAN-GP, which will be demonstrated in the next section. The following table summarizes the hyper-parameters chosen for the ANN model:
+We train the ANN model for more than 2000 epochs, starting from the original data set. Then we augment the latter set by 1000 generated samples by our WGAN-GP, which will be demonstrated in the next subsection. The following table summarizes the hyper-parameters chosen for the ANN model:
 \begin{table}[h]
 \centering
 \scalebox{1.5}{
     \begin{tabular}{|l|l|l|l|l|}
     \hline
-Length of the training data-set & Learning rate&Batch size & $\beta_{1}$ & $\beta_{2}$\\
+Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ & $\beta_{2}$\\
 \hline
-336 & $ 1\times10^{-04} $ & 12 & 0.9 & 0.999 \\
+336 & $ 1\times10^{-04} $ & 8 & 0.9 & 0.999 \\
 \hline
-336 + 1000 & $ 1\times10^{-04} $ & 12 & 0.9 & 0.999 \\
+336 + 1000 & $ 1\times10^{-04} $ & 8 & 0.9 & 0.999 \\
 \hline
 336 + 2000 & $ 2\times10^{-04} $ & 16 & 0.9 & 0.999 \\
 \hline
-336 + 3000 & $ 2.5\times10^{-04} $ & 16  & 0.9 & 0.999 \\
+336 + 3000 & $ 2.5\times10^{-04} $ & 20  & 0.9 & 0.999 \\
 \hline
     \end{tabular}
 }
@@ -141,13 +194,12 @@ The MSE on the training sets ranged from 0.0030 to 0.0050. For all data sets the
 \end{figure}\\
 
     \newpage
-As you can see, the ANN made somewhat good predictions of the low values of the confinement loss. A close inspection into the data samples collected shows that points are concentrated in the low values interval, i.e the ANN picked up the pattern quiet easily. However, in the higher values interval, the ANN could not see a pattern because points are distant from each other to some extent, even though we transformed the confinement loss to the log scale to actually minimize these distances.
 
 \subsection{Performance boost of GAN}
 
-During training the metric used to monitor the WGAN-GP is the loss function of the Critic network. Its convergence signals the ending of the training phase, shown in figure(num).
-In this sub-section we discuss the results of augmenting the real data set with Synthetic data. Figure(num) demonstrates the predictions made by the ANN model after training with different sizes of the Synthetic data set.
-This might seem paradoxical to what we mentioned earlier, that ANN model benefit from large amounts of data. There are several reasons that is driving our ANN model predictions in the wrong way. Even though our WGAN-GP seemed well trained, there still a domain gap between the real data and the generated data, or the expansion of data is growing in the wrong direction to that of entirely containing the real data. Furthermore, the generated data might lack realism. Or the sampling strategy adopted is poor. After all, with 1000 generated data samples the ANN model made quiet accurate predictions with which we are satisfied, that is we have achieved we set out to accomplish at the beginning, to train an ANN model and make accurate prediction on a never-seen-before data.
+During training, the metric used to monitor the WGAN-GP is the loss function of the Critic network. Its convergence signals the ending of the training phase, shown in figure(num).
+In this sub-section we discuss the results of augmenting the real data set with generated samples. Figure(num) demonstrates the predictions made by the ANN model after training with different sizes of the data set.
+This might look paradoxical to what we mentioned earlier, that ANN model benefit from large amounts of data. There are several reasons that is driving our ANN model predictions in the wrong way. Even though our WGAN-GP seemed well trained, there still a domain gap between the real data and the generated data, or the expansion of data is growing in the wrong direction to that of entirely containing the real data. Furthermore, the generated data might lack realism. Or the sampling strategy adopted is poor. But the most convincing reason is the limited original data set size of 336 samples, used to train the WGAN model in the first place. After all, with 1000 generated data samples the ANN model made quiet accurate predictions with which we are satisfied, that is we have achieved what we set out to accomplish at the beginning, to increase the accuracy of the ANN model by artificially expanding the original set.
 
 \hspace{-0.07\textwidth}
 \begin{figure}[h]
@@ -311,10 +363,26 @@ It can readily be seen that by augmenting with 1000 samples the ANN model made t
 \hl{Training and execution time of ANN versus simulation method}
 
 
-This work had been conduct on a  laptop having: Intel(R) Core(TM) i7-5600 CPU @2.60GHz (4 CPUs) and 8GB RAM. The code for this work is available at: \url{https://github.com/Aimen-Zelaci/SPRPCF_ANN/}.
+This work had been conduct on a  laptop: 
+
+\begin{itemize}
+\item Intel(R) Core(TM) i7-5600 CPU @2.60GHz (4 CPUs)
+\item 8GB RAM
+\item No GPU on board
+\end{itemize}
+
+For comparaison purposes we ran the expirements on a machine with GPU on board:
+
+\hl{CEM PC SPECS}
+
+Epirements conducted on the latter machine will be labeled as GPU based, whereas on the former as CPU based.
+
+By taking advantage of Cloud Computing technology, one does not have to spend large amounts of money to obtain high-specs machine, rather, rent readily available deep learning instances in the cloud for pennies on the dollar. 
+
+The code for this work is available at: \url{https://github.com/Aimen-Zelaci/SPRPCF_ANN/}.
 \newline
-The elapsed training time of an ANN model depends on the parameters of the model, for example, the number of hidden layers and hidden neurons, batch size, data set size, epochs and framework used to code the model.
-In this work we fixed the number of epochs and executed training using Tensorflow/Keras and Pytorch frameworks, by varying the mini-btach size and the data set size, as demonstrated in Table(num). It is worth mentioning the differences between using full batch or mini-batch. In full batch training the whole data set is passed to the model for each iteration. In contrast, mini-batch training, the data set is split into small mini-batches of equal sizes. Previous works [17, 18] have firmly proved the advantages of using the correct mini-batch size as oppose to large batch sizes. Training runtime is longer using mini-batches. However, mini-batches allow for more frequent gradient calculations, that results in more stable and reliable training. Perhaps one of the main downsides of using large batch size is the poor generalization resulting in a phenomena know as the "generalization gap". Active research [19] is on going to actually use large batch sizes while mainting the performance of the model and shortning the training runtime. A closely related recent work (Machine learning approach for computing optical properties of a photonic crystal fiber, SUNNY CHUGH, AAMIR GULISTAN, SOUVIK GHOSH, AND B.M.A. RAHMAN, DEC 2019), conducted their expirements using full batch to train the model. In this works we will use the latter paper availabe code on Github for Pytorch expirements, with slight modifications to fit our purposes. Finally, we compared the performance of the ANN/WGAN models using CPU and GPU. As Table (num) demonstrates, GPU based training outperformes that of CPU based. With the emergence of Cloud Computing technology, one can rent GPU based instances of high specs with pennies on the dollar.
+The elapsed training time of an ANN model depends on the parameters of the model, for example, the number of hidden layers and hidden neurons, mini batch size, data set size, number of epochs, the framework used to code the model, and of course the specifications of the machine.
+In this work we fixed the number of epochs to 2000 and executed training using Tensorflow(Keras) and Pytorch frameworks. As demonstrated in Table(num). It is worth mentioning the differences between training with full batch or mini batches. In full batch training, the whole data set is passed to the model for each iteration. In contrast, mini-batch-training, the data set is split into small mini batches of equal sizes, then passed to the model seperately, thus for each epoch there will be exactly length  of the data set devided by the mini batch size steps, and hence slowing down the training process. Previous works [17, 18] have firmly proved the advantages of using the correct mini batch size as oppose to large batch sizes. Mini batches allow for more frequent gradient calculations, that results in more stable and reliable training. Perhaps one of the main downsides of using large batch size is the poor generalization resulting in a phenomena know as the "generalization gap". Active research [19] is on going to actually use large batch sizes while mainting the performance of the model and shortning the training runtime. A closely related recent work (Machine learning approach for computing optical properties of a photonic crystal fiber, Sunny Chugh, Aamir Gulistan, Souvik Ghosh, AND B.M.A. Rahman, DEC 2019), conducted their expirements using full batch to train the model. In this work we will use the latter paper availabe code on Github for Pytorch expirements, with slight modifications to fit our purposes. Finally, we compare the performance of the WGAN model, using Tensorflow(Keras) framework, of CPU based to that of GPU based.
 
 \begin{table}[h]
 \begin{tabular}{lllll}
@@ -331,7 +399,7 @@ Full batch    &336 + 0 &  23 & \\
     &336 + 2000 &  45 & \\ 
     &336 + 3000 &  57 & \\
 \end{tabular}
-\caption{Training performance using Tensorflow(Keras)}
+\caption{Training performance using Tensorflow(Keras). CPU based training.}
 \end{table}
 \begin{table}[h]
 \begin{tabular}{lllll}
@@ -342,18 +410,18 @@ Mini batches    & 336 + 0 & 8 & 1315 & \\
     & 336 + 3000 & 20 & 5132 & \\
 \end{tabular}
 \begin{tabular}{lllll}
-   &data set size & Time (sec) \\
+   &data set size & Time elapsed (sec) \\
    Full batch &336 + 0 &  36  & \\
     & 336 + 1000 &  98  & \\
     & 336 + 2000 &  195  & \\ 
     & 336 + 3000 &  336  & \\
 \end{tabular}
-\caption{Training performance using Pytorch}
+\caption{Training performance using Pytorch. CPU based training.}
 \end{table}
 
 \hl{WGAN EXCUTION WITH GPU VS CPU BY CEM}
 
-Next, we compare the testing runtime of the ANN model to that of simulation methods used to compute the confinement loss for 3 different analytes and 16 wavelenghts, i.e a total of 48 values of the confinement loss, demonstrated in Table(num).
+Next, we compare the testing runtime of the ANN model to that of simulation methods used to compute the confinement loss for 3 different analytes and 16 wavelenghts, i.e a total of 48 values of the confinement loss, demonstrated in Table(num). This result is absolutely staggering. The ANN model calculated 16 confinement losses in just 0.17 seconds, while simulations took about 2 hours. Therefore, a well trained ANN model can be used to accurately find the best PCF geometric properties set that maximisez the distance between the confinement loss distributions of each analyte in a matter of seconds to minutes. Hence, accelerate the search for the best PCF sensor.
 
 \begin{table}[h]
 \centering

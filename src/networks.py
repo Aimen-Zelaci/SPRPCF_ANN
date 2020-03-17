@@ -62,7 +62,7 @@ def train_model(model,epochs, tr_data, tr_labels, va_data, va_labels, save_dir, 
         lr = 2e-4
         batch_size = 16
     if data_size >= 3000:
-        lr = 20e-4 / 8
+        lr = 2.5e-4
         batch_size = 20
 
     # Define optimizers
