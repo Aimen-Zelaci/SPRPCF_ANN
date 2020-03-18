@@ -6,6 +6,8 @@ def load_pcf_data(fname='.\data\pcf_data1.xlsx'):
     df_1 = pd.read_excel(fname)
     datafile_1 = df_1.values
 
+    sp.random.shuffle(datafile_1)
+
     tr_data = datafile_1[:1000,2:6].reshape(1000,4)
     tr_labels = datafile_1[:1000,-1].reshape(1000,1)
 
@@ -51,7 +53,12 @@ def load_data(fname='.\data\data.xlsx'):
     test_data = x[-1].reshape(1*16*3,6)
     test_labels = y[-1].reshape(1*16*3,1)
 
+    # Save shuffled data frame
+    df = pd.DataFrame(df, index = None)
+    df.to_excel(r'.\data\shuffled_df.xlsx')
+
     return [tr_data, tr_labels, va_data, va_labels, test_data, test_labels]
+
 
 # Augment data
 def augment_data(tr_data, tr_labels, size, fname='.\gen_data\gen_data.txt'):

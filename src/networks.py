@@ -19,15 +19,15 @@ tf.compat.v1.enable_eager_execution()
 ####################################################################################
 ####################################################################################
 
-def make_model(num_layers=5, num_neurons=50, num_inputs=6, num_outputs=1):
+def make_model(num_layers=6, num_neurons=50, num_inputs=6, num_outputs=1):
     model = tf.keras.Sequential()
 
-    # INPUT layer
+    # 1st layer
     model.add(layers.Dense(num_neurons, input_shape=(num_inputs,)))
     model.add(layers.ReLU())
 
     # Hidden layers
-    for _ in range(num_layers):
+    for _ in range(num_layers - 1):
         model.add(layers.Dense(num_neurons))
         model.add(layers.BatchNormalization())
         model.add(layers.ReLU())
@@ -147,16 +147,16 @@ class Wgan(object):
         self.critic_optimizer = critic_optimizer
         self.generator_optimizer = generator_optimizer
 
-    def make_generator_model(self, num_layers = 4):
+    def make_generator_model(self, num_layers = 5):
         model = tf.keras.Sequential()
 
-        # INPUT layer
+        # 1st layer
         model.add(layers.Dense(self.BATCH_SIZE * (2 ** 2), input_shape=(self.noise_dim,)))
         model.add(layers.BatchNormalization())
         model.add(layers.LeakyReLU())
 
         # HIDDEN layers
-        for _ in range(num_layers):
+        for _ in range(num_layers - 1):
             model.add(layers.Dense(self.BATCH_SIZE * (2 ** 2)))
             model.add(layers.BatchNormalization())
             model.add(layers.ReLU())
@@ -167,16 +167,16 @@ class Wgan(object):
 
         return model
 
-    def make_critic_model(self, num_layers = 4):
+    def make_critic_model(self, num_layers = 5):
         model = tf.keras.Sequential()
 
-        # INPUT layer
+        # 1st layer
         model.add(layers.Dense(self.BATCH_SIZE * (2 ** 2), input_shape=(self.num_critic_input,)))
         model.add(layers.LeakyReLU())
 
         # HIDDEN LAYERS
         i = 2
-        for _ in range(num_layers):
+        for _ in range(num_layers - 1):
             model.add(layers.Dense(self.BATCH_SIZE * (2 ** i)))
             model.add(layers.LeakyReLU())
             i-=1

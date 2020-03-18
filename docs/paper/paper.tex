@@ -23,7 +23,7 @@
 \maketitle
 	
 \begin{abstract}
-Our aim is to propose a deep learning approach that surpasses simulations conducted using Full-Vectorial Finite Element Method (FV-FEM) used to design, optimise and evaluate a Surface Plasmon Reasonance (SPR) based Photonic Crystal Fiber (PCF) sensor performance. Through these simulation techniques one must calculate the confinement loss for a specific wavelength and a particular set of geometric properties of the PCF sensor, then repeat the process for different analytes. To eventually find the best set of geometric properties that maximises the distance between the confinement loss distributions of different analytes, and thus find the most sensible PCF sensor. In order to find these distributions we have to make as much calculations per wavelength as possible to ensure the correct location of the peak value of the confinement loss. Simulation methods are not only time costing and daunting, consuming hours to days, but also inaccurate sometimes. In contrast, a deep neural network model astonishingly performs these calculations in milliseconds to seconds, quiet accurately, when it is well trained with an accurate data set.
+Our aim is to propose a deep learning approach that surpasses simulations conducted using Full-Vectorial Finite Element Method (FV-FEM) used to design, optimise and evaluate a unique multi-channel Photonic Crystal Fiber (PCF) sensor based on Surface Plasmon Resonance (SPR) structure performance, proposed in our recent work. Through these simulation techniques one must calculate the confinement loss for a specific wavelength and a particular set of geometric properties of the PCF sensor, then repeat the process for different analytes. To eventually find the best set of geometric properties that maximises the distance between the confinement loss distributions of different analytes, and thus find the most sensible PCF sensor. In order to find these distributions we have to make as much calculations per wavelength as possible to ensure the correct location of the peak value of the confinement loss. Simulation methods are not only time costing and daunting, consuming hours to days, but also inaccurate sometimes. In contrast, a deep neural network model astonishingly performs these calculations in milliseconds to seconds, quiet accurately, when it is well trained with an accurate data set.
 
 \end{abstract}
 
@@ -34,7 +34,7 @@ Our aim is to propose a deep learning approach that surpasses simulations conduc
 Machine Learning (ML) techniques are coming to the forefront of many fields, surpassing human performance in many tasks, namely automatic speech recognition, image recognition, natural language processing, drug discovery and toxicology. Artificial Neural Networks can approximate any function by virtue of the Universality theorem: No matter what the input is there is to be a guaranteed ANN architecture that computes the desired outputs. This fact propelled researchers to widen the applications of ANN even further, including the study of nanophotonic structures [1], optimization of photonic crystal nanocavities [2], and more recently, computing optical properties of a photonic crystal fiber [3].
 
 One of the most difficult challenges that deep learning models face is that they benefit from large amounts of data to train, which may be costly to acquire. One of the solutions to overcome this issue is to artificially expand the original training dataset by the means of generative networks. Introduced by Goodfellow et al., Generative Adversarial Networks (GAN) [4], proved to be successful in data generation [5, 6, 7, 8, 9]. 
-In this paper we focus on determining one of the propagation features of a multi-channel Photonic Crystal Fiber (PCF) sensor based on Surface Plasmon Resonance (SPR), that is the confinement loss, by using an Artificial Neural Network model, and a special kind generative networks to expand our limited data set for the purpose of  improving the accuracy of our ANN model.
+In this paper we focus on determining one of the propagation features of a unique multi-channel Photonic Crystal Fiber (PCF) sensor based on Surface Plasmon Resonance (SPR), proposed in our recent work [21], that is the confinement loss, by using an Artificial Neural Network model, and a special kind generative networks to expand our limited data set for the purpose of  improving the accuracy of our ANN model.
 
 \hl{Literature survey}
 
@@ -55,7 +55,7 @@ The ANN model is a fully-connected feed-forward Multi Layer Perceptron (MLP) mod
 \scalebox{1.1}{
     \begin{tabular}{|l|l|}
     \hline
-Number of hidden layers & 5  \\
+Number of hidden layers & 6  \\
 \hline
 Number of neurons per hidden layers & 50  \\
 \hline
@@ -79,7 +79,7 @@ In this work, both the Critic and the generator are fully connected feed forward
 \centering
 \begin{tabular}{|l|l|}
 \hline
-Number of hidden layers & 4  \\
+Number of hidden layers & 5  \\
 \hline
 Number of neurons per hidden layers & $ minibatchsize\times2^{number of layers} $  \\
 \hline
@@ -95,7 +95,7 @@ Optimizer & Adam[13]  \\
 \centering
  \begin{tabular}{|l|l|}
     \hline
-Number of hidden layers & 4  \\
+Number of hidden layers & 5 \\
 \hline
 Number of neurons per hidden layers & $ minibatchsize\times2^{2} $  \\
 \hline

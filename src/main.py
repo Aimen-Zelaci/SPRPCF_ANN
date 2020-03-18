@@ -29,8 +29,8 @@ if __name__ == '__main__':
                 n_critic = 5,
                 grad_penalty_weight = 10,
                 num_examples_to_generate = 8)
-    generator = wgan.make_generator_model(num_layers=4)
-    critic = wgan.make_critic_model(num_layers=4)
+    generator = wgan.make_generator_model(num_layers=5)
+    critic = wgan.make_critic_model(num_layers=5)
 
     wgan.train_wgan(tr_data,tr_labels,epochs = 2000, generator=generator, critic=critic)
 
@@ -45,14 +45,16 @@ if __name__ == '__main__':
     #########################################################################################
 
     # 3. TRAIN ANN MODEL/Augment data
-    ann_model = networks.make_model(num_layers=5,
+    for augment_size in [0,1000,2000,3000]:
+
+        ann_model = networks.make_model(num_layers=6,
                                     num_inputs=6,
                                     num_outputs=1,
                                     num_neurons=50)
-
-    for augment_size in [0,1000,2000,3000]:
         tr_data, tr_labels = data_handler.augment_data(tr_data, tr_labels, augment_size, fname='.\gen_data\gen_data.txt')
+
         print('\n\n Training on {} samples \n\n'.format(int(len(tr_data))))
+
         start = time.time()
         networks.train_model(model = ann_model,
                              epochs=2000,
