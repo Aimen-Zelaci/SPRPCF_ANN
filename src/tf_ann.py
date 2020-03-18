@@ -1,6 +1,5 @@
 from __future__ import print_function
 import data_handler
-# Import MNIST data
 import tensorflow.compat.v1 as tf
 import scipy as sp
 import time
