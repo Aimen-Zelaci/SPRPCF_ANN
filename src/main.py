@@ -3,7 +3,7 @@ from networks import Wgan
 import time
 
 # Load Original data
-# OUR SPR PHOTONIC SENSOR
+# OUR SPR BASED PHOTONIC SENSOR
 tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_data(fname='.\data\data.xlsx')
 
 # THEIR PCF DATA
@@ -12,7 +12,6 @@ tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.lo
 # Augment data after training the wgan
 # To augment our data use fname = '.\gen_data\gen_data.txt'
 # To augment their data use fname = '.\gen_data\gen_data_pcf.txt'
-#tr_data, tr_labels = data_handler.augment_data(tr_data, tr_labels, AUGMENT_SIZE, fname='.\gen_data\gen_data_pcf.txt')
 
 # Save / Checkpoint directory
 save_dir = r'.\trained-nets\model1.h5'
@@ -20,15 +19,16 @@ chkdir = r'.\trained-weights\weights1.hdf5'
 
 if __name__ == '__main__':
     # PLEASE TRAIN the ANN and WGAN seperately !
-
     # 1. TRAIN WGAN
     start = time.time()
+    print('\n*****\nTraining The WGAN  \n****\n')
     wgan = Wgan(BATCH_SIZE = 12,
                 noise_dim = 7,
                 num_critic_input = 7,
                 n_critic = 5,
                 grad_penalty_weight = 10,
                 num_examples_to_generate = 8)
+
     generator = wgan.make_generator_model(num_layers=5)
     critic = wgan.make_critic_model(num_layers=5)
 
@@ -38,9 +38,10 @@ if __name__ == '__main__':
 
     # 2. GENERATE DATA
     #########################################################################################
+    print('\n*****\n GENERATING DATA ... \n****\n')
     start = time.time()                                                                     #
     # WILL SAVE TO gen_data\gen_data2.txt // Data already generated in gen_data\gen_data.txt#
-    wgan.generate_and_save_data(iterations = 1000,training=False, generator=generator, critic=critic)       #
+    wgan.generate_and_save_data(iterations = 1000, training=False, generator=generator, critic=critic)
     print('\n*****\nGeneration run time is: {} sec\n*****'.format(time.time() - start))
     #########################################################################################
 
@@ -53,7 +54,7 @@ if __name__ == '__main__':
                                     num_neurons=50)
         tr_data, tr_labels = data_handler.augment_data(tr_data, tr_labels, augment_size, fname='.\gen_data\gen_data.txt')
 
-        print('\n\n Training on {} samples \n\n'.format(int(len(tr_data))))
+        print('\n\n Training the ANN model on {} samples \n\n'.format(int(len(tr_data))))
 
         start = time.time()
         networks.train_model(model = ann_model,

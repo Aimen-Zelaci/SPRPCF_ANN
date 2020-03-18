@@ -2,7 +2,9 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 from tensorflow import keras
 from tensorflow.keras import layers
+import numpy as np
 import scipy as sp
+import pandas as pd
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import time
@@ -70,12 +72,12 @@ def train_model(model,epochs, tr_data, tr_labels, va_data, va_labels, save_dir, 
     RMSprop = keras.optimizers.RMSprop(learning_rate=1e-2, rho=0.9)
     # Train
     model.compile(optimizer=Adam, loss='mean_squared_error')
-    hist = model.fit(tr_data, tr_labels, epochs=epochs, verbose=0,
+    hist = model.fit(tr_data, tr_labels, epochs=epochs, verbose=1,
                      validation_data=(va_data, va_labels), callbacks=[checkpointer], batch_size=batch_size)
     # Post training
     model.save(save_dir)
     #loss = hist.history['loss']
-    #epochsArr = sp.arange(epochs)
+    #epochsArr = np.arange(epochs)
     #predictions = model.predict([va_data])
     #MSE = sp.square(sp.subtract(va_labels, predictions)).mean()
 
@@ -289,6 +291,9 @@ class Wgan(object):
                                          generator=generator,
                                          discriminator=critic)
         checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
+
+        _df = sp.zeros(7).reshape(1,7)
+
         for _ in range(iterations):
             seed = tf.random.normal([self.num_examples_to_generate, self.noise_dim])
             predictions = generator(seed, training=training)
@@ -299,9 +304,10 @@ class Wgan(object):
                     zeros = sum(int(z < 0.1) for z in p)
                     # sp.savetxt(r'gen_data_pcf.txt', p, delimiter=',')
                     if(ones == 0 and zeros == 0):
-                        file = open(r'.\gen_data\gen_data2.txt', 'a+')
-                        file.write('{},{},{},{},{}\n'.format(p[0], p[1], p[2], p[3], p[4], p[5], p[6]))
-                        file.close()
+                        _df = np.concatenate((_df,tf.reshape(p,[1, 7])), axis=0)
+        _df = pd.DataFrame(_df, index=None)
+        _df = _df.drop(0, axis=0)
+        _df.to_csv('.\gen_data\gen_data2.txt', index=False)
 
     @staticmethod
     def critic_loss(real_output, fake_output):

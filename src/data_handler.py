@@ -1,4 +1,5 @@
 import scipy as sp
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -80,8 +81,8 @@ def augment_data(tr_data, tr_labels, size, fname='.\gen_data\gen_data.txt'):
     gen_y = generated_data[start_slice:size, -1].reshape(1000,1)
 
     # Concatenate arrays
-    tr_labels = sp.concatenate((tr_labels, gen_y), axis=0)
-    tr_data = sp.concatenate((tr_data, gen_x), axis=0)
+    tr_labels = np.concatenate((tr_labels, gen_y), axis=0)
+    tr_data = np.concatenate((tr_data, gen_x), axis=0)
 
     return [tr_data, tr_labels]
 
