@@ -53,11 +53,12 @@ def initializer():
 
     return [weights, biases]
 
-weights, biases = initializer()
+# We are going to use Batch Normalization, therefore we don't need the biases
+weights, _ = initializer()
 
 # Create model
 def multilayer_perceptron(x, weights, biases):
-    in_x = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
+    in_x = tf.matmul(x, weights['h1'])
     in_x = tf.nn.relu(in_x)
     in_x = tf.layers.batch_normalization(in_x)
 
@@ -66,7 +67,7 @@ def multilayer_perceptron(x, weights, biases):
         in_x = tf.nn.relu(in_x)
         in_x = tf.layers.batch_normalization(in_x)
 
-    out_layer = tf.matmul(in_x, weights['out']) + biases['out']
+    out_layer = tf.matmul(in_x, weights['out'])
     out_layer = tf.nn.relu(out_layer)
 
     return out_layer
@@ -75,7 +76,7 @@ def multilayer_perceptron(x, weights, biases):
 X = tf.placeholder("float", [None, n_input], name='X')
 Y = tf.placeholder("float", [None, n_outputs], name='Y')
 
-out = multilayer_perceptron(X, weights, biases)
+out = multilayer_perceptron(X, weights, _)
 
 # Define loss and optimizer
 loss_op = tf.losses.mean_squared_error(Y, out)
