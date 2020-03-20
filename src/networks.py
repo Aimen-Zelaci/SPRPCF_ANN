@@ -94,7 +94,7 @@ def test_model(model, test_data, test_labels, len_tr_data=0, plot=True):
     predictions = model.predict([test_data])
     #MSE = sp.square(sp.subtract(test_labels, predictions)).mean()
     if plot == True:
-        plt.scatter(test_labels, predictions, label='Predictions', c='red', alpha=0.5)
+        plt.plot(test_labels, predictions, label='Predictions', c='red', alpha=0.5)
         plt.plot(test_labels, test_labels, label='Actual', c='green', alpha=0.7)
         legend = plt.legend(loc='upper left', shadow=True, fontsize='large')
         legend.get_frame().set_facecolor('C7')
@@ -109,7 +109,7 @@ def test_model(model, test_data, test_labels, len_tr_data=0, plot=True):
             spl = UnivariateSpline(wavelength, predictions[i:i+16])
             wavelength_smoothed = sp.linspace(500,820,100)
             spl.set_smoothing_factor(0.0)
-            plt.scatter(wavelength, predictions[i:i+16], label='Predictions', c='black', lw=2)
+            plt.scatter(wavelength_smoothed, spl(wavelength_smoothed), label='Predictions', c='black', lw=2)
             plt.scatter(wavelength, test_labels[i:i+16], label='Actual', c='red', alpha=0.7,marker='o')
             legend = plt.legend(loc='upper left', shadow=True, fontsize='large')
             legend.get_frame().set_facecolor('C7')
