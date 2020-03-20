@@ -107,10 +107,9 @@ def test_model(model, test_data, test_labels, len_tr_data=0, plot=True):
         wavelength = sp.arange(500,820,20)
         for i in [0,16,32]:
             spl = UnivariateSpline(wavelength, predictions[i:i+16])
-            wavelength_smoothed = sp.linspace(500,820,500)
-            pr_smoothed = spl(wavelength_smoothed)
-            spl.set_smoothing_factor(0.5)
-            plt.plot(wavelength_smoothed, pr_smoothed, label='Predictions', c='black', lw=2)
+            wavelength_smoothed = sp.linspace(500,820,100)
+            spl.set_smoothing_factor(0.0)
+            plt.scatter(wavelength, predictions[i:i+16], label='Predictions', c='black', lw=2)
             plt.scatter(wavelength, test_labels[i:i+16], label='Actual', c='red', alpha=0.7,marker='o')
             legend = plt.legend(loc='upper left', shadow=True, fontsize='large')
             legend.get_frame().set_facecolor('C7')
