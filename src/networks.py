@@ -9,6 +9,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import time
 import os
+from tqdm import tqdm
 from scipy.interpolate import UnivariateSpline
 from tensorflow.python.client import device_lib
 
@@ -21,7 +22,7 @@ tf.compat.v1.enable_eager_execution()
 ####################################################################################
 ####################################################################################
 
-def make_model(num_layers=6, num_neurons=50, num_inputs=6, num_outputs=1):
+def make_model(num_layers=6, num_neurons=50, num_inputs=6, num_outputs=1, batch_norm=True):
     model = tf.keras.Sequential()
 
     # 1st layer
@@ -31,7 +32,8 @@ def make_model(num_layers=6, num_neurons=50, num_inputs=6, num_outputs=1):
     # Hidden layers
     for _ in range(num_layers - 1):
         model.add(layers.Dense(num_neurons))
-        model.add(layers.BatchNormalization())
+        if batch_norm == True:
+            model.add(layers.BatchNormalization())
         model.add(layers.ReLU())
 
     # OUTPUT layer
@@ -73,7 +75,7 @@ def train_model(model,epochs, tr_data, tr_labels, va_data, va_labels, save_dir, 
     # Train
     model.compile(optimizer=Adam, loss='mean_squared_error')
     hist = model.fit(tr_data, tr_labels, epochs=epochs, verbose=1,
-                     validation_data=(va_data, va_labels), callbacks=[checkpointer], batch_size=batch_size)
+                     validation_data=(va_data, va_labels), callbacks=[checkpointer], batch_size=data_size)
     # Post training
     model.save(save_dir)
     #loss = hist.history['loss']
@@ -148,7 +150,7 @@ class Wgan(object):
         self.critic_optimizer = critic_optimizer
         self.generator_optimizer = generator_optimizer
 
-    def make_generator_model(self, num_layers = 5):
+    def make_generator_model(self, num_layers = 5, batch_norm=True):
         model = tf.keras.Sequential()
 
         # 1st layer
@@ -159,7 +161,8 @@ class Wgan(object):
         # HIDDEN layers
         for _ in range(num_layers - 1):
             model.add(layers.Dense(self.BATCH_SIZE * (2 ** 2)))
-            model.add(layers.BatchNormalization())
+            if batch_norm == True:
+                model.add(layers.BatchNormalization())
             model.add(layers.ReLU())
 
         # OUTPUT layer
@@ -293,7 +296,7 @@ class Wgan(object):
 
         _df = sp.zeros(7).reshape(1,7)
 
-        for _ in range(iterations):
+        for _ in tqdm(range(iterations)):
             seed = tf.random.normal([self.num_examples_to_generate, self.noise_dim])
             predictions = generator(seed, training=training)
             if (training == False):
