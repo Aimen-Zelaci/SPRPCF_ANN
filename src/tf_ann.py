@@ -11,17 +11,13 @@ tf.disable_eager_execution()
 # Print CPUs / GPUs available
 print(device_lib.list_local_devices())
 
-
 # Load data
 tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_data(fname='.\data\data.xlsx')
 
-
 # Augment
-
-for _ in [1000]:
+for _ in [1000, 2000, 3000]:
     tr_data, tr_labels = data_handler.augment_data(tr_data, tr_labels, _, fname='.\gen_data\gen_data.txt')
 
-print(tr_labels[0])
 # Parameters
 learning_rate = 0.001
 training_epochs = 2000
