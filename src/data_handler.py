@@ -9,21 +9,54 @@ def load_pcf_data(fname='.\data\pcf_data1.xlsx'):
 
     sp.random.shuffle(datafile_1)
 
-    tr_data = datafile_1[:1000,2:6].reshape(1000,4)
+    tr_data = datafile_1[:1000, 2:6].reshape(1000,4)
     tr_labels = datafile_1[:1000,-1].reshape(1000,1)
 
-    va_data = datafile_1[1000:1050,2:6].reshape(50,4)
+    va_data = datafile_1[1000:1050, 2:6].reshape(50,4)
     va_labels = datafile_1[1000:1050, -1].reshape(50, 1)
 
-    test_data =datafile_1[1050:,2:6]
+    test_data =datafile_1[1050:, 2:6]
     test_labels =datafile_1[1050:,-1]
 
     return [tr_data, tr_labels, va_data, va_labels, test_data, test_labels]
 
+def handle_data(x, y, shuffle_tr=True):
+    x = x.reshape(9,3,16,6)
+    y = y.reshape(9,3,16,1)
+
+    tr_data = x[:7].reshape(7 * 16 * 3, 6)
+    tr_labels = y[:7].reshape(7 * 16 * 3, 1)
+
+    if shuffle_tr == True:
+        merge = np.concatenate((tr_data,tr_labels), axis=1)
+        sp.random.shuffle(merge)
+        tr_data = merge[:,:6].reshape(7 * 16 * 3, 6)
+        tr_labels = merge[:,-1].reshape(7 * 16 * 3, 1)
+
+    va_data = x[-2].reshape(1*16*3,6)
+    va_labels = y[-2].reshape(1*16*3,1)
+
+    test_data = x[-1].reshape(1*16*3,6)
+    test_labels = y[-1].reshape(1*16*3,1)
+
+    return [tr_data, tr_labels, va_data, va_labels, test_data, test_labels]
+
+
 def load_data(fname='.\data\data.xlsx'):
     data =pd.read_excel(fname)
-    df = data.values
+    print(data.head())
 
+    if fname == 'shuffled_df.xlsx':
+            data = data.drop('Unnamed',axis=1)
+            print(data.head())
+            df = data.values
+            df = df.reshape(432,7)
+            x = df[:,:6]
+            y = df[:,-1]
+            # The training data is already shuffled, set shuffle_tr=False
+            return handle_data(x,y, shuffle_tr=False)
+
+    df = data.values
     df = df.reshape(9,3,16,7)
     sp.random.shuffle(df)
     df = df.reshape(432,7)
@@ -40,45 +73,31 @@ def load_data(fname='.\data\data.xlsx'):
 
     y = df[:, -1]
     y = y * (10**8)
-    y = sp.log10(y)
+    y = sp.log10(y).reshape(432,1)
     #Assert shape
-    x = x.reshape(9,3,16,6)
-    y = y.reshape(9,3,16,1)
-
-    tr_data = x[:7].reshape(7 * 16 * 3, 6)
-    tr_labels = y[:7].reshape(7 * 16 * 3, 1)
-
-    va_data = x[-2].reshape(1*16*3,6)
-    va_labels = y[-2].reshape(1*16*3,1)
-
-    test_data = x[-1].reshape(1*16*3,6)
-    test_labels = y[-1].reshape(1*16*3,1)
 
     # Save shuffled data frame
-    df = pd.DataFrame(df, index = None)
-    df.to_excel(r'.\data\shuffled_df.xlsx')
+    df = pd.DataFrame(df, columns=['Analytes','lambda','Pitch','d1','d2','d3','loss'])
+    df.to_excel(r'.\data\shuffled_df.xlsx', index = False)
 
-    return [tr_data, tr_labels, va_data, va_labels, test_data, test_labels]
+    return handle_data(x,y, shuffle_tr=True)
 
 
 # Augment data
-def augment_data(tr_data, tr_labels, size, fname='.\gen_data\gen_data.txt'):
-
+def augment_data(tr_data, tr_labels, size, fname='.\gen_data\gen_data2.txt'):
     generated_data = pd.read_csv(fname).values
-
-    start_slice = size-1000
+    #start_slice = size-1000
 
     if(size == 0):
         return [tr_data, tr_labels]
 
     #OUR data
-    gen_x = generated_data[start_slice:size, :6].reshape(1000,6)
-
+    gen_x = generated_data[:size, :6].reshape(size, 6)
     #THEIR data
     if(fname=='gen_data_pcf'):
-        gen_x = generated_data[start_slice:size, :4].reshape(1000,4)
+        gen_x = generated_data[:size, :4].reshape(size, 4)
 
-    gen_y = generated_data[start_slice:size, -1].reshape(1000,1)
+    gen_y = generated_data[:size, -1].reshape(size, 1)
 
     # Concatenate arrays
     tr_labels = np.concatenate((tr_labels, gen_y), axis=0)

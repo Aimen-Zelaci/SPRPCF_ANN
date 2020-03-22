@@ -28,22 +28,19 @@ def make_model(num_layers=6, num_neurons=50, num_inputs=6, num_outputs=1, batch_
     # 1st layer
     model.add(layers.Dense(num_neurons, input_shape=(num_inputs,)))
     model.add(layers.ReLU())
-
     # Hidden layers
     for _ in range(num_layers - 1):
         model.add(layers.Dense(num_neurons))
         if batch_norm == True:
             model.add(layers.BatchNormalization())
         model.add(layers.ReLU())
-
     # OUTPUT layer
     model.add(layers.Dense(num_outputs))
     model.add(layers.ReLU())
 
     return model
 
-def train_model(model,epochs, tr_data, tr_labels, va_data, va_labels, save_dir, chkdir):
-
+def train_model(model,epochs ,tr_data, tr_labels, va_data, va_labels, save_dir, chkdir,learning_rate = 1e-3, batch_size = 32):
     # Proceed training of a saved model
     # model = keras.models.load_model(save_dir)
 
@@ -58,30 +55,16 @@ def train_model(model,epochs, tr_data, tr_labels, va_data, va_labels, save_dir, 
     checkpointer = keras.callbacks.ModelCheckpoint(filepath=chkdir, verbose=0,
                                                    save_best_only=True)
 
-    data_size = int(len(tr_data))
-    # Learning rate / Minibatch size
-    lr = 1e-4
-    batch_size = 8
-    if data_size >= 2000:
-        lr = 2e-4
-        batch_size = 16
-    if data_size >= 3000:
-        lr = 2.5e-4
-        batch_size = 20
-
     # Define optimizers
-    Adam = keras.optimizers.Adam(learning_rate=lr, beta_1=0.9, beta_2=0.999)
+    Adam = keras.optimizers.Adam(learning_rate=learning_rate, beta_1=0.9, beta_2=0.999)
     RMSprop = keras.optimizers.RMSprop(learning_rate=1e-2, rho=0.9)
     # Train
     model.compile(optimizer=Adam, loss='mean_squared_error')
     hist = model.fit(tr_data, tr_labels, epochs=epochs, verbose=1,
-                     validation_data=(va_data, va_labels), callbacks=[checkpointer], batch_size=data_size)
+                     validation_data=(va_data, va_labels), callbacks=[checkpointer, tensorboard_callback], batch_size=batch_size)
     # Post training
     model.save(save_dir)
     #loss = hist.history['loss']
-    #epochsArr = np.arange(epochs)
-    #predictions = model.predict([va_data])
-    #MSE = sp.square(sp.subtract(va_labels, predictions)).mean()
 
 def load_model(model,load_type,dir):
     if load_type == 'load_weights':
