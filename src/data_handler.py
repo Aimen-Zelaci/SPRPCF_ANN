@@ -42,21 +42,18 @@ def handle_data(x, y, shuffle_tr=True):
     return [tr_data, tr_labels, va_data, va_labels, test_data, test_labels]
 
 
-def load_data(fname='.\data\data.xlsx'):
+def load_data(fname):
     data =pd.read_excel(fname)
+    df = data.values
     print(data.head())
 
-    if fname == 'shuffled_df.xlsx':
-            data = data.drop('Unnamed',axis=1)
-            print(data.head())
-            df = data.values
-            df = df.reshape(432,7)
-            x = df[:,:6]
-            y = df[:,-1]
-            # The training data is already shuffled, set shuffle_tr=False
-            return handle_data(x,y, shuffle_tr=False)
+    if fname == r'.\data\shuffled_df.xlsx':
+        df = df.reshape(432,7)
+        x = df[:,:6]
+        y = df[:,-1]
+        # The training data is already shuffled, set shuffle_tr=False
+        return handle_data(x,y, shuffle_tr=False)
 
-    df = data.values
     df = df.reshape(9,3,16,7)
     sp.random.shuffle(df)
     df = df.reshape(432,7)
@@ -76,6 +73,7 @@ def load_data(fname='.\data\data.xlsx'):
     y = sp.log10(y).reshape(432,1)
     #Assert shape
 
+    df = np.concatenate((x,y), axis=1)
     # Save shuffled data frame
     df = pd.DataFrame(df, columns=['Analytes','lambda','Pitch','d1','d2','d3','loss'])
     df.to_excel(r'.\data\shuffled_df.xlsx', index = False)
