@@ -167,7 +167,7 @@ class Wgan(object):
             model.add(layers.Dense(self.BATCH_SIZE * (2 ** i)))
             model.add(layers.LeakyReLU())
             i-=1
-            if i == 0:
+            if i < 0:
                 i = 0
         # OUTPUT layer
         model.add(layers.Dense(1, activation='linear'))
