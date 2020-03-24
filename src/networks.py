@@ -24,7 +24,6 @@ tf.compat.v1.enable_eager_execution()
 
 def make_model(num_layers=6, num_neurons=50, num_inputs=6, num_outputs=1, batch_norm=True):
     model = tf.keras.Sequential()
-
     # 1st layer
     model.add(layers.Dense(num_neurons, input_shape=(num_inputs,)))
     model.add(layers.ReLU())
@@ -43,18 +42,14 @@ def make_model(num_layers=6, num_neurons=50, num_inputs=6, num_outputs=1, batch_
 def train_model(model,epochs ,tr_data, tr_labels, va_data, va_labels, save_dir, chkdir,learning_rate = 1e-3, batch_size = 32):
     # Proceed training of a saved model
     # model = keras.models.load_model(save_dir)
-
     # TensorBoard log directory
     logdir = r'.\logs\scalars\{}'.format(time.time())
-
     # CALLBACKS
     # TensorBoard
     tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
-
     # Save the best va_loss file
     checkpointer = keras.callbacks.ModelCheckpoint(filepath=chkdir, verbose=0,
                                                    save_best_only=True)
-
     # Define optimizers
     Adam = keras.optimizers.Adam(learning_rate=learning_rate, beta_1=0.9, beta_2=0.999)
     RMSprop = keras.optimizers.RMSprop(learning_rate=1e-2, rho=0.9)
@@ -106,8 +101,6 @@ def test_model(model, test_data, test_labels, len_tr_data=0, plot=True):
 
     return predictions
 
-
-
     ############################### WGAN ###############################################
     ####################################################################################
     ####################################################################################
@@ -123,7 +116,6 @@ class Wgan(object):
                       critic_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5, beta_2=0.9),
                       generator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5, beta_2=0.9)
                         ):
-
         self.BATCH_SIZE = BATCH_SIZE
         self.noise_dim = noise_dim
         self.num_critic_input = num_critic_input
@@ -132,22 +124,22 @@ class Wgan(object):
         self.num_examples_to_generate = num_examples_to_generate
         self.critic_optimizer = critic_optimizer
         self.generator_optimizer = generator_optimizer
+        self.checkpoint_dir = './training_checkpoints'
+        self.checkpoint_prefix = os.path.join(self.checkpoint_dir, 'ckpt')
+        self._tensorboard()
 
     def make_generator_model(self, num_layers = 5, batch_norm=True):
         model = tf.keras.Sequential()
-
         # 1st layer
         model.add(layers.Dense(self.BATCH_SIZE * (2 ** 2), input_shape=(self.noise_dim,)))
         model.add(layers.BatchNormalization())
         model.add(layers.LeakyReLU())
-
         # HIDDEN layers
         for _ in range(num_layers - 1):
             model.add(layers.Dense(self.BATCH_SIZE * (2 ** 2)))
             if batch_norm == True:
                 model.add(layers.BatchNormalization())
             model.add(layers.ReLU())
-
         # OUTPUT layer
         model.add(layers.Dense(self.noise_dim))
         model.add(layers.ReLU())
@@ -156,11 +148,9 @@ class Wgan(object):
 
     def make_critic_model(self, num_layers = 5):
         model = tf.keras.Sequential()
-
         # 1st layer
         model.add(layers.Dense(self.BATCH_SIZE * (2 ** 2), input_shape=(self.num_critic_input,)))
         model.add(layers.LeakyReLU())
-
         # HIDDEN LAYERS
         i = 2
         for _ in range(num_layers - 1):
@@ -184,36 +174,30 @@ class Wgan(object):
         return gp
 
     @tf.function
-    def train_critic(self,data, generator, critic, train_critic_loss_summary):
-
+    def train_critic(self,data, generator, critic, epoch):
         noise = tf.random.normal([self.BATCH_SIZE, self.noise_dim])
-
-        with tf.GradientTape() as disc_tape:
+        with tf.GradientTape() as cr_tape, self.critic_summary_writer.as_default():
             generated_data = generator(noise, training=True)
             data = tf.dtypes.cast(data, tf.float32)
             real_output = critic(data, training=True)
             fake_output = critic(generated_data, training=True)
-
-            # critic loss
-            disc_loss = self.critic_loss(real_output, fake_output)
-
-            # Gradient penalty
+            critic_loss = self.critic_loss(real_output, fake_output)
             gp =self. gradient_penalty(critic, data, generated_data)
-            disc_loss += self.grad_penalty_weight * gp
-            train_critic_loss_summary(disc_loss)
-        gradients_of_critic = disc_tape.gradient(disc_loss, critic.trainable_variables)
+            critic_loss += self.grad_penalty_weight * gp
+            self.train_loss_cr(critic_loss)
+            tf.summary.scalar('loss', self.train_loss_cr.result(), step=epoch)
+        gradients_of_critic = cr_tape.gradient(critic_loss, critic.trainable_variables)
         self.critic_optimizer.apply_gradients(zip(gradients_of_critic, critic.trainable_variables))
 
     @tf.function
-    def train_gen(self, generator, critic, train_loss_gen_summary):
+    def train_gen(self, generator, critic, epoch):
         noise = tf.random.normal([self.BATCH_SIZE, self.noise_dim])
-        with tf.GradientTape() as gen_tape:
+        with tf.GradientTape() as gen_tape, self.gen_summary_writer.as_default():
             generated_data = generator(noise, training=True)
             fake_output = critic(generated_data, training=True)
-            # WGAN
-            # generator loss
             gen_loss = self.generator_loss(fake_output)
-            train_loss_gen_summary(gen_loss)
+            self.train_loss_gen(gen_loss)
+            tf.summary.scalar('loss', self.train_loss_gen.result(), step=epoch)
         gradients_of_generator = gen_tape.gradient(gen_loss, generator.trainable_variables)
         self.generator_optimizer.apply_gradients(zip(gradients_of_generator, generator.trainable_variables))
 
@@ -225,17 +209,7 @@ class Wgan(object):
 
         return train_dataset
 
-    def train_wgan(self,tr_data, tr_labels, epochs, generator, critic):
-        # Continue training
-        # checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
-        # Save model's checkpoints as we iterate
-        checkpoint_dir = './training_checkpoints'
-        checkpoint_prefix = os.path.join(checkpoint_dir, 'ckpt')
-        checkpoint = tf.train.Checkpoint(generator_optimizer=self.generator_optimizer,
-                                         discriminator_optimizer=self.critic_optimizer,
-                                         generator=generator,
-                                         discriminator=critic)
-
+    def _tensorboard(self):
         # Critic Tensorboard loss summary
         critic_logdir = r'.\ganlogs\scalars\{}'.format(time.time())
         train_loss_cr = tf.keras.metrics.Mean('train_loss', dtype=tf.float32)
@@ -245,40 +219,44 @@ class Wgan(object):
         train_loss_gen = tf.keras.metrics.Mean('train_loss', dtype=tf.float32)
         gen_summary_writer = tf.compat.v2.summary.create_file_writer(gen_logdir)
 
+        self.gen_summary_writer = gen_summary_writer
+        self.critic_summary_writer = critic_summary_writer
+        self.train_loss_gen = train_loss_gen
+        self.train_loss_cr = train_loss_cr
+
+    def train_wgan(self,tr_data, tr_labels, epochs, generator, critic):
+        # Continue training
+        # checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
+        # Save model's checkpoints as we iterate
+        checkpoint = tf.train.Checkpoint(generator_optimizer=self.generator_optimizer,
+                                         discriminator_optimizer=self.critic_optimizer,
+                                         generator=generator,
+                                         discriminator=critic)
         dataset = self.shape_wgan_data(tr_data, tr_labels)
         for epoch in range(epochs):
             start = time.time()
-
             for data_batch in dataset:
                 # Train Critic
                 for _ in range(self.n_critic):
-                    self.train_critic(data_batch, generator, critic, train_loss_cr)
-                    with critic_summary_writer.as_default():
-                        tf.summary.scalar('loss', train_loss_cr.result(), step=epoch)
+                    self.train_critic(data_batch, generator, critic, epoch)
                 # Train Generator
-                self.train_gen(generator, critic, train_loss_gen)
-                with gen_summary_writer.as_default():
-                    tf.summary.scalar('loss', train_loss_gen.result(), step=epoch)
-
+                self.train_gen(generator, critic, epoch)
             # Generate and save data
             # generate_and_save_data(generator,seed,training=False)
             # Plot generated data vs wavelength each 200 epoch
             if (epoch + 1) % 2 == 0:
                 # data_handler.plot_wgan(epoch + 1)
-                checkpoint.save(file_prefix=checkpoint_prefix)
+                checkpoint.save(file_prefix=self.checkpoint_prefix)
 
             print('Time for epoch {} is {} sec'.format(epoch + 1, time.time() - start))
 
     def generate_and_save_data(self,iterations,training, generator, critic):
-        checkpoint_dir = './training_checkpoints'
         checkpoint = tf.train.Checkpoint(generator_optimizer=self.generator_optimizer,
                                          discriminator_optimizer=self.critic_optimizer,
                                          generator=generator,
                                          discriminator=critic)
-        checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
-
+        checkpoint.restore(tf.train.latest_checkpoint(self.checkpoint_dir))
         _df = sp.zeros(7).reshape(1,7)
-
         for _ in tqdm(range(iterations)):
             seed = tf.random.normal([self.num_examples_to_generate, self.noise_dim])
             predictions = generator(seed, training=training)
