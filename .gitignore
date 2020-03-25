@@ -2,9 +2,11 @@ docs/**/*.log
 docs/**/*.synctex.gz
 docs/**/*.aux
 ganlogs/
-.\\ganlogs\\*
+.\\src\\ganlogs\\*
 logs/
-.\\logs\\*
+.\\src\\logs\\*
+.src\\trained-nets\\*
+.src\\trained-weights\\*
 __pycache__
 training_checkpoints
 .idea
