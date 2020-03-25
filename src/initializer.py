@@ -10,6 +10,12 @@ wgan_flags = params_dict[0]
 ann_flags  = params_dict[1]
 data_flags = params_dict[2]
 
+
+tf.flags.DEFINE_bool('train_wgan', False,'train wgan, defaul:True')
+tf.flags.DEFINE_bool('generate', False,'generate data, defaul:True')
+tf.flags.DEFINE_bool('train_ann', False,'train ann, defaul:True')
+tf.flags.DEFINE_bool('test_ann', False,'test ann, defaul:True')
+
 tf.flags.DEFINE_integer('wgan_batch_size', wgan_flags['BATCH_SIZE'], 'batch size, default: 12')
 tf.flags.DEFINE_integer('noise_dim', wgan_flags['noise_dim'], 'z_dimension, default:7')
 tf.flags.DEFINE_integer('num_critic_input', wgan_flags['num_critic_input'], 'number of inputs to the critic, default:7')

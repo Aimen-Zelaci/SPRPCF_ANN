@@ -1,4 +1,5 @@
 [
+    // WGAN-GP PARAMS
     {
             "BATCH_SIZE" : 12,
             "epochs": 2000,
@@ -11,13 +12,15 @@
             "cr_num_layers":5,
             "gen_batch_norm":"True"
     },
+
+    // ANN PARAMS
     {
         "num_layers":6,
         "num_inputs":6,
         "num_outputs":1,
         "num_neurons":50,
         "batch_norm":"True",
-        "epochs":2000,
+        "epochs":2,
         "batch_size": 8,
         "learning_rate": 1e-3,
         "augment_size":1000,
@@ -27,6 +30,7 @@
         "model_to_test": ".\\trained-weights\\weights1000.hdf5"
     },
 
+    // DATA PATHS
     {
         "shuffled_data": ".\\data\\shuffled_df.xlsx",
         "data": ".\\data\\data.xlsx"

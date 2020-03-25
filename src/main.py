@@ -50,18 +50,20 @@ def test_model():
 
 def main(_):
     # 1. TRAIN WGAN
-    train_wgan()
+    if FLAGS.train_wgan:
+        train_wgan()
 
     # 2. GENERATE DATA
-    generate_data()
+    if FLAGS.generate:
+        generate_data()
 
     # 3. TRAIN ANN MODEL/Augment data
-    train_ann_model()
+    if FLAGS.train_ann:
+        train_ann_model()
 
     # 4. TEST
-    test_model()
+    if FLAGS.test_ann:
+        test_model()
 
 if __name__ == '__main__':
     tf.app.run()
-
-
