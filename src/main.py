@@ -1,4 +1,3 @@
-#! /usr/bin/python3
 import tensorflow.compat.v1 as tf
 import networks, data_handler, initializer
 from networks import Wgan
