@@ -1,4 +1,3 @@
-# Load libraries
 from __future__ import absolute_import, division, print_function, unicode_literals
 from tensorflow import keras
 from tensorflow.keras import layers
@@ -78,7 +77,6 @@ def train_model(model ,tr_data, tr_labels, va_data, va_labels, flags):
 def load_model(model,load_type,dir):
     if load_type == 'load_weights':
         model.load_weights(dir)
-
     if load_type == 'load_model':
         model = keras.models.load_model(dir)
 
@@ -130,7 +128,7 @@ class Wgan(object):
         self.n_critic = flags.n_critic
         self.grad_penalty_weight = flags.grad_penalty_weight
         self.num_examples_to_generate = flags.num_examples_to_generate
-        self.epochs = flags.epochs
+        self.epochs = flags.wgan_epochs
         self.critic_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5, beta_2=0.9)
         self.generator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5, beta_2=0.9)
         self.checkpoint_dir = './training_checkpoints'

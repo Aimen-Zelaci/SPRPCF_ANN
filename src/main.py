@@ -25,7 +25,6 @@ def generate_data():
 def train_ann_model():
     # Load the same data used to train the WGAN
     tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_data(fname=FLAGS.shuffled_data)
-
     # Augment data. To train with only the original real samples, set augment_size = 0.
     # For different augmentations, change the batch_size/ learning_rate accordingly.
     tr_data, tr_labels = data_handler.augment_data(tr_data, tr_labels, FLAGS)
@@ -53,15 +52,12 @@ def main(_):
     # 1. TRAIN WGAN
     if FLAGS.train_wgan:
         train_wgan()
-
     # 2. GENERATE DATA
     if FLAGS.generate:
         generate_data()
-
     # 3. TRAIN ANN MODEL/Augment data
     if FLAGS.train_ann:
         train_ann_model()
-
     # 4. TEST
     if FLAGS.test_ann:
         test_model()
