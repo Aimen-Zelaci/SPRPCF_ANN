@@ -1,0 +1,34 @@
+[
+    {
+            "BATCH_SIZE" : 12,
+            "epochs": 2,
+            "noise_dim" : 7,
+            "num_critic_input" : 7,
+            "n_critic" : 5,
+            "grad_penalty_weight" : 10,
+            "num_examples_to_generate" : 8,
+            "gen_num_layers":5,
+            "cr_num_layers":5,
+            "gen_batch_norm":"True"
+    },
+    {
+        "num_layers":6,
+        "num_inputs":6,
+        "num_outputs":1,
+        "num_neurons":50,
+        "batch_norm":"True",
+        "epochs":2,
+        "batch_size": 8,
+        "learning_rate": 1e-3,
+        "augment_size":1000,
+        "gen_data_dir":".\\gen_data\\gen_data.txt",
+        "save_dir":".\\trained-nets\\model1000.h5",
+        "chkdir":".\\trained-weights\\weights1000.hdf5",
+        "model_to_test": ".\\trained-weights\\weights1000.hdf5"
+    },
+
+    {
+        "shuffled_data": ".\\data\\shuffled_df.xlsx",
+        "data": ".\\data\\data.xlsx"
+    }
+]

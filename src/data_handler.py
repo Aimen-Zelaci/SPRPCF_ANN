@@ -82,7 +82,10 @@ def load_data(fname):
 
 
 # Augment data
-def augment_data(tr_data, tr_labels, size, fname='.\gen_data\gen_data2.txt'):
+def augment_data(tr_data, tr_labels, flags):
+    size = flags.augment_size
+    fname = flags.gen_data_dir
+
     generated_data = pd.read_csv(fname).values
     #start_slice = size-1000
 
