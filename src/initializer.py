@@ -23,10 +23,8 @@ tf.flags.DEFINE_integer('n_critic', wgan_flags['n_critic'], 'Critic iterations, 
 tf.flags.DEFINE_integer('grad_penalty_weight', wgan_flags['grad_penalty_weight'], 'Gradient penalty weight, default:10')
 tf.flags.DEFINE_integer('num_examples_to_generate', wgan_flags['num_examples_to_generate'], 'number of examples to generate, default:8')
 tf.flags.DEFINE_integer('wgan_epochs', wgan_flags['epochs'], 'WGAN epochs,default:2000')
-
 tf.flags.DEFINE_integer('gen_num_layers', wgan_flags['gen_num_layers'], 'Generator number of hidden layers,default:5')
 tf.flags.DEFINE_integer('cr_num_layers', wgan_flags['cr_num_layers'], 'Critic number of hidden layers,default:5')
-
 tf.flags.DEFINE_string('gen_batch_norm', wgan_flags['gen_batch_norm'], 'Generator batch normalization')
 
 tf.flags.DEFINE_integer('num_layers',ann_flags['num_layers'],'number of hidden layers of the ANN model, default:6')
@@ -39,10 +37,12 @@ tf.flags.DEFINE_integer('ANN_batch_size', ann_flags['batch_size'], 'ANN batch si
 tf.flags.DEFINE_string('batch_norm', ann_flags['batch_norm'], 'ANN batch norm,default:True')
 tf.flags.DEFINE_string('save_dir', ann_flags['save_dir'], 'ANN save directory, default:model1000.h5')
 tf.flags.DEFINE_string('chkdir',ann_flags['chkdir'],'ANN checkpoint directory, default:weights1000.hdf5')
-tf.flags.DEFINE_string('gen_data_dir', ann_flags['gen_data_dir'], 'generated data directory,default:gen_data/gen_data.txt')
 tf.flags.DEFINE_string('model_to_test', ann_flags['model_to_test'], 'Test model directory')
-tf.flags.DEFINE_integer('augment_size', ann_flags['augment_size'], 'data augmentation size, default:1000')
 
+tf.flags.DEFINE_integer('augment_size', ann_flags['augment_size'], 'data augmentation size, default:1000')
+tf.flags.DEFINE_integer('gen_iterations', wgan_flags['gen_iterations'], 'iteration of data generation, default:1000')
+
+tf.flags.DEFINE_string('gen_data_dir', data_flags['gen_data_dir'], 'generated data directory,default:gen_data/gen_data.txt')
 tf.flags.DEFINE_string('data', data_flags['data'], 'Data directory')
 tf.flags.DEFINE_string('shuffled_data', data_flags['shuffled_data'], 'Suffled data directory')
 

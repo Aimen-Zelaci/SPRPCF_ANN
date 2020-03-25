@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 import tensorflow.compat.v1 as tf
 import networks, data_handler, initializer
 from networks import Wgan
@@ -19,7 +20,7 @@ def train_wgan():
 
 def generate_data():
     # WILL SAVE TO gen_data\gen_data2.txt // Data already generated in gen_data\gen_data.txt#
-    wgan.generate_and_save_data(iterations = 10, training=False, generator=generator, critic=critic)
+    wgan.generate_and_save_data(iterations = FLAGS.gen_iterations, training=False, generator=generator, critic=critic)
 
 def train_ann_model():
     # Load the same data used to train the WGAN
