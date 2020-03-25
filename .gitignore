@@ -5,7 +5,9 @@ ganlogs/
 .\\src\\ganlogs\\*
 logs/
 .\\src\\logs\\*
+src/trained-nets
 .src\\trained-nets\\*
+src/trained-weights
 .src\\trained-weights\\*
 __pycache__
 training_checkpoints
