@@ -2,7 +2,7 @@
 
 - Train the wgan: `python main.py -train_wgan`
 
-- Generate data: ``python main.py -generate`
+- Generate data: `python main.py -generate`
 
 - Train the ANN model: `python main.py -train_ann`
 
