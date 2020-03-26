@@ -7,6 +7,7 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{hyperref}
+\usepackage{cite}
 
 \begin{document}
 
@@ -24,9 +25,10 @@ Photonic crystal fibers (PCF) for specific applications are designed and optimiz
 
 \hl{Importance of PCF and SPR, written by AY or HA}
 	
-Machine Learning (ML) techniques are coming to the forefront of many fields, surpassing human performance in many tasks, namely automatic speech recognition, image recognition, natural language processing, drug discovery and toxicology. Artificial Neural Networks can approximate any function by virtue of the Universality theorem: No matter what the input is there is to be a guaranteed ANN architecture that computes the desired outputs. This fact propelled researchers to widen the applications of ANN even further, including the study of nanophotonic structures [1], optimization of photonic crystal nanocavities [2], and more recently, computing optical properties of a photonic crystal fiber [3].
+Machine Learning (ML) techniques are coming to the forefront of many fields, surpassing human performance in many tasks, namely automatic speech recognition, image recognition, natural language processing, drug discovery and toxicology. Artificial Neural Networks can approximate any function by virtue of the Universality theorem: No matter what the input is there is to be a guaranteed ANN architecture that computes the desired outputs. This fact propelled researchers to widen the applications of ANN even further, including the study of nanophotonic structures \cite{kiarashinejad2020knowledge}, optimization of photonic crystal nanocavities \cite{asano2018optimization}, and more recently, computing optical properties of a photonic crystal fiber \cite{chugh2019machine}.
 
-One of the most difficult challenges that deep learning models face is that they benefit from large amounts of data to train, which may be costly to acquire. One of the solutions to overcome this issue is to artificially expand the original training dataset by the means of generative networks. Introduced by Goodfellow et al., Generative Adversarial Networks (GAN) [4], proved to be successful in data generation [5, 6, 7, 8, 9]. 
+One of the most difficult challenges that deep learning models face is that they benefit from large amounts of data to train, which may be costly to acquire. One of the solutions to overcome this issue is to artificially expand the original training dataset by the means of generative networks. Introduced by Goodfellow et al., Generative Adversarial Networks (GAN) \cite{goodfellow2014generative}, proved to be successful in data generation \cite{schlegl2017unsupervised, zheng2017unlabeled, frid2018synthetic, tanaka2019data, perez2017effectiveness}.
+ 
 In this paper we focus on determining one of the propagation features of a unique multi-channel Photonic Crystal Fiber (PCF) sensor based on Surface Plasmon Resonance (SPR), proposed in our recent work [21], that is the confinement loss, by using an Artificial Neural Network model, and a special kind generative networks to expand our limited data set for the purpose of  improving the accuracy of our ANN model, as demonstrated in Figure(1). We will fix the pattern and geometrical shape of the cladding air holes, and vary the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$. Then the results of this study can be carried to different types of SPR-based PCF sensors, using other suitable deep learning approaches such as Recurrent and Convolutional neural networks. 
 
 \begin{figure}
@@ -46,20 +48,20 @@ In this section details of the proposed method is discussed. At the start, a GAN
 
 
 \hl{will be split into the subsections.} We will first train ANN model to predict the confinement loss of a SPR based PCF using the original data set collected. Then we will augment the original training data set with generated samples by the GAN, to improve the performance of the ANN model.
-Previous works [ref, ref], demonstrated that random data augmentation actually had weakened the performance of the model. Hence, active researches are ongoing to find ways to optimally sample the generated data [ref], in other words to filter out the "good" generated data after training the GAN. In this paper, we will use a simple if-statement to discard values that fall out of our desired ranges for both the independent variables($n_{analyte}, \lambda, \Lambda, d1, d2, d3$), and the confinement loss. In the following sub-sections we discuss the networks architectures.
+Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that random data augmentation actually had weakened the performance of the model. Hence, active researches are ongoing to find ways to optimally sample the generated data \cite{bhattarai2019sampling}, in other words to filter out the "good" generated data after training the GAN. In this paper, we will use a simple if-statement to discard values that fall out of our desired ranges for both the independent variables($n_{analyte}, \lambda, \Lambda, d1, d2, d3$), and the confinement loss. In the following sub-sections we discuss the networks architectures.
 
 \subsection{Artificial neural network design}
 \label{ssec:ann}
 The ANN model employed in this research is a fully-connected feed-forward MLP (Multi Layer Perceptron) consisting of an input layer, an output layer, and 5 hidden layers. Each hidden layer consists of 50 neurons and uses Rectified Linear Unit (ReLU) activation function. 
 
-Adam [ref] as the optimizer and the mean squared error as the loss/cost function. To reduce overfitting we use the Early stopping method [reference], that is by saving checkpoints where the best validation mean squared error occurred as we iterate. To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm was used [ref].
+Adam \cite{kingma2014adam} as the optimizer and the mean squared error as the loss/cost function. To reduce overfitting we use the Early stopping method, that is by saving checkpoints where the best validation mean squared error occurred as we iterate. To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm was used \cite{ioffe2015batch}.
 
 We will first train ANN model to predict the confinement loss of a SPR based PCF using the original data set collected. Then we will augment the original training data set with generated samples by the GAN, to improve the performance of the ANN model.
-Previous works [10, 11], demonstrated that random data augmentation actually had weakened the performance of the model. Hence, active researches are ongoing to find ways to optimally sample the generated data [12], in other words to filter out the "good" generated data after training the GAN. In this paper, we will use a simple if-statement to discard values that fall out of our desired ranges for both the independent variables, and the confinement loss. In the following sub-sections we discuss the networks architectures. Before we proceed, it is worth mentioning that the choices made for the parameters of the networks are by no means a robust set of rules, rather, they are rules of thumb and heuristics, as no such rules have been yet developed for ANN models.
+Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that random data augmentation actually had weakened the performance of the model. Hence, active researches are ongoing to find ways to optimally sample the generated data \cite{bhattarai2019sampling}, in other words to filter out the "good" generated data after training the GAN. In this paper, we will use a simple if-statement to discard values that fall out of our desired ranges for both the independent variables, and the confinement loss. In the following sub-sections we discuss the networks architectures. Before we proceed, it is worth mentioning that the choices made for the parameters of the networks are by no means a robust set of rules, rather, they are rules of thumb and heuristics, as no such rules have been yet developed for ANN models.
 
 \subsection{Artificial neural network design}
 \label{ssec:ann}
-The ANN model is a fully-connected feed-forward Multi Layer Perceptron (MLP) model. Table(1) summarizes the details of the model. To reduce over fitting we use the Early stopping method, by saving checkpoints where the best validation mean squared error occurred as we iterate before the model starts to over fit. To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm [14] was used.
+The ANN model is a fully-connected feed-forward Multi Layer Perceptron (MLP) model. Table(1) summarizes the details of the model. To reduce over fitting we use the Early stopping method, by saving checkpoints where the best validation mean squared error occurred as we iterate before the model starts to over fit. To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm \cite{ioffe2015batch} was used.
 
 \begin{table}[h]
 \centering
@@ -72,7 +74,7 @@ Number of neurons per hidden layers & 50  \\
 \hline
 Activation function & Rectified Linear Unit (ReLU)  \\
 \hline
-Optimizer & Adam[13]  \\
+Optimizer & Adam\cite{kingma2014adam}  \\
 \hline
 Loss function& Mean Squared Error (MSE) \\
 \hline
@@ -84,7 +86,7 @@ Loss function& Mean Squared Error (MSE) \\
 \subsection{Generative Adversarial network design}
 \label{ssec:gan}
 
-GANs consist of two neural networks, as shown in Figure (2). The first of which called a discriminator, that gives an estimate of the probability that a given input is real or generated (fake). Whereas the second network is referred to as the generator, which outputs data samples from a random noise vector called a latent variable usually given the symbol $z$ supplied at its input. The error at the discriminator's output would then be measured by the means of a chosen metric. Introduced by Arjovsky et al [15] the Wasserstein distance metric (or the earth mover distance) proved to be very effective, instead of discriminating whether an input is real or generated, the discriminator provides a criticism of how far the generated data from the real data is, hence the discriminator network is referred to as the critic in the WGANs. Throughout this paper we will use yet the improved WGAN, the WGAN with Gradient penalty [16]. The improved WGAN converges in a stable manner with least efforts made to tune the hyper- parameters of both networks constituting the GAN, which can be very daunting.
+GANs consist of two neural networks, as shown in Figure (2). The first of which called a discriminator, that gives an estimate of the probability that a given input is real or generated (fake). Whereas the second network is referred to as the generator, which outputs data samples from a random noise vector called a latent variable usually given the symbol $z$ supplied at its input. The error at the discriminator's output would then be measured by the means of a chosen metric. Introduced by Arjovsky et al \cite{arjovsky2017wasserstein} the Wasserstein distance metric (or the earth mover distance) proved to be very effective, instead of discriminating whether an input is real or generated, the discriminator provides a criticism of how far the generated data from the real data is, hence the discriminator network is referred to as the critic in the WGANs. Throughout this paper we will use yet the improved WGAN, the WGAN with Gradient penalty \cite{gulrajani2017improved}. The improved WGAN converges in a stable manner with least efforts made to tune the hyper- parameters of both networks constituting the GAN, which can be very daunting.
 In this work, both the Critic and the generator are fully connected feed forward MLP models. Tables(2, 3) summarize the details of both networks. The input vector to the Critic network consists of the six parameters discussed earlier for the ANN model, in addition to the corresponding confinement loss value, giving a total of seven inputs. The generator is supplied with random noise vector having a dimension of $7$, and outputs a vector that resembles that of the input to the Critic.
 
 \begin{figure}
@@ -121,7 +123,7 @@ Activation function & Rectified Linear Unit (ReLU)  \\
 \hline
 Optimizer & Adam[13]  \\
 \hline
-Normalization & Batch Normalization[14] \\
+Normalization & Batch Normalization\cite{ioffe2015batch} \\
 \hline
     \end{tabular}
 \caption{Details of the Generator model}
@@ -402,7 +404,7 @@ By taking advantage of Cloud Computing technology, one does not have to spend la
 The code for this work is available at: \url{https://github.com/Aimen-Zelaci/SPRPCF_ANN/}.
 \newline
 The elapsed training time of an ANN model depends on the parameters of the model, for example, the number of hidden layers and hidden neurons, mini batch size, data set size, number of epochs, the framework used to code the model, and of course the specifications of the machine.
-In this work we fixed the number of epochs to 2000 and executed training using Tensorflow(Keras) and Pytorch frameworks. As demonstrated in Tables(5,6). It is worth mentioning the differences between training with full batch or mini batches. In full batch training, the whole data set is passed to the model for each iteration. In contrast, mini-batch-training, the data set is split into small mini batches of equal sizes, then passed to the model seperately, thus for each epoch there will be exactly length  of the data set devided by the mini batch size steps, and hence slowing down the training process. Previous works [17, 18] have firmly proved the advantages of using the correct mini batch size as oppose to large batch sizes. Mini batches allow for more frequent gradient calculations, that results in more stable and reliable training. Perhaps one of the main downsides of using large batch size is the poor generalization resulting in a phenomena know as the "generalization gap". Active research [19] is on going to actually use large batch sizes while mainting the performance of the model and shortning the training runtime. A closely related recent work (Machine learning approach for computing optical properties of a photonic crystal fiber, Sunny Chugh, Aamir Gulistan, Souvik Ghosh, AND B.M.A. Rahman, DEC 2019), conducted their expirements using full batch to train the model. In this work we will use the latter paper availabe code on Github for Pytorch expirements, with slight modifications to fit our purposes. Finally, we compare the performance of the WGAN model, using Tensorflow(Keras) framework, of CPU based to that of GPU based.
+In this work we fixed the number of epochs to 2000 and executed training using Tensorflow(Keras) and Pytorch frameworks. As demonstrated in Tables(5,6). It is worth mentioning the differences between training with full batch or mini batches. In full batch training, the whole data set is passed to the model for each iteration. In contrast, mini-batch-training, the data set is split into small mini batches of equal sizes, then passed to the model seperately, thus for each epoch there will be exactly length  of the data set devided by the mini batch size steps, and hence slowing down the training process. Previous works \cite{masters2018revisiting, keskar2016large} have firmly proved the advantages of using the correct mini batch size as oppose to large batch sizes. Mini batches allow for more frequent gradient calculations, that results in more stable and reliable training. Perhaps one of the main downsides of using large batch size is the poor generalization resulting in a phenomena know as the "generalization gap". Active research \cite{hoffer2017train} is on going to actually use large batch sizes while mainting the performance of the model and shortning the training runtime. A closely related recent work \cite{chugh2019machine}, conducted their expirements using full batch to train the model. In this work we will use the latter paper availabe code on Github for Pytorch expirements, with slight modifications to fit our purposes. Finally, we compare the performance of the WGAN model, using Tensorflow(Keras) framework, of CPU based to that of GPU based.
 
 \begin{table}[h]
 \begin{tabular}{lllll}
@@ -441,7 +443,7 @@ Mini batches    & 336 + 0 & 8 & 1315 & \\
 
 \hl{WGAN EXCUTION WITH GPU VS CPU BY CEM}
 
-Next, we compare the testing runtime of the ANN model to that of simulation methods used to compute the confinement loss for 3 different analytes and 16 wavelenghts, i.e a total of 48 values of the confinement loss, demonstrated in Table(num). This result is absolutely staggering. The ANN model calculated 48 confinement losses in just 0.17 seconds, while simulations took about 2 hours. Therefore, a well trained ANN model can be used to accurately find the best PCF geometric properties set that maximisez the distance between the confinement loss distributions of each analyte in a matter of seconds to minutes. Hence, accelerate the search for the best PCF sensor.
+Next, we compare the testing runtime of the ANN model to that of simulation methods used to compute the confinement loss for 3 different analytes and 16 wavelenghts, i.e a total of 48 values of the confinement loss, demonstrated in Table(7). This result is absolutely staggering. The ANN model calculated 48 confinement losses in just 0.17 seconds, while simulations took about 2 hours. Therefore, a well trained ANN model can be used to accurately find the best PCF geometric properties set that maximisez the distance between the confinement loss distributions of each analyte in a matter of seconds to minutes. Hence, accelerate the search for the best PCF sensor.
 
 \begin{table}[h]
 \centering
@@ -470,5 +472,7 @@ Next, we compare the testing runtime of the ANN model to that of simulation meth
 In this work we built a feed forward ANN model that learned the confinement loss given the geometric properties of a SPR-based PCF sensor with fixed pattern and geometrical shape of the cladding air holes. For different types of sensors, Convolutional and Reccurent neural networks can be of great advantage, to discover the spatial insights of variety of patterns and  geometrical shape of the cladding air holes. The latter will be conducted in future work.
 
 Machine learning approaches has an inherit strength on top of classical simulation methods: they could model hidden parameters in a system which we have no knowledge about. Therefore, not only ANN can improve the speed of PCF simulation, but also accuracy of the simulations. However, this final claim requires further analysis and experimentation.
-	
+
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,references}	
 \end{document}
