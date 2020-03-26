@@ -3,5 +3,8 @@ docs/**/*.synctex.gz
 docs/**/*.aux
 ganlogs/
 .\\ganlogs\\*
+logs/
+.\\logs\\*
 __pycache__
 training_checkpoints
+.idea
