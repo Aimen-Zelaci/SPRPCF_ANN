@@ -235,6 +235,7 @@ class Wgan(object):
         self.train_loss_cr = train_loss_cr
 
     def train_wgan(self,tr_data, tr_labels, generator, critic):
+        start_tr = time.time()
         print('\n*****\nTraining The WGAN  \n****\n')
         epochs = self.epochs
         # Continue training
@@ -262,7 +263,7 @@ class Wgan(object):
 
             print('Time for epoch {} is {} sec'.format(epoch + 1, time.time() - start))
 
-        print('\n*****\nTraining run time for the wgan is: {} sec\n****\n'.format(time.time() - start))
+        print('\n*****\nTraining run time for the wgan is: {} sec\n****\n'.format(time.time() - start_tr))
 
     def generate_and_save_data(self,iterations,training, generator, critic):
         print('\n*****\n GENERATING DATA ... \n****\n')
