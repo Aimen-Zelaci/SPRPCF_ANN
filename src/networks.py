@@ -175,11 +175,11 @@ class Wgan(object):
         return model
 
     def gradient_penalty(self,model,x_real, x_fake):
-        alpha = tf.compat.v1.random_uniform(shape=[self.BATCH_SIZE, self.num_critic_input], minval=0., maxval=1.)
-        diff = x_real - x_fake
+        alpha = tf.compat.v1.random_uniform(shape=[self.BATCH_SIZE, 1], minval=0., maxval=1.)
+        diff = x_fake - x_real
         interpolates = x_real + (alpha * diff)
         gradients = tf.gradients(model(interpolates), [interpolates])[0]
-        slopes = tf.sqrt(tf.reduce_sum(tf.square(gradients)))
+        slopes = tf.sqrt(tf.compat.v1.reduce_sum(tf.square(gradients), reduction_indices=[1]))
         gp = tf.reduce_mean((slopes - 1.) ** 2)
         return gp
 
@@ -194,8 +194,8 @@ class Wgan(object):
             critic_loss = self.critic_loss(real_output, fake_output)
             gp =self. gradient_penalty(critic, data, generated_data)
             critic_loss += self.grad_penalty_weight * gp
-            self.train_loss_cr(critic_loss)
-            tf.summary.scalar('loss', self.train_loss_cr.result(), step=epoch)
+            #self.train_loss_cr(critic_loss)
+            #tf.summary.scalar('loss', self.train_loss_cr.result(), step=epoch)
         gradients_of_critic = cr_tape.gradient(critic_loss, critic.trainable_variables)
         self.critic_optimizer.apply_gradients(zip(gradients_of_critic, critic.trainable_variables))
 
@@ -206,8 +206,8 @@ class Wgan(object):
             generated_data = generator(noise, training=True)
             fake_output = critic(generated_data, training=True)
             gen_loss = self.generator_loss(fake_output)
-            self.train_loss_gen(gen_loss)
-            tf.summary.scalar('loss', self.train_loss_gen.result(), step=epoch)
+            #self.train_loss_gen(gen_loss)
+            #tf.summary.scalar('loss', self.train_loss_gen.result(), step=epoch)
         gradients_of_generator = gen_tape.gradient(gen_loss, generator.trainable_variables)
         self.generator_optimizer.apply_gradients(zip(gradients_of_generator, generator.trainable_variables))
 
