@@ -29,7 +29,7 @@ def load_data(fname):
     df = data.values
     print(data.head())
 
-    if fname == r'.\data\shuffled_df.xlsx':
+    if fname == r'./data/shuffled_df.xlsx':
         df = df.reshape(432,7)
         x = df[:,:6]
         y = df[:,-1]
@@ -53,7 +53,7 @@ def load_data(fname):
     df = np.concatenate((x,y), axis=1)
     # Save shuffled data frame
     df = pd.DataFrame(df, columns=['Analytes','lambda','Pitch','d1','d2','d3','loss'])
-    df.to_excel(r'.\data\shuffled_df.xlsx', index = False)
+    df.to_excel(r'./data/shuffled_df.xlsx', index = False)
 
     return split_data(x,y)
 
@@ -79,7 +79,7 @@ def augment_data(tr_data, tr_labels, flags):
 
 # Plot wgan progress
 def plot_wgan(epoch, fname):
-    real_data_fname = r'.\data\data.xlsx'
+    real_data_fname = r'./data/data.xlsx'
     x_real, y_real ,_,__,___,____ = load_data(real_data_fname)
 
     data = pd.read_csv(fname).values

@@ -3,6 +3,8 @@ import networks, data_handler, initializer
 from networks import Wgan
 import time
 
+tf.config.experimental.set_visible_devices([], 'GPU')
+tf.config.threading.set_inter_op_parallelism_threads(16)
 FLAGS = initializer.init()
 
 wgan = Wgan(FLAGS)
@@ -11,7 +13,6 @@ generator = wgan.make_generator_model()
 critic = wgan.make_critic_model()
 
 ann_model = networks.make_model(FLAGS)
-
 def train_wgan():
     start = time.time()
     tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_data(fname=FLAGS.data)
