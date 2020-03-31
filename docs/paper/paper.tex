@@ -25,11 +25,16 @@ Photonic crystal fibers (PCF) for specific applications are designed and optimiz
 
 \hl{Importance of PCF and SPR, written by AY or HA}
 	
-Machine Learning (ML) techniques are coming to the forefront of many fields, surpassing human performance in many tasks, namely automatic speech recognition, image recognition, natural language processing, drug discovery and toxicology. Artificial Neural Networks can approximate any function by virtue of the Universality theorem: No matter what the input is there is to be a guaranteed ANN architecture that computes the desired outputs. This fact propelled researchers to widen the applications of ANN even further, including the study of nanophotonic structures \cite{kiarashinejad2020knowledge}, optimization of photonic crystal nanocavities \cite{asano2018optimization}, and more recently, computing optical properties of a photonic crystal fiber \cite{chugh2019machine}.
+Machine Learning (ML) techniques are coming to the forefront of many fields, surpassing human performance in many tasks, namely automatic speech recognition, image recognition, natural language processing, drug discovery and toxicology. Additionally, ANN can approximate any function proven by Universality theorem \cite{HORNIK1991251}. This fact propelled researchers to widen the applications of ANN even further, including the study of nanophotonic structures \cite{kiarashinejad2020knowledge}, optimization of photonic crystal nanocavities \cite{asano2018optimization}, and more recently, computing optical properties of a photonic crystal fiber \cite{chugh2019machine}.
 
 One of the most difficult challenges that deep learning models face is that they benefit from large amounts of data to train, which may be costly to acquire. One of the solutions to overcome this issue is to artificially expand the original training dataset by the means of generative networks. Introduced by Goodfellow et al., Generative Adversarial Networks (GAN) \cite{goodfellow2014generative}, proved to be successful in data generation \cite{schlegl2017unsupervised, zheng2017unlabeled, frid2018synthetic, tanaka2019data, perez2017effectiveness}.
- 
-In this paper we focus on determining one of the propagation features of a unique multi-channel Photonic Crystal Fiber (PCF) sensor based on Surface Plasmon Resonance (SPR), proposed in our recent work [21], that is the confinement loss, by using an Artificial Neural Network model, and a special kind generative networks to expand our limited data set for the purpose of  improving the accuracy of our ANN model, as demonstrated in Figure(1). We will fix the pattern and geometrical shape of the cladding air holes, and vary the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$. Then the results of this study can be carried to different types of SPR-based PCF sensors, using other suitable deep learning approaches such as Recurrent and Convolutional neural networks. 
+
+In this paper, we focus on estimating confinement loss, one of the propagation features of multi-channel Photonic Crystal Fiber (PCF) sensors, using artificial neural networks. Specifically, we have based our system on Surface Plasmon Resonance (SPR). 
+
+
+\hl{CK: Continuing from here...}
+
+\hl{and a special kind generative networks to expand our limited data set for the purpose of  improving the accuracy of our ANN model, as demonstrated in Figure(1). We will fix the pattern and geometrical shape of the cladding air holes, and vary the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$. Then the results of this study can be carried to different types of SPR-based PCF sensors, using other suitable deep learning approaches such as Recurrent and Convolutional neural networks. }
 
 \begin{figure}
 \centering
