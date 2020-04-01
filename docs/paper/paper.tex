@@ -1,13 +1,82 @@
-\documentclass[draft, a4, 10pt, onecolumn]{IEEEtran}
+\documentclass[draft, a4, 10pt]{IEEEtran}
 
 \usepackage{color,soul}
 \usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, shapes.arrows, decorations.markings, calc}
 \usepackage{pgfplots}
+
 \usepackage[english]{babel}
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{cite}
+
+%for flowcharts
+\tikzstyle{testing} = [
+	thick,
+	->,
+	>=stealth
+]
+\tikzstyle{training} = [
+	thick, 
+	decoration={
+		markings,
+		mark=at position 1 with {
+			\arrow[semithick]{open triangle 60}
+		}
+	},
+	double distance=1.4pt, 
+	shorten >= 5.5pt,
+	preaction = {decorate},
+	postaction = {
+		draw,
+		line width=1.4pt,
+		white,
+		shorten >= 4.5pt
+	}
+]
+
+\tikzstyle{data} = [
+	cylinder, 
+	shape border rotate=90, 
+	draw,
+	minimum width=1.5cm, 
+	minimum height=1.2cm,
+	text centered, 
+	draw=black, 
+	line width=0.3mm,
+	shape aspect=.1
+]
+
+\tikzstyle{operation} = [
+	rectangle, 
+	rounded corners,
+	minimum width=2cm, 
+	minimum height=1.2cm,
+	text centered, 
+	draw=black, 
+	line width=0.6mm,
+]
+
+\tikzstyle{sample} = [
+	rectangle, 
+	minimum width=1.2cm, 
+	minimum height=1.2cm,
+	text centered, 
+	draw=black,
+	line width=0.3mm,
+]
+
+\tikzstyle{filter} = [
+	trapezium, 
+	trapezium left angle=70, 
+	trapezium right angle=110, 
+	minimum width=1.5cm, 
+	minimum height=1cm, 
+	text centered, 
+	draw=black, 
+	line width=0.5mm
+]
 
 \begin{document}
 
@@ -29,28 +98,44 @@ Machine Learning (ML) techniques are coming to the forefront of many fields, sur
 
 One of the most difficult challenges that deep learning models face is that they benefit from large amounts of data to train, which may be costly to acquire. One of the solutions to overcome this issue is to artificially expand the original training dataset by the means of generative networks. Introduced by Goodfellow et al., Generative Adversarial Networks (GAN) \cite{goodfellow2014generative}, proved to be successful in data generation \cite{schlegl2017unsupervised, zheng2017unlabeled, frid2018synthetic, tanaka2019data, perez2017effectiveness}.
 
-In this paper, we focus on estimating confinement loss, one of the propagation features of multi-channel Photonic Crystal Fiber (PCF) sensors, using artificial neural networks. Specifically, we have based our system on Surface Plasmon Resonance (SPR). 
+In this paper, we focus on estimating confinement loss, one of the propagation features of multi-channel Photonic Crystal Fiber (PCF) sensors, using artificial neural networks. Specifically, we have based our system on Surface Plasmon Resonance (SPR). However, in the experiments section we have demonstrated that the designed system is generic enough to apply to multiple PCF designs. Perhaps the most important contribution that augments the success of the proposed method is the use of GAN phase, where the available data is expanded to be used in the training phase. 
 
 
-\hl{CK: Continuing from here...}
+\hl{!! Literature survey !!}
 
-\hl{and a special kind generative networks to expand our limited data set for the purpose of  improving the accuracy of our ANN model, as demonstrated in Figure(1). We will fix the pattern and geometrical shape of the cladding air holes, and vary the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$. Then the results of this study can be carried to different types of SPR-based PCF sensors, using other suitable deep learning approaches such as Recurrent and Convolutional neural networks. }
+\hl{Use of ANN in PCF}
 
-\begin{figure}
-\centering
-\includegraphics[trim= 0 0 0 0, clip, width=0.9\textwidth]{mainalgo.png}
-\caption{}
-\end{figure} 
-
-\hl{Literature survey}
+\hl{SPR in PCF}
 
 This paper is organized as follows. Section \ref{sec:prop} details the use of GAN to generate additional training samples for ANN as well as the proposed neural network architecture. Photonic crystal fiber design that is used for testing is described in details in section \ref{sec:pcf}. Detailed analysis of the experimental results are discussed in section \ref{sec:exp}. Finally, concluding remarks are made in section \ref{sec:conc}.
 
 \section{Proposed method}
 \label{sec:prop}
 
-In this section details of the proposed method is discussed. At the start, a GAN is trained to generate additional data by using training samples. These generated samples are filtered to ensure they fall within the applicable range. Original training samples and remaining samples are joined to train a fully-connected feed-forward multi layer perceptron neural network network. The details of the proposed ANN architecture and the GAN is discussed in the following subsections.
+In this section details of the proposed method is discussed. At the start, a GAN is trained to generate additional data by using training samples. These generated samples are filtered to ensure they fall within the applicable range. Original training samples and remaining samples are joined to train a fully-connected feed-forward multi layer perceptron neural network network. This architecture is illustrated in Figure \ref{fig:overall} The The details of the proposed ANN architecture and the GAN is discussed in the following subsections.
 
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[node distance=2cm]
+\node (collected) [data] {Collected samples};
+\node (GAN) [operation,below of=collected,xshift=-2cm] {GAN};
+\node (filter) [filter, below of=GAN, text width=2.4cm] {\baselineskip=10pt Filter out-of-range samples\par};
+\node (generated) [data, below of=filter] {Generated samples};
+\node (ann) [operation,below of=generated,xshift=2cm] {ANN};
+\node (testsample) [sample, right of=generated,xshift=2cm,yshift=-1cm, text width=1.2cm] {\baselineskip=10pt Test\par};
+\node (output) [sample, below of=testsample,yshift=-0cm, text width=1.2cm] {\baselineskip=10pt Output\par};
+
+\draw [training] (collected) -- (GAN);
+\draw [training] (GAN) -- (filter);
+\draw [training] (filter) -- (generated);
+\draw [training] (generated) -- (ann);
+\draw [training] (collected) -- (ann);
+\draw [testing] (testsample.west) to [bend right=45] ($(ann.north east)-(0.5,0)$);
+\draw [testing] ($(ann.south east)-(0.5,0)$) to [bend right=45] (output.west);
+	\end{tikzpicture}
+	\caption{System architecture}
+	\label{fig:overall}
+\end{figure}
 
 \hl{will be split into the subsections.} We will first train ANN model to predict the confinement loss of a SPR based PCF using the original data set collected. Then we will augment the original training data set with generated samples by the GAN, to improve the performance of the ANN model.
 Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that random data augmentation actually had weakened the performance of the model. Hence, active researches are ongoing to find ways to optimally sample the generated data \cite{bhattarai2019sampling}, in other words to filter out the "good" generated data after training the GAN. In this paper, we will use a simple if-statement to discard values that fall out of our desired ranges for both the independent variables($n_{analyte}, \lambda, \Lambda, d1, d2, d3$), and the confinement loss. In the following sub-sections we discuss the networks architectures.
@@ -136,6 +221,9 @@ Normalization & Batch Normalization\cite{ioffe2015batch} \\
 
 \section{Photonic crystal fiber design}
 \label{sec:pcf}
+
+
+\hl{We will fix the pattern and geometrical shape of the cladding air holes, and vary the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$. Then the results of this study can be carried to different types of SPR-based PCF sensors, using other suitable deep learning approaches such as Recurrent and Convolutional neural networks. }
 
 \hl{PCF design details, written by AY}
 
