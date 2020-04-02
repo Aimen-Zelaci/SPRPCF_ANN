@@ -1,0 +1,10 @@
+ With augmentation on our data:
+	They did 1.870 % ; mse=0.037
+	We did 0.545% ; mse = 0.00416
+without augmentation on our data:
+	They did 5.63%; mse=0.235
+	We did 1.01%; mse=0.0137
+
+On their data:
+	They did 6.80%; mse = 3.947
+	We did 2.1292% ; mse = 0.14119
