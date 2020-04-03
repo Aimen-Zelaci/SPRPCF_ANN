@@ -35,6 +35,6 @@
     "shuffled_data": "./data/shuffled_df.xlsx",
     "data": "./data/data.xlsx",
     "pcf_data": "./data/pcf_data1.xlsx",
-    "shuffled_pcf_data": "./data/shuffled_pcf_data.xlsx"
+    "shuffled_pcf_data": "./data/shuffled_pcf_df.xlsx"
   }
 ]
