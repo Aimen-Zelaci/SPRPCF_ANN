@@ -1,8 +1,8 @@
 [
   {
     "COMMENT": "WGAN PARAMS",
-    "BATCH_SIZE": 12,
-    "epochs": 200,
+    "BATCH_SIZE": 32,
+    "epochs": 400,
     "noise_dim": 7,
     "num_critic_input": 7,
     "n_critic": 5,
@@ -12,7 +12,7 @@
     "cr_num_layers": 5,
     "gen_iterations": 1000,
     "gen_batch_norm": true,
-    "load_wga_model_dir": "./training-checkpoints/20200402-1716"
+    "load_wga_model_dir": "./training-checkpoints/20200403-1312"
   },
   {
     "COMMENT": "ANN PARAMS",
@@ -22,7 +22,7 @@
     "num_neurons": 50,
     "batch_norm": true,
     "epochs": 2000,
-    "batch_size": 8,
+    "batch_size": 32,
     "learning_rate": 1e-3,
     "augment_size": 1000,
     "save_dir": "./trained-nets/model1000.h5",
@@ -31,10 +31,10 @@
   },
   {
     "COMMENT": "DATA PATHS",
-    "gen_data_dir": "./gen_data/gen_data.txt",
+    "gen_data_dir": "./gen_data/gen_data2.txt",
     "shuffled_data": "./data/shuffled_df.xlsx",
     "data": "./data/data.xlsx",
     "pcf_data": "./data/pcf_data1.xlsx",
-    "shuffled_pcf_data": "./data/shuffled_pcf_data"
+    "shuffled_pcf_data": "./data/shuffled_pcf_df.xlsx"
   }
 ]

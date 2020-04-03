@@ -13,7 +13,8 @@ sess = tf.Session(config=run_config)
 
 
 def train_wgan():
-    tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_data(fname=FLAGS.data)
+    #tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_data(fname=FLAGS.data)
+    tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_pcf_data(fname=FLAGS.pcf_data)
     wgan = Wgan_optim(sess, FLAGS, tr_data, tr_labels)
     sess.run(tf.global_variables_initializer())
     wgan.train_wgan()
@@ -30,9 +31,9 @@ def train_ann_model():
     ann_model = networks.make_model(FLAGS)
     # Load the same data used to train the WGAN
     # SPR-based PCF
-    tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_data(fname=FLAGS.data)
+    tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_data(fname=FLAGS.shuffled_data)
     # PCF data
-    # tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_pcf_data(fname=FLAGS.pcf_data)
+    # tr_data, tr_labels, va_data, va_labels, test_data, test_labels = data_handler.load_pcf_data(fname=FLAGS.shuffled_pcf_data)
     # Augment data. To train with only the original real samples, set augment_size = 0.
     # For different augmentations, change the batch_size/ learning_rate accordingly.
     tr_data, tr_labels = data_handler.augment_data(tr_data, tr_labels, FLAGS)

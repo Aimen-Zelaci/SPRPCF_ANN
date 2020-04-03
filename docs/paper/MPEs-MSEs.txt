@@ -5,6 +5,10 @@ without augmentation on our data:
 	They did 5.63%; mse=0.235
 	We did 1.01%; mse=0.0137
 
-On their data:
+On their data without augmentation:
 	They did 6.80%; mse = 3.947
 	We did 2.1292% ; mse = 0.14119
+
+On their data with augmentation:
+	They did mse = 1.7719
+	WE did mse = 0.07255
