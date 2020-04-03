@@ -1,4 +1,4 @@
-\documentclass[draft, a4, 10pt]{IEEEtran}
+\documentclass[draft, 10pt]{IEEEtran}
 
 \usepackage{color,soul}
 \usepackage{tikz}
@@ -87,7 +87,7 @@
 \maketitle
 	
 \begin{abstract}
-Photonic crystal fibers (PCF) for specific applications are designed and optimized by both industry experts and researches. However, the potential number of combinations possible for a single application is very large. This issue combined by the speed of the commonly used Full Vectorial Finite Element Method (FV-FEM) causes the task to take significant amount of time. As stated in the previous works, artificial neural networks (ANN) can predict the result of numerical simulations much faster. However, there are two issues with the methods proposed previously. Namely, the required number of samples for training and generality of the designed network. In this paper, we  propose the use of generative adversarial networks (GAN) to augment the real data set to train a ANN model. Experimental analysis suggest that the proposed combination not only accurately predicts the confinement loss even with limited amount of data, but also can work in wider range of methods and geometric configurations. Finally, the proposed method is shown to predict the confinement loss over a range of analytes and wavelengths in a completely new set of geometric configuration.
+Photonic crystal fibers (PCF) for specific applications are designed and optimized by both industry experts and researches. However, the potential number of combinations possible for a single application is very large. This issue combined by the speed of the commonly used Full Vectorial Finite Element Method (FV-FEM) causes the task to take significant amount of time. As stated in the previous works, artificial neural networks (ANN) can predict the result of numerical simulations much faster. However, there are two issues with the methods proposed previously. Namely, the required number of samples for training and the overall accuracy of these methods. In this paper, we  propose the use of generative adversarial networks (GAN) to augment the real data set to train an ANN model. Experimental analysis suggest that the proposed combination not only accurately predicts the confinement loss even with limited amount of data but also GAN can be used to improve existing methods in the literature. Finally, it is shown that this system can predict the confinement loss over a range of analytes and wavelengths in a completely new set of geometric configuration.
 \end{abstract}
 
 \section{Introduction}
@@ -98,7 +98,7 @@ Machine Learning (ML) techniques are coming to the forefront of many fields, sur
 
 One of the most difficult challenges that deep learning models face is that they benefit from large amounts of data to train, which may be costly to acquire. One of the solutions to overcome this issue is to artificially expand the original training dataset by the means of generative networks. Introduced by Goodfellow et al., Generative Adversarial Networks (GAN) \cite{goodfellow2014generative}, proved to be successful in data generation \cite{schlegl2017unsupervised, zheng2017unlabeled, frid2018synthetic, tanaka2019data, perez2017effectiveness}.
 
-In this paper, we focus on estimating confinement loss, one of the propagation features of multi-channel Photonic Crystal Fiber (PCF) sensors, using artificial neural networks. Specifically, we have based our system on Surface Plasmon Resonance (SPR). However, in the experiments section we have demonstrated that the designed system is generic enough to apply to multiple PCF designs. Perhaps the most important contribution that augments the success of the proposed method is the use of GAN phase, where the available data is expanded to be used in the training phase. 
+In this paper, we focus on estimating confinement loss, one of the propagation features of multi-channel Photonic Crystal Fiber (PCF) sensors, using artificial neural networks. Specifically, we have based our system on Surface Plasmon Resonance (SPR). However, in the experiments section we have demonstrated that the designed system is generic enough to apply to multiple PCF designs. The most important contribution of this research is the use of GAN phase, where the available data is expanded to be used in the training phase.
 
 
 \hl{!! Literature survey !!}
@@ -112,7 +112,7 @@ This paper is organized as follows. Section \ref{sec:prop} details the use of GA
 \section{Proposed method}
 \label{sec:prop}
 
-In this section details of the proposed method is discussed. At the start, a GAN is trained to generate additional data by using training samples. These generated samples are filtered to ensure they fall within the applicable range. Original training samples and remaining samples are joined to train a fully-connected feed-forward multi layer perceptron neural network network. This architecture is illustrated in Figure \ref{fig:overall} The The details of the proposed ANN architecture and the GAN is discussed in the following subsections.
+In this section details of the proposed method is discussed. At the start, a GAN is trained to generate additional data by using training samples. These generated samples are filtered to ensure they fall within the applicable range. Original training samples and remaining samples are joined to train a fully-connected feed-forward multi layer perceptron neural network. This architecture is illustrated in Figure \ref{fig:overall}. The details of the proposed ANN architecture and the GAN is discussed in the following subsections.
 
 \begin{figure}
 	\centering
@@ -125,6 +125,12 @@ In this section details of the proposed method is discussed. At the start, a GAN
 \node (testsample) [sample, right of=generated,xshift=2cm,yshift=-1cm, text width=1.2cm] {\baselineskip=10pt Test\par};
 \node (output) [sample, below of=testsample,yshift=-0cm, text width=1.2cm] {\baselineskip=10pt Output\par};
 
+\node (legendtrain) [right of=GAN,xshift=2cm] {};
+\node (legendtrainend) [below of=legendtrain,yshift=1cm] {Training};
+\node (legendtest) [below of=legendtrainend,yshift=1cm] {};
+\node (legendtestend) [below of=legendtest,yshift=1cm] {Testing};
+
+
 \draw [training] (collected) -- (GAN);
 \draw [training] (GAN) -- (filter);
 \draw [training] (filter) -- (generated);
@@ -132,17 +138,54 @@ In this section details of the proposed method is discussed. At the start, a GAN
 \draw [training] (collected) -- (ann);
 \draw [testing] (testsample.west) to [bend right=45] ($(ann.north east)-(0.5,0)$);
 \draw [testing] ($(ann.south east)-(0.5,0)$) to [bend right=45] (output.west);
+
+\draw [training] (legendtrain) -- (legendtrainend);
+\draw [testing] (legendtest) -- (legendtestend);
+
 	\end{tikzpicture}
 	\caption{System architecture}
 	\label{fig:overall}
 \end{figure}
 
-\hl{will be split into the subsections.} We will first train ANN model to predict the confinement loss of a SPR based PCF using the original data set collected. Then we will augment the original training data set with generated samples by the GAN, to improve the performance of the ANN model.
-Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that random data augmentation actually had weakened the performance of the model. Hence, active researches are ongoing to find ways to optimally sample the generated data \cite{bhattarai2019sampling}, in other words to filter out the "good" generated data after training the GAN. In this paper, we will use a simple if-statement to discard values that fall out of our desired ranges for both the independent variables($n_{analyte}, \lambda, \Lambda, d1, d2, d3$), and the confinement loss. In the following sub-sections we discuss the networks architectures.
+
+\subsection{Generative adversarial network design}
+\label{ssec:gan}
+
+Generative adversarial networks are introduced in \cite{goodfellow2014generative}. We have employed GAN to augment the number of samples that are used in training. A GAN is composed of two neural networks: estimator and discriminator. The aim of the generator is to transform fully randomized data into data that follows the distribution of the original dataset. Discriminator assesses the performance of the generator and provides feedback for training. Instead of directly training generator, it is trained through this feedback. This paradigm avoids over-fitting the data in the generator side.
+
+It is possible to use different metrics for training in GAN [references here], for this project we have selected WGAN Wasserstein distance metric. This variant has been proposed by Arjovsky et al in \cite{arjovsky2017wasserstein}. In this system, discriminator is named as critic and it measures the distance between the generated data and the real data. The parameters to these networks are given in Table \ref{tbl:gandetails}. The reason behind choosing WGAN over other methods is to be able to determine a stopping criteria. In a regular GAN system, training is stopped when the generated data is deemed viable by an observer. Since GAN is often used in generation of image, video or audio, using a human in the loop is effective. However, in our problem, it is not viable for a human to judge the generated data. Automating this procedure to remove the human in-the-loop can lead to over or under-fitting, which in turn degrades the performance. WGAN uses an adaptive stopping criteria that does not have the issue mentioned above.
+
+Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it is possible for random data augmentation to weaken the performance of the model. Hence, it is important to sample the generated data in way to prevent performance degradation \cite{bhattarai2019sampling}. In this method, we use a simple condition to discard the values that fall out of the desired range for both the independent variables ($n_{analyte}, \lambda, \Lambda, d1, d2, d3$), and the confinement loss.
+
+\hl{CK: continue here.}
+
+Throughout this paper we will use yet the improved WGAN, the WGAN with Gradient penalty \cite{gulrajani2017improved}. The improved WGAN converges in a stable manner with least efforts made to tune the hyper- parameters of both networks constituting the GAN, which can be very daunting.
+
+In this work, both the Critic and the generator are fully connected feed forward MLP models. Tables(2, 3) summarize the details of both networks. The input vector to the Critic network consists of the six parameters discussed earlier for the ANN model, in addition to the corresponding confinement loss value, giving a total of seven inputs. The generator is supplied with random noise vector having a dimension of $7$, and outputs a vector that resembles that of the input to the Critic.
+
+\begin{figure}
+	\centering
+	\includegraphics[trim= 0 0 0 0, clip, width=0.9\textwidth]{GAN.png}
+	\caption{}
+\end{figure}
+
+\begin{table}
+	\centering
+	\begin{tabular}{l|l|l}
+		\textbf{Parameter} & \textbf{Generator} & \textbf{Critic} \\\hline
+		Hidden layers & 5 & 5 \\
+		Neurons & $ batchsize~2^{2} $ & $batchsize~2^{layers}$ \\
+		Activation & ReLU & Leaky ReLU \\
+		Optimizer & Adam [ref] & Adam [ref] \\
+		Normalization & - & Batch \cite{ioffe2015batch} \\
+	\end{tabular}
+	\caption{Details of WGAN model}
+	\label{tbl:gandetails}
+\end{table}
 
 \subsection{Artificial neural network design}
 \label{ssec:ann}
-The ANN model employed in this research is a fully-connected feed-forward MLP (Multi Layer Perceptron) consisting of an input layer, an output layer, and 5 hidden layers. Each hidden layer consists of 50 neurons and uses Rectified Linear Unit (ReLU) activation function. 
+
 
 Adam \cite{kingma2014adam} as the optimizer and the mean squared error as the loss/cost function. To reduce overfitting we use the Early stopping method, that is by saving checkpoints where the best validation mean squared error occurred as we iterate. To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm was used \cite{ioffe2015batch}.
 
@@ -151,11 +194,10 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that rand
 
 \subsection{Artificial neural network design}
 \label{ssec:ann}
-The ANN model is a fully-connected feed-forward Multi Layer Perceptron (MLP) model. Table(1) summarizes the details of the model. To reduce over fitting we use the Early stopping method, by saving checkpoints where the best validation mean squared error occurred as we iterate before the model starts to over fit. To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm \cite{ioffe2015batch} was used.
+The ANN model employed in this research is a fully-connected feed-forward MLP (Multi Layer Perceptron) consisting of an input layer, an output layer, and 5 hidden layers. Each hidden layer consists of 50 neurons and uses Rectified Linear Unit (ReLU) activation function.  Table \ref{tbl:anndetails} summarizes the details of the model. Due to the nature of the problem, over-fitting is an important issue. We have used early stopping method [ref] to reduce over-fitting. \hl{This method works by saving checkpoints where the best validation mean squared error occurred as it iterates before the model starts to over-fit.} To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm \cite{ioffe2015batch} was used.
 
 \begin{table}[h]
 \centering
-\scalebox{1.1}{
     \begin{tabular}{|l|l|}
     \hline
 Number of hidden layers & 6  \\
@@ -169,54 +211,8 @@ Optimizer & Adam\cite{kingma2014adam}  \\
 Loss function& Mean Squared Error (MSE) \\
 \hline
     \end{tabular}
-}
 \caption{Detailes of the ANN model}
-\end{table}
-
-\subsection{Generative Adversarial network design}
-\label{ssec:gan}
-
-GANs consist of two neural networks, as shown in Figure (2). The first of which called a discriminator, that gives an estimate of the probability that a given input is real or generated (fake). Whereas the second network is referred to as the generator, which outputs data samples from a random noise vector called a latent variable usually given the symbol $z$ supplied at its input. The error at the discriminator's output would then be measured by the means of a chosen metric. Introduced by Arjovsky et al \cite{arjovsky2017wasserstein} the Wasserstein distance metric (or the earth mover distance) proved to be very effective, instead of discriminating whether an input is real or generated, the discriminator provides a criticism of how far the generated data from the real data is, hence the discriminator network is referred to as the critic in the WGANs. Throughout this paper we will use yet the improved WGAN, the WGAN with Gradient penalty \cite{gulrajani2017improved}. The improved WGAN converges in a stable manner with least efforts made to tune the hyper- parameters of both networks constituting the GAN, which can be very daunting.
-In this work, both the Critic and the generator are fully connected feed forward MLP models. Tables(2, 3) summarize the details of both networks. The input vector to the Critic network consists of the six parameters discussed earlier for the ANN model, in addition to the corresponding confinement loss value, giving a total of seven inputs. The generator is supplied with random noise vector having a dimension of $7$, and outputs a vector that resembles that of the input to the Critic.
-
-\begin{figure}
-\centering
-\includegraphics[trim= 0 0 0 0, clip, width=0.9\textwidth]{GAN.png}
-\caption{}
-\end{figure}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{|l|l|}
-\hline
-Number of hidden layers & 5  \\
-\hline
-Number of neurons per hidden layers & $ minibatchsize\times2^{number of layers} $  \\
-\hline
-Activation function & Leaky Rectified Linear Unit (LeakyReLU)  \\
-\hline
-Optimizer & Adam[13]  \\
-\hline
-    \end{tabular}
-\caption{Details of the Critic model}    
-\end{table}
-
-\begin{table}[h]
-\centering
- \begin{tabular}{|l|l|}
-    \hline
-Number of hidden layers & 5 \\
-\hline
-Number of neurons per hidden layers & $ minibatchsize\times2^{2} $  \\
-\hline
-Activation function & Rectified Linear Unit (ReLU)  \\
-\hline
-Optimizer & Adam[13]  \\
-\hline
-Normalization & Batch Normalization\cite{ioffe2015batch} \\
-\hline
-    \end{tabular}
-\caption{Details of the Generator model}
+\label{tbl:anndetails}
 \end{table}
 
 \section{Photonic crystal fiber design}
