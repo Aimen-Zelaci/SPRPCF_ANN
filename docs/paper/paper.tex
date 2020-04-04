@@ -67,6 +67,15 @@
 	line width=0.3mm,
 ]
 
+\tikzstyle{metric} = [
+	diamond, 
+	minimum width=1.2cm, 
+	minimum height=1.2cm,
+	text centered, 
+	draw=black,
+	line width=0.3mm,
+]
+
 \tikzstyle{filter} = [
 	trapezium, 
 	trapezium left angle=70, 
@@ -161,10 +170,27 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it i
 
 \begin{figure}
 	\centering
-	\begin{tikzpicture}
+	\begin{tikzpicture}[node distance=2cm]
+		\node(latent) 	[filter,text width=1.4cm] 		{\baselineskip=10pt Noise generator\par};
+		\node(generator)[operation,below of=latent] 	{Generator};
+		\node(generated)[data, below of=generator,
+						 text width=1.4cm]				{\baselineskip=10pt Generated samples\par};
+		\node(collected)[data, right of=generated,
+						 xshift=1cm,text width=1.4cm]	{\baselineskip=10pt Collected samples\par};
+		\node(critic)	[operation,below of=generated,
+						 xshift=1.5cm]					{Critic};
+		\node(metric)   [metric,below of=critic,
+						 text width=1.4cm, yshift=-.2cm]{\baselineskip=10pt{}Wasserstein distance\par};
 		
+		\draw [training] (latent) -- (generator) node [pos=.5, right, xshift=0.1cm] (z) {Latent variable};
+		\draw [training] (generator) -- (generated);
+		\draw [training] (generated) -| (critic);
+		\draw [training] (collected) -| (critic);
+		\draw [training] (critic) -- (metric);
+		\draw [testing]  (metric.east) - ++(1,0) |-  (critic.east);
+		\draw [testing]  (metric.west) - ++(-2.2,0) |-  (generator.west);
 	\end{tikzpicture}
-	\caption{WGAN architecture}
+	\caption{WGAN training}
 	\label{fig:gan}
 \end{figure}
 
