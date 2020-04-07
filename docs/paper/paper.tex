@@ -103,7 +103,7 @@ Photonic crystal fibers (PCF) for specific applications are designed and optimiz
 
 \hl{Importance of PCF and SPR, written by AY or HA}
 	
-Machine Learning (ML) techniques are coming to the forefront of many fields, surpassing human performance in many tasks, namely automatic speech recognition, image recognition, natural language processing, drug discovery and toxicology. Additionally, ANN can approximate any function proven by Universality theorem \cite{HORNIK1991251}. This fact propelled researchers to widen the applications of ANN even further, including the study of nanophotonic structures \cite{kiarashinejad2020knowledge}, optimization of photonic crystal nanocavities \cite{asano2018optimization}, and more recently, computing optical properties of a photonic crystal fiber \cite{chugh2019machine}.
+Machine Learning (ML) techniques are coming to the forefront of many fields, surpassing human performance in many tasks, namely automatic speech recognition, image recognition, natural language processing, drug discovery and toxicology. Additionally, ANN can approximate any function proven by Universality theorem \cite{HORNIK1991251}. This fact propelled researchers to widen the applications of ANN even further, including the study of nanophotonic structures \cite{kiarashinejad2020knowledge}, optimization of photonic crystal nanocavities \cite{asano2018optimization}, and more recently, computing optical properties of a photonic crystal fiber \cite{paper0}.
 
 One of the most difficult challenges that deep learning models face is that they benefit from large amounts of data to train, which may be costly to acquire. One of the solutions to overcome this issue is to artificially expand the original training dataset by the means of generative networks. Introduced by Goodfellow et al., Generative Adversarial Networks (GAN) \cite{goodfellow2014generative}, proved to be successful in data generation \cite{schlegl2017unsupervised, zheng2017unlabeled, frid2018synthetic, tanaka2019data, perez2017effectiveness}.
 
@@ -121,7 +121,7 @@ This paper is organized as follows. Section \ref{sec:prop} details the use of GA
 \section{Proposed method}
 \label{sec:prop}
 
-In this section details of the proposed method is discussed. Training of the system contains two phases: a GAN phase and regression training phase. At the start of the training, a GAN is trained to generate additional data by using training samples. These generated samples are filtered to ensure they fall within the applicable range. Original training samples and remaining samples are joined to train a fully-connected feed-forward multi layer perceptron neural network. At the end of the training, the ANN that is trained for the regression task will be used to decide the output of a particular input parameters. This architecture is illustrated in Figure \ref{fig:overall}. The details of the proposed ANN architecture and the GAN is discussed in the following subsections.
+In this section details of the proposed method is discussed. Training of the system contains two phases: a GAN phase and regression training phase. At the start of the training, a GAN is trained to generate additional data by using training samples. These generated samples are filtered to ensure they fall within the applicable range. Original training samples and remaining samples are joined to train a fully-connected feed-forward multi layer perceptron neural network. At the end of the training, the ANN that is trained for the regression task will be used to decide the containment loss  of a set of input parameters. This architecture is illustrated in Figure \ref{fig:overall}. The details of the proposed GAN and ANN architecture is discussed in the following subsections.
 
 \begin{figure}
 	\centering
@@ -164,7 +164,7 @@ Generative adversarial networks are introduced in \cite{goodfellow2014generative
 
 It is possible to use different metrics for training in GAN [references here], for this project we have selected WGAN Wasserstein distance metric. This variant has been proposed by Arjovsky et al in \cite{arjovsky2017wasserstein}. In this system, discriminator is named as critic and it measures the distance between the generated data and the real data. The reason behind choosing WGAN over other methods is to be able to determine a stopping criteria. In a regular GAN system, training is stopped when the generated data is deemed viable by an observer. Since GAN is often used in generation of image, video or audio, using a human in the loop is effective. However, in our problem, it is not viable for a human to judge the generated data. Automating this procedure to remove the human in-the-loop can lead to over or under-fitting, which in turn degrades the performance. WGAN uses an adaptive stopping criteria that does not have the issue mentioned above. Additionally, we have selected to incorporate Gradient penalty to improve WGAN proposed in \cite{gulrajani2017improved}. This improved WGAN system converges in a stable manner without having to fine tune hyper-parameters of the system. The flowchart of this system is given in Figure \ref{fig:gan}.
 
-In this work, both the Critic and the generator are fully connected feed forward MLP models. The details of the networks are given in Table \ref{tbl:gandetails}. The output from this system should be input and output pairs that will be used to train ANN part of the system. In our PCF system we have 6 input parameters and a single output parameter making a total of 7 parameters that will be used in the GAN phase. In Section \ref{sec:exp}, we have experimented using a different PCF system with different inputs, resulting a different number of parameters for the system. The generator is supplied with the same number of parameters as its expected output, that is 7 for our PCF system. These parameters are generated using Gaussian noise and is called latent variable. Once the training phase is complete, the generator and the filter is used to augment the number of training samples that are available for ANN.
+In this work, both the Critic and the generator are fully connected feed forward MLP models. The details of the networks are given in Table \ref{tbl:anndetails}. The output from this system should be input and output pairs that will be used to train ANN part of the system. In our PCF system we have 6 input parameters and a single output parameter making a total of 7 parameters that will be used in the GAN phase. In Section \ref{sec:exp}, we have experimented using a different PCF system with different inputs, resulting a different number of parameters for the system. The generator is supplied with the same number of parameters as its expected output, that is 7 for our PCF system. These parameters are generated using Gaussian noise and is called latent variable. Once the training phase is complete, the generator and the filter is used to augment the number of training samples that are available for ANN.
 
 Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it is possible for random data augmentation to weaken the performance of the model. Hence, it is important to sample the generated data in way to prevent performance degradation \cite{bhattarai2019sampling}. In the proposed system, we have included a filtering step for the generated data. This step uses a simple condition to discard the values that fall out of the desired range, for both the independent variables ($n_{analyte}, \lambda, \Lambda, d1, d2, d3$), and the confinement loss.
 
@@ -194,46 +194,31 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it i
 	\label{fig:gan}
 \end{figure}
 
-\begin{table}
+\begin{table*}
 	\centering
-	\begin{tabular}{l|l|l}
-		\textbf{Parameter} & \textbf{Generator} & \textbf{Critic} \\\hline
-		Hidden layers & 5 & 5 \\
-		Neurons & $ 2^{2}~batchsize $ & $2^{layers}~batchsize$ \\
-		Activation & ReLU & Leaky ReLU \\
-		Optimizer & Adam \cite{kingma2014adam} & Adam \cite{kingma2014adam} \\
-		Normalization & - & Batch \cite{ioffe2015batch} \\
+	\begin{tabular}{l|l|l|l}
+		\textbf{Parameter} & \textbf{Generator} & \textbf{Critic} & \textbf{Regressor} \\\hline
+		Hidden layers & 5 & 5 & 6 \\
+		Neurons in hidden layers & $ 2^{2}~batchsize $ & $2^{layers}~batchsize$ & 50 \\
+		Activation function & ReLU & Leaky ReLU & ReLU \\
+		Optimizer & Adam \cite{kingma2014adam} & Adam & Adam \\
+		Input normalization & Z-score & Z-score & Z-score \\
+		Layer normalization & - & Batch \cite{ioffe2015batch} & Batch \\
+		Loss function & MSE & MSE & MSE \\
 	\end{tabular}
-	\caption{Details of WGAN model}
-	\label{tbl:gandetails}
-\end{table}
+	\caption{Details of ANN models}
+	\label{tbl:anndetails}
+\end{table*}
 
 
 \subsection{Artificial neural network design}
 \label{ssec:ann}
 
-The ANN model employed in this research is a fully-connected feed-forward Multi Layer Perceptron (MLP) consists of an input layer, an output layer, and 5 hidden layers. Each hidden layer contains 50 neurons and uses Rectified Linear Unit (ReLU) activation function.  Table \ref{tbl:anndetails} summarizes the details of this model. We have adopted Adam \cite{kingma2014adam} as the optimizer and the mean squared error as the loss/cost function.
+The ANN model employed in this research is a fully-connected feed-forward Multi Layer Perceptron (MLP) consists of an input layer, an output layer, and 5 hidden layers. The ANN is designed and trained to estimate containment loss in a regression configuration. We have applied $log_{10}$ to confinement loss in order to keep its numeric stability across a wide range. Each hidden layer contains 50 neurons and uses Rectified Linear Unit (ReLU) activation function. Table \ref{tbl:anndetails} summarizes the details of this model. We have adopted Adam \cite{kingma2014adam} as the optimizer and the mean squared error (MSE) as the loss/cost function.
 
 Due to the nature of the problem, over-fitting is an important issue. We have used early stopping method to reduce over-fitting. In this method, it is possible to terminate and go back to a previous state if overall validation error increases. Thus instead of being forced into a worse classifier, training is terminated earlier. In addition, we use Batch Normalization algorithm \cite{ioffe2015batch} to accelerate training, reduce the effects of initial randomized state and mitigate the problem of internal covariate shift.
 
-In proposed system, the ANN is trained using the samples from the original dataset and the augmented samples generated by the GAN phase. Please note that the samples that are selected to be used in training is not used in the training phase.
-
-\begin{table}
-\centering
-    \begin{tabular}{l|l}
-		Hidden layers & 6  \\
-		\hline
-		Neurons per hidden layer & 50  \\
-		\hline
-		Activation function & Rectified Linear Unit (ReLU)  \\
-		\hline
-		Optimizer & Adam\cite{kingma2014adam}  \\
-		\hline
-		Loss function& Mean Squared Error (MSE) \\
-    \end{tabular}
-	\caption{Detailes of the ANN model}
-	\label{tbl:anndetails}
-\end{table}
+In proposed system, the ANN is trained using the samples from the original dataset and the augmented samples generated by the GAN phase. Additionally, we use z-score normalization (standardization). The parameters to the normalizer is calculated through training samples and it is applied to all samples that will be used with the regressor. This includes testing and training samples. Please note that the samples that are selected to be used in training is not used in the training phase and any normalization that is applied to them are applied during testing phase.
 
 
 \section{Photonic crystal fiber design}
@@ -250,19 +235,16 @@ A labelled data set of only 432 samples was collected in this work, through simu
 
 \subsection{Experimental setup}
 
-In order to prove the effectiveness of the proposed setup, we have performed multiple experiments over two datasets. We have built the first dataset that is used in the experiments. This is \hl{an SPR PCF configuration ... and collected using FV-FEM.} Details of this dataset is explained in Section \ref{sec:pcf}. Seven configurations were randomly selected for training both the GAN and the ANN, one configuration was held out for validation, and the last one is used for testing. Slicing the data this way allowed us to guide the network to predict the loss on a completely different configuration.
+In order to prove the effectiveness of the proposed setup, we have performed multiple experiments over two datasets. We have built the first dataset that is used in the experiments. This is \hl{an SPR PCF configuration ... and collected using FV-FEM.} Details of this dataset is explained in Section \ref{sec:pcf}. Seven configurations were randomly selected for training both the GAN and the ANN, one configuration was held out for validation, and the last one is used for testing. Slicing the data this way allowed us to guide the network to predict the loss on a completely different configuration. Please note that we have applied $log_{10}$ to confinement loss to scale it.
 
-Additionally, we have used the dataset that has been used in [paper0]. \hl{This dataset contains 1000 samples. Inputs to this data is .... and outputs are ....} We have only used confinement loss for the output.
+Additionally, we have used the dataset that has been used in \cite{paper0}. \hl{This dataset contains 1000 samples. Inputs to this data is .... and outputs are ....} We have only used log of confinement loss as the output.
+
+We have used mean square error as in the comparisons. All algorithms are implemented using TensorFlow library in Python and experiments are performed on laptop with Intel i7-5600 CPU and 8GB of RAM. TensorFlow library is set to use only CPU for the experiments.
+
+We have performed \hl{this and that experiments} which are discussed in the following sections.
+
 
 \hl{CK: continue here.}
-
-
-By slicing the data set this way we are guiding the network to learn an entirely new set of geometric properties, and this is the reason what made the task impossible, since we only have nine configurations, as we discussed at the beginning of this subsection. In contrast, randomly shuffling the data set as a whole is an easy task in this situation, and the ANN model would make great predictions on the test set, however a sense of generality towards new geometric sets will be lost.
-
-This data was preprocessed before fed in the networks. The indices of refraction  are very close, which made it quiet difficult for the neural networks to differentiate between them, after many trials, the best choice was to take only the tens digit of ${134, 135, 136}$, giving ${4, 5, 6}$. Finally, we transform the confinement loss to the log scale, for the purpose of shortening the distances between the confinement loss points.
-
-\hl{Metrics used in the comparisons}
-
 
 \subsection{Performance of ANN}
 
@@ -522,7 +504,7 @@ By taking advantage of Cloud Computing technology, one does not have to spend la
 The code for this work is available at: \url{https://github.com/Aimen-Zelaci/SPRPCF_ANN/}.
 \newline
 The elapsed training time of an ANN model depends on the parameters of the model, for example, the number of hidden layers and hidden neurons, mini batch size, data set size, number of epochs, the framework used to code the model, and of course the specifications of the machine.
-In this work we fixed the number of epochs to 2000 and executed training using Tensorflow(Keras) and Pytorch frameworks. As demonstrated in Tables(5,6). It is worth mentioning the differences between training with full batch or mini batches. In full batch training, the whole data set is passed to the model for each iteration. In contrast, mini-batch-training, the data set is split into small mini batches of equal sizes, then passed to the model seperately, thus for each epoch there will be exactly length  of the data set devided by the mini batch size steps, and hence slowing down the training process. Previous works \cite{masters2018revisiting, keskar2016large} have firmly proved the advantages of using the correct mini batch size as oppose to large batch sizes. Mini batches allow for more frequent gradient calculations, that results in more stable and reliable training. Perhaps one of the main downsides of using large batch size is the poor generalization resulting in a phenomena know as the "generalization gap". Active research \cite{hoffer2017train} is on going to actually use large batch sizes while mainting the performance of the model and shortning the training runtime. A closely related recent work \cite{chugh2019machine}, conducted their expirements using full batch to train the model. In this work we will use the latter paper availabe code on Github for Pytorch expirements, with slight modifications to fit our purposes. Finally, we compare the performance of the WGAN model, using Tensorflow(Keras) framework, of CPU based to that of GPU based.
+In this work we fixed the number of epochs to 2000 and executed training using Tensorflow(Keras) and Pytorch frameworks. As demonstrated in Tables(5,6). It is worth mentioning the differences between training with full batch or mini batches. In full batch training, the whole data set is passed to the model for each iteration. In contrast, mini-batch-training, the data set is split into small mini batches of equal sizes, then passed to the model seperately, thus for each epoch there will be exactly length  of the data set devided by the mini batch size steps, and hence slowing down the training process. Previous works \cite{masters2018revisiting, keskar2016large} have firmly proved the advantages of using the correct mini batch size as oppose to large batch sizes. Mini batches allow for more frequent gradient calculations, that results in more stable and reliable training. Perhaps one of the main downsides of using large batch size is the poor generalization resulting in a phenomena know as the "generalization gap". Active research \cite{hoffer2017train} is on going to actually use large batch sizes while mainting the performance of the model and shortning the training runtime. A closely related recent work \cite{paper0}, conducted their expirements using full batch to train the model. In this work we will use the latter paper availabe code on Github for Pytorch expirements, with slight modifications to fit our purposes. Finally, we compare the performance of the WGAN model, using Tensorflow(Keras) framework, of CPU based to that of GPU based.
 
 \begin{table}[h]
 \begin{tabular}{lllll}
