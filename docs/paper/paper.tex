@@ -160,7 +160,7 @@ In this section details of the proposed method is discussed. Training of the sys
 \subsection{Generative adversarial network design}
 \label{ssec:gan}
 
-Generative adversarial networks are introduced in \cite{goodfellow2014generative}. We have employed GAN to augment the number of samples that are used in training. A GAN is composed of two neural networks: generator and discriminator. The aim of the generator is to transform fully randomized data into data that follows the distribution of the original dataset. Discriminator assesses the performance of the generator and provides feedback for training. Instead of directly training generator, it is trained through this feedback. This paradigm avoids over-fitting the data in the generator side.
+Generative adversarial networks are introduced in \cite{goodfellow2014generative}. We have employed GAN to augment the number of samples that are used in training. A GAN is composed of two neural networks: generator and discriminator. The aim of the generator is to transform fully randomized data into data that follows the distribution of the original dataset. Discriminator assesses the performance of the generator and provides feedback for training. Instead of directly training generator, it is trained through this feedback. This paradigm avoids over-fitting the data.
 
 It is possible to use different metrics for training in GAN [references here], for this project we have selected WGAN Wasserstein distance metric. This variant has been proposed by Arjovsky et al in \cite{arjovsky2017wasserstein}. In this system, discriminator is named as critic and it measures the distance between the generated data and the real data. The reason behind choosing WGAN over other methods is to be able to determine a stopping criteria. In a regular GAN system, training is stopped when the generated data is deemed viable by an observer. Since GAN is often used in generation of image, video or audio, using a human in the loop is effective. However, in our problem, it is not viable for a human to judge the generated data. Automating this procedure to remove the human in-the-loop can lead to over or under-fitting, which in turn degrades the performance. WGAN uses an adaptive stopping criteria that does not have the issue mentioned above. Additionally, we have selected to incorporate Gradient penalty to improve WGAN proposed in \cite{gulrajani2017improved}. This improved WGAN system converges in a stable manner without having to fine tune hyper-parameters of the system. The flowchart of this system is given in Figure \ref{fig:gan}.
 
@@ -182,7 +182,7 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it i
 		\node(metric)   [metric,below of=critic,
 						 text width=1.4cm, yshift=-.2cm]{\baselineskip=10pt{}Wasserstein distance\par};
 		
-		\draw [training] (latent) -- (generator) node [pos=.5, right, xshift=0.1cm] (z) {Latent variable};
+		\draw [training] (latent) -- (generator) node [pos=.5, left, xshift=-0.1cm] (z) {Latent variable};
 		\draw [training] (generator) -- (generated);
 		\draw [training] (generated) -| (critic);
 		\draw [training] (collected) -| (critic);
@@ -201,51 +201,45 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it i
 		Hidden layers & 5 & 5 \\
 		Neurons & $ 2^{2}~batchsize $ & $2^{layers}~batchsize$ \\
 		Activation & ReLU & Leaky ReLU \\
-		Optimizer & Adam [ref] & Adam [ref] \\
+		Optimizer & Adam \cite{kingma2014adam} & Adam \cite{kingma2014adam} \\
 		Normalization & - & Batch \cite{ioffe2015batch} \\
 	\end{tabular}
 	\caption{Details of WGAN model}
 	\label{tbl:gandetails}
 \end{table}
 
-\hl{CK: continue here.}
 
 \subsection{Artificial neural network design}
 \label{ssec:ann}
 
+The ANN model employed in this research is a fully-connected feed-forward Multi Layer Perceptron (MLP) consists of an input layer, an output layer, and 5 hidden layers. Each hidden layer contains 50 neurons and uses Rectified Linear Unit (ReLU) activation function.  Table \ref{tbl:anndetails} summarizes the details of this model. We have adopted Adam \cite{kingma2014adam} as the optimizer and the mean squared error as the loss/cost function.
 
-Adam \cite{kingma2014adam} as the optimizer and the mean squared error as the loss/cost function. To reduce overfitting we use the Early stopping method, that is by saving checkpoints where the best validation mean squared error occurred as we iterate. To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm was used \cite{ioffe2015batch}.
+Due to the nature of the problem, over-fitting is an important issue. We have used early stopping method to reduce over-fitting. In this method, it is possible to terminate and go back to a previous state if overall validation error increases. Thus instead of being forced into a worse classifier, training is terminated earlier. In addition, we use Batch Normalization algorithm \cite{ioffe2015batch} to accelerate training, reduce the effects of initial randomized state and mitigate the problem of internal covariate shift.
 
-We will first train ANN model to predict the confinement loss of a SPR based PCF using the original data set collected. Then we will augment the original training data set with generated samples by the GAN, to improve the performance of the ANN model.
-Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that random data augmentation actually had weakened the performance of the model. Hence, active researches are ongoing to find ways to optimally sample the generated data \cite{bhattarai2019sampling}, in other words to filter out the "good" generated data after training the GAN. In this paper, we will use a simple if-statement to discard values that fall out of our desired ranges for both the independent variables, and the confinement loss. In the following sub-sections we discuss the networks architectures. Before we proceed, it is worth mentioning that the choices made for the parameters of the networks are by no means a robust set of rules, rather, they are rules of thumb and heuristics, as no such rules have been yet developed for ANN models.
+In proposed system, the ANN is trained using the samples from the original dataset and the augmented samples generated by the GAN phase. Please note that the samples that are selected to be used in training is not used in the training phase.
 
-\subsection{Artificial neural network design}
-\label{ssec:ann}
-The ANN model employed in this research is a fully-connected feed-forward MLP (Multi Layer Perceptron) consisting of an input layer, an output layer, and 5 hidden layers. Each hidden layer consists of 50 neurons and uses Rectified Linear Unit (ReLU) activation function.  Table \ref{tbl:anndetails} summarizes the details of the model. Due to the nature of the problem, over-fitting is an important issue. We have used early stopping method [ref] to reduce over-fitting. \hl{This method works by saving checkpoints where the best validation mean squared error occurred as it iterates before the model starts to over-fit.} To accelerate training and mitigate the problem of internal covariate shift Batch Normalization algorithm \cite{ioffe2015batch} was used.
-
-\begin{table}[h]
+\begin{table}
 \centering
-    \begin{tabular}{|l|l|}
-    \hline
-Number of hidden layers & 6  \\
-\hline
-Number of neurons per hidden layers & 50  \\
-\hline
-Activation function & Rectified Linear Unit (ReLU)  \\
-\hline
-Optimizer & Adam\cite{kingma2014adam}  \\
-\hline
-Loss function& Mean Squared Error (MSE) \\
-\hline
+    \begin{tabular}{l|l}
+		Hidden layers & 6  \\
+		\hline
+		Neurons per hidden layer & 50  \\
+		\hline
+		Activation function & Rectified Linear Unit (ReLU)  \\
+		\hline
+		Optimizer & Adam\cite{kingma2014adam}  \\
+		\hline
+		Loss function& Mean Squared Error (MSE) \\
     \end{tabular}
-\caption{Detailes of the ANN model}
-\label{tbl:anndetails}
+	\caption{Detailes of the ANN model}
+	\label{tbl:anndetails}
 \end{table}
 
 
 \section{Photonic crystal fiber design}
 \label{sec:pcf}
 
+A labelled data set of only 432 samples was collected in this work, through simulations using FV-FEM. This data set consists of the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$, taken as our independent variables. The labels are the confinement loss of the PCF. The set consists of nine different configurations of the geometric properties ($ \Lambda $, d1, d2, d3), for each configuration the confinement loss was calculated for three different analytes (Water (n=1.33), Ethanol (n=1.35) and several commercial hydrocarbon mixtures (n=1.36)).
 
 \hl{We will fix the pattern and geometrical shape of the cladding air holes, and vary the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$. Then the results of this study can be carried to different types of SPR-based PCF sensors, using other suitable deep learning approaches such as Recurrent and Convolutional neural networks. }
 
@@ -256,7 +250,14 @@ Loss function& Mean Squared Error (MSE) \\
 
 \subsection{Experimental setup}
 
-A labelled data set of only 432 samples was collected in this work, through simulations using FV-FEM. This length of the data set made the task of building ANN model look quiet impossible, however the results were satisfying to some extent. This data set consists of the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$, taken as our independent variables. The labels are the confinement loss of the PCF. The set consists of nine different configurations of the geometric properties ($ \Lambda $, d1, d2, d3), for each configuration the confinement loss was calculated for three different analytes (Water (n=1.33), Ethanol (n=1.35) and several commercial hydrocarbon mixtures (n=1.36)). Seven configurations were randomly selected for training both the WGAN-GP and the ANN, one configuration was held out for validation, and the last configuration for testing. By slicing the data set this way we are guiding the network to learn an entirely new set of geometric properties, and this is the reason what made the task impossible, since we only have nine configurations, as we discussed at the beginning of this subsection. In contrast, randomly shuffling the data set as a whole is an easy task in this situation, and the ANN model would make great predictions on the test set, however a sense of generality towards new geometric sets will be lost.
+In order to prove the effectiveness of the proposed setup, we have performed multiple experiments over two datasets. We have built the first dataset that is used in the experiments. This is \hl{an SPR PCF configuration ... and collected using FV-FEM.} Details of this dataset is explained in Section \ref{sec:pcf}. Seven configurations were randomly selected for training both the GAN and the ANN, one configuration was held out for validation, and the last one is used for testing. Slicing the data this way allowed us to guide the network to predict the loss on a completely different configuration.
+
+Additionally, we have used the dataset that has been used in [paper0]. \hl{This dataset contains 1000 samples. Inputs to this data is .... and outputs are ....} We have only used confinement loss for the output.
+
+\hl{CK: continue here.}
+
+
+By slicing the data set this way we are guiding the network to learn an entirely new set of geometric properties, and this is the reason what made the task impossible, since we only have nine configurations, as we discussed at the beginning of this subsection. In contrast, randomly shuffling the data set as a whole is an easy task in this situation, and the ANN model would make great predictions on the test set, however a sense of generality towards new geometric sets will be lost.
 
 This data was preprocessed before fed in the networks. The indices of refraction  are very close, which made it quiet difficult for the neural networks to differentiate between them, after many trials, the best choice was to take only the tens digit of ${134, 135, 136}$, giving ${4, 5, 6}$. Finally, we transform the confinement loss to the log scale, for the purpose of shortening the distances between the confinement loss points.
 
