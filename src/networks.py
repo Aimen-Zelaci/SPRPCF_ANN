@@ -46,7 +46,8 @@ def make_model(flags):
     logger.info('\n[*] Batch Normalization: {}'.format(batch_norm))
     # 1st layer
     model.add(layers.Dense(num_neurons, input_shape=(num_inputs,)))
-    # model.add(layers.BatchNormalization())
+    if batch_norm:
+     model.add(layers.BatchNormalization())
     model.add(layers.ReLU())
     # Hidden layers
     for _ in range(num_layers - 1):
