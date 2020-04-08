@@ -2,27 +2,40 @@ import scipy as sp
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+import initializer
 
+FLAGS = initializer.init()
 
-def split_data(x, y):
-    x = x.reshape(9, 3, 16, 6)
-    y = y.reshape(9, 3, 16, 1)
+def split_data(x, y, kf=False):
+    if kf:
+        x = x.reshape(8, 3, 16, 6)
+        y = y.reshape(8, 3, 16, 1)
+    else:
+        x = x.reshape(9, 3, 16, 6)
+        y = y.reshape(9, 3, 16, 1)
+
+    if FLAGS.k_fold and not kf:
+        return [x,y]
 
     tr_data = x[:7].reshape(7 * 16 * 3, 6)
     tr_labels = y[:7].reshape(7 * 16 * 3, 1)
-
+    #Shuffle tr data
     merge = np.concatenate((tr_data, tr_labels), axis=1)
     sp.random.shuffle(merge)
     tr_data = merge[:, :6].reshape(7 * 16 * 3, 6)
     tr_labels = merge[:, -1].reshape(7 * 16 * 3, 1)
 
-    va_data = x[-2].reshape(1 * 16 * 3, 6)
-    va_labels = y[-2].reshape(1 * 16 * 3, 1)
-
-    test_data = x[-1].reshape(1 * 16 * 3, 6)
-    test_labels = y[-1].reshape(1 * 16 * 3, 1)
-
-    return [tr_data, tr_labels, va_data, va_labels, test_data, test_labels]
+    if kf:
+        va_data = x[-1].reshape(1 * 16 * 3, 6)
+        va_labels = y[-1].reshape(1 * 16 * 3, 1)
+        return [tr_data, tr_labels, va_data, va_labels]
+    else:
+        va_data = x[-2].reshape(1 * 16 * 3, 6)
+        va_labels = y[-2].reshape(1 * 16 * 3, 1)
+        test_data = x[-1].reshape(1 * 16 * 3, 6)
+        test_labels = y[-1].reshape(1 * 16 * 3, 1)
+        return [tr_data, tr_labels, va_data, va_labels, test_data, test_labels]
 
 
 def load_data(fname):
@@ -35,18 +48,21 @@ def load_data(fname):
         x = df[:, :6]
         y = df[:, -1]
         # The training data is already shuffled, set shuffle_tr=False
-        return split_data(x, y)
+        return split_data(x, y, )
 
     df = df.reshape(9, 3, 16, 7)
     sp.random.shuffle(df)
     df = df.reshape(432, 7)
-    analytes = df[:, 0]
-    analytes = (analytes * 100) % 10
-    x = df[:, 1:6]
-    x = x.reshape(432, 5)
-    analytes = analytes.reshape(432, 1)
-    x = sp.concatenate((analytes, x), axis=1)
-    x /= 10
+    #analytes = df[:, 0]
+    #analytes = (analytes * 100) % 10
+    x = df[:, :6]
+    x = x.reshape(432, 6)
+    #analytes = analytes.reshape(432, 1)
+    #x = sp.concatenate((analytes, x), axis=1)
+    #x /= 10
+    scaler = StandardScaler()
+    scaler.fit(x)
+    x = scaler.transform(x)
     y = df[:, -1]
     y = y * (10 ** 8)
     y = sp.log10(y).reshape(432, 1)
@@ -82,9 +98,9 @@ def load_pcf_data(fname='.\data\pcf_data1.xlsx'):
 
 
 # Augment data
-def augment_data(tr_data, tr_labels, flags):
-    size = flags.augment_size
-    fname = flags.gen_data_dir
+def augment_data(tr_data, tr_labels):
+    size = FLAGS.augment_size
+    fname = FLAGS.gen_data_dir
 
     generated_data = pd.read_csv(fname).values
     # start_slice = size-1000
