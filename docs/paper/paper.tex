@@ -202,9 +202,9 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it i
 		Neurons in hidden layers & $ 2^{2}~batchsize $ & $2^{layers}~batchsize$ & 50 \\
 		Activation function & ReLU & Leaky ReLU & ReLU \\
 		Optimizer & Adam \cite{kingma2014adam} & Adam & Adam \\
-		Input normalization & Z-score & Z-score & Z-score \\
+		Input normalization & None & Z-score (for collected samples) & Z-score \\
 		Layer normalization & - & Batch \cite{ioffe2015batch} & Batch \\
-		Loss function & MSE & MSE & MSE \\
+		Loss function & -Critic(generated) & Critic(generated) - Critic(collected) & MSE \\
 	\end{tabular}
 	\caption{Details of ANN models}
 	\label{tbl:anndetails}
@@ -241,7 +241,7 @@ Additionally, we have used the dataset that has been used in \cite{paper0}. \hl{
 
 We have used mean square error as in the comparisons. All algorithms are implemented using TensorFlow library in Python and experiments are performed on laptop with Intel i7-5600 CPU and 8GB of RAM. TensorFlow library is set to use only CPU for the experiments.
 
-We have performed \hl{this and that experiments} which are discussed in the following sections.
+In the following subsections, we have performed experiments to show the performance of the base ANN system by its own comparing with the state-of-the-art method in the literature, improvement gained by employing GAN phase, and finally the computational cost of the overall system compared to the simulator. All numeric comparison results are average of 10 executions.
 
 
 \hl{CK: continue here.}
