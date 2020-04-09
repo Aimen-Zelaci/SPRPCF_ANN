@@ -46,7 +46,8 @@ def make_model(flags):
     logger.info('\n[*] Batch Normalization: {}'.format(batch_norm))
     # 1st layer
     model.add(layers.Dense(num_neurons, input_shape=(num_inputs,)))
-    # model.add(layers.BatchNormalization())
+    if batch_norm:
+     model.add(layers.BatchNormalization())
     model.add(layers.ReLU())
     # Hidden layers
     for _ in range(num_layers - 1):
@@ -67,8 +68,22 @@ def train_model(model, tr_data, tr_labels, va_data, va_labels, flags):
     epochs = flags.epochs
     lr = flags.lr
     batch_size = flags.ANN_batch_size
-    save_dir = flags.save_dir
-    chkdir = flags.chkdir
+    if flags.k_fold:
+        cur_time = datetime.now().strftime("%Y%m%d-%H%M")
+        if not os.path.isdir('./trained-kf-models/{}'.format(cur_time)):
+            os.makedirs('./trained-kf-models/{}'.format(cur_time))
+
+        if not os.path.isdir('./trained-kf-weights/{}'.format(cur_time)):
+            os.makedirs('./trained-kf-weights/{}'.format(cur_time))
+
+        save_dir = "./trained-kf-models/{}/model.h5".format(cur_time)
+        chkdir = "./trained-kf-weights/{}/weights.hdf5".format(cur_time)
+        flags.model_to_test = chkdir
+
+    if not flags.k_fold:
+        save_dir = flags.save_dir
+        chkdir = flags.chkdir
+
     logger.info('\n[*] learning rate: {}'.format(lr))
     logger.info('\n[*] Batch size: {}'.format(batch_size))
     logger.info('\n[*] Epoch: {}'.format(epochs))
@@ -110,6 +125,34 @@ def load_model(model, load_type, dir):
 def test_model(model, test_data, test_labels, augment_size=0, plot=True):
     start = time.time()
     predictions = model.predict([test_data])
+    print(predictions.shape)
+    MSE = np.square(np.subtract(test_labels.reshape(int(len(test_labels)), 1), predictions)).mean()
+    wavelength = sp.arange(500, 820, 20)
+    cur_time = datetime.now().strftime("%Y%m%d-%H%M")
+
+    if not os.path.isdir('./kfold-predictions-vs-wavelength/{}'.format(cur_time)):
+        os.makedirs('./kfold-predictions-vs-wavelength/{}'.format(cur_time))
+
+    if not os.path.isdir('./kfold-predictions-vs-labels/{}'.format(cur_time)):
+        os.makedirs('./kfold-predictions-vs-labels/{}'.format(cur_time))
+
+    if not os.path.isdir('./kfold-MSEs'.format(cur_time)):
+        os.makedirs('./kfold-MSEs'.format(cur_time))
+
+    file = open('./kfold-predictions-vs-wavelength/{}/graph_data.txt'.format(cur_time),'a+')
+    for p,w in zip(predictions, wavelength):
+        file.write('{}\t{}\n'.format(w, p[0]))
+    file.close()
+
+    file = open('./kfold-predictions-vs-labels/{}/graph_data.txt'.format(cur_time), 'a+')
+    for p,l in zip(predictions, test_labels):
+        file.write('{}\t{}\n'.format(l[0], p[0]))
+    file.close()
+
+    file = open('./kfold-MSEs/MSEs.txt','a+')
+    file.write('MSE:\t{}\n'.format(MSE))
+    file.close()
+
     logger.info('Augment size: {}'.format(augment_size))
     # MSE = sp.square(sp.subtract(test_labels, predictions)).mean()
     if plot == True:
@@ -123,7 +166,6 @@ def test_model(model, test_data, test_labels, augment_size=0, plot=True):
         plt.title('Length of TR dataset 336 + {}'.format(augment_size))
         plt.show()
 
-        wavelength = sp.arange(500, 820, 20)
         for i in [0, 16, 32]:
             spl = UnivariateSpline(wavelength, predictions[i:i + 16])
             wavelength_smoothed = sp.linspace(500, 820, 100)
@@ -158,8 +200,6 @@ class Wgan_optim(object):
         self._build_net()
         self._logger()
         self._tensorboard()
-        self.train_writer = tf.summary.FileWriter("./ganlogs/{}".format(time.time()),
-                                                  graph_def=self.sess.graph_def)
 
     def _build_net(self):
         self.Y = tf.placeholder(tf.float32, shape=[None, self.num_critic_input], name='real_data')
@@ -192,8 +232,10 @@ class Wgan_optim(object):
 
         self.saver = tf.train.Saver()
         cur_time = datetime.now().strftime("%Y%m%d-%H%M")
-        self.checkpoint_dir = "./training-checkpoints/{}".format(cur_time)
-        if not os.path.isdir(self.checkpoint_dir):
+        self.checkpoint_dir = "./training-wgan-checkpoints/{}".format(cur_time)
+        if self.flags.k_fold:
+            self.checkpoint_dir = "./training-kf-wgan-checkpoints/{}".format(cur_time)
+        if not os.path.isdir(self.checkpoint_dir) and len(self.dataset):
             os.makedirs(self.checkpoint_dir)
 
     def gradient_penalty(self):
@@ -278,7 +320,7 @@ class Wgan_optim(object):
                 gen_feed = {self.z: self.sample_z(num=self.batch_size), self.Y: batch_y}
                 gen_run = [self.gen_optim, self.g_loss, self.g_samples, self.summary_op]
                 _, g_loss, g_samples, summary = self.sess.run(gen_run, feed_dict=gen_feed)
-                if (epoch + 1) % 500 == 0:
+                if (epoch + 1)  == self.flags.save_step:
                     # data_handler.plot_wgan(epoch + 1,)
                     self.saver.save(self.sess, os.path.join(self.checkpoint_dir, 'wgan'), global_step=epoch)
 
@@ -305,11 +347,15 @@ class Wgan_optim(object):
         tf.summary.scalar('loss/g_loss', self.g_loss)
 
         self.summary_op = tf.summary.merge_all()
-
-    def generate_data(self):
+        self.train_writer = tf.summary.FileWriter("./ganlogs/{}".format(time.time()),
+                                                  graph_def=self.sess.graph_def)
+    def generate_data(self,load=True):
         logger.info('\n*****\n GENERATING DATA ... \n****\n')
         start = time.time()
-        self.load_wgan()
+
+        if load:
+            self.load_wgan()
+
         _df = sp.zeros(7).reshape(1, 7)
         for _ in tqdm(range(self.flags.gen_iterations)):
             predictions = self.sess.run(self.g_samples,
@@ -317,10 +363,10 @@ class Wgan_optim(object):
             # print(predictions)
             for p in predictions:
                 # Noise filter
-                ones = sum(int(o >= 1.0) for o in p[:6])
-                zeros = sum(int(z < 0.1) for z in p)
+                pve = sum(int(o >= 2.0) for o in p[:6])
+                nve = sum(int(t <= -2.0) for t in p[:6])
                 # sp.savetxt(r'gen_data_pcf.txt', p, delimiter=',')
-                if (zeros == 0 and ones == 0):
+                if (pve == 0 and nve==0 and p[-1] > 2.0):
                     _df = np.concatenate((_df, p.reshape(1, 7)), axis=0)
         _df = pd.DataFrame(_df, index=None)
         _df = _df.drop(0, axis=0)
