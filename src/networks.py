@@ -45,14 +45,17 @@ def make_model(flags):
     logger.info('\n[*] Number of outputs: {}'.format(num_outputs))
     logger.info('\n[*] Batch Normalization: {}'.format(batch_norm))
     # 1st layer
-    model.add(layers.Dense(num_neurons, input_shape=(num_inputs,)))
+    model.add(layers.Dense(num_neurons,input_shape=(num_inputs,)))
     if batch_norm:
-     model.add(layers.BatchNormalization())
+        pass
+        #model.add(layers.Dropout(0.3))
+        model.add(layers.BatchNormalization())
     model.add(layers.ReLU())
     # Hidden layers
     for _ in range(num_layers - 1):
         model.add(layers.Dense(num_neurons))
         if batch_norm:
+            #model.add(layers.Dropout(0.5))
             model.add(layers.BatchNormalization())
         model.add(layers.ReLU())
     # OUTPUT layer
@@ -78,7 +81,7 @@ def train_model(model, tr_data, tr_labels, va_data, va_labels, flags):
 
         save_dir = "./trained-kf-models/{}/model.h5".format(cur_time)
         chkdir = "./trained-kf-weights/{}/weights.hdf5".format(cur_time)
-        flags.model_to_test = chkdir
+        flags.model_to_test = save_dir
 
     if not flags.k_fold:
         save_dir = flags.save_dir
@@ -95,7 +98,7 @@ def train_model(model, tr_data, tr_labels, va_data, va_labels, flags):
     # TensorBoard
     tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
     # Save the best va_loss file
-    checkpointer = keras.callbacks.ModelCheckpoint(filepath=chkdir, verbose=0,
+    checkpointer = keras.callbacks.ModelCheckpoint(filepath=chkdir, verbose=1,
                                                    save_best_only=True)
     # Define optimizers
     Adam = keras.optimizers.Adam(learning_rate=
@@ -103,11 +106,13 @@ def train_model(model, tr_data, tr_labels, va_data, va_labels, flags):
     RMSprop = keras.optimizers.RMSprop(learning_rate=1e-2, rho=0.9)
     # Train
     model.compile(optimizer=Adam, loss='mean_squared_error')
-    hist = model.fit(tr_data, tr_labels, epochs=epochs, verbose=1,
+    hist = model.fit(tr_data, tr_labels, epochs=epochs,
                      validation_data=(va_data, va_labels), callbacks=[checkpointer, tensorboard_callback],
                      batch_size=batch_size)
     # Post training
     model.save(save_dir)
+
+    keras.backend.clear_session()
     # loss = hist.history['loss']
     print('\n*****\nTraining run time for data set length {} is : {} sec\n*****'.format(336 + flags.augment_size,
                                                                                         time.time() - start))
@@ -125,7 +130,6 @@ def load_model(model, load_type, dir):
 def test_model(model, test_data, test_labels, augment_size=0, plot=True):
     start = time.time()
     predictions = model.predict([test_data])
-    print(predictions.shape)
     MSE = np.square(np.subtract(test_labels.reshape(int(len(test_labels)), 1), predictions)).mean()
     wavelength = sp.arange(500, 820, 20)
     cur_time = datetime.now().strftime("%Y%m%d-%H%M")
@@ -139,10 +143,11 @@ def test_model(model, test_data, test_labels, augment_size=0, plot=True):
     if not os.path.isdir('./kfold-MSEs'.format(cur_time)):
         os.makedirs('./kfold-MSEs'.format(cur_time))
 
-    file = open('./kfold-predictions-vs-wavelength/{}/graph_data.txt'.format(cur_time),'a+')
-    for p,w in zip(predictions, wavelength):
-        file.write('{}\t{}\n'.format(w, p[0]))
-    file.close()
+    for i in [0, 16, 32]:
+        file = open('./kfold-predictions-vs-wavelength/{}/analyte_{}.txt'.format(cur_time,i),'a+')
+        for p,l,w in zip(predictions[i:i+16], test_labels[i:i+16], wavelength):
+            file.write('{}\t{}\t{}\n'.format(w, l[0],p[0]))
+        file.close()
 
     file = open('./kfold-predictions-vs-labels/{}/graph_data.txt'.format(cur_time), 'a+')
     for p,l in zip(predictions, test_labels):
@@ -349,6 +354,20 @@ class Wgan_optim(object):
         self.summary_op = tf.summary.merge_all()
         self.train_writer = tf.summary.FileWriter("./ganlogs/{}".format(time.time()),
                                                   graph_def=self.sess.graph_def)
+
+    @staticmethod
+    def filter_1(data):
+        # Noise filter
+        pve = sum(int(o <= 0.0) for o in data[:7])
+        #nve = sum(int(t <= 0.0) for t in p[1:6])
+        return pve
+
+    @staticmethod
+    def filter_2(data):
+        pve = sum(int(o <= 0.0) for o in data[:6])
+        #nve = sum(int(t <= 0.0) for t in p[1:6])
+        return pve
+
     def generate_data(self,load=True):
         logger.info('\n*****\n GENERATING DATA ... \n****\n')
         start = time.time()
@@ -356,18 +375,15 @@ class Wgan_optim(object):
         if load:
             self.load_wgan()
 
-        _df = sp.zeros(7).reshape(1, 7)
+        _df = sp.zeros(self.noise_dim).reshape(1, self.noise_dim)
         for _ in tqdm(range(self.flags.gen_iterations)):
             predictions = self.sess.run(self.g_samples,
                                         feed_dict={self.z: self.sample_z(num=self.num_examples_to_generate)})
             # print(predictions)
             for p in predictions:
-                # Noise filter
-                pve = sum(int(o >= 2.0) for o in p[:6])
-                nve = sum(int(t <= -2.0) for t in p[:6])
                 # sp.savetxt(r'gen_data_pcf.txt', p, delimiter=',')
-                if (pve == 0 and nve==0 and p[-1] > 2.0):
-                    _df = np.concatenate((_df, p.reshape(1, 7)), axis=0)
+                if not self.filter_1(p):
+                    _df = np.concatenate((_df, p.reshape(1, self.noise_dim)), axis=0)
         _df = pd.DataFrame(_df, index=None)
         _df = _df.drop(0, axis=0)
         _df.to_csv('.\gen_data\gen_data2.txt', index=False)

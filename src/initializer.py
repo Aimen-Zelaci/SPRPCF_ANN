@@ -13,7 +13,8 @@ wgan_flags = params_dict[0]
 ann_flags = params_dict[1]
 data_flags = params_dict[2]
 
-tf.flags.DEFINE_bool('k_fold', False, 'Use Kfold')
+tf.flags.DEFINE_bool('k_fold_pcf2', False, 'Use Kfold for pcf2')
+tf.flags.DEFINE_bool('k_fold', False, 'Use Kfold for pcf-SPR')
 tf.flags.DEFINE_bool('train_wgan', False, 'train wgan, defaul:True')
 tf.flags.DEFINE_bool('generate', False, 'generate data, defaul:True')
 tf.flags.DEFINE_bool('train_ann', False, 'train ann, defaul:True')
