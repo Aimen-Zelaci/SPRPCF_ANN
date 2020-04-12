@@ -96,14 +96,14 @@
 \maketitle
 	
 \begin{abstract}
-Photonic crystal fibers (PCF) for specific applications are designed and optimized by both industry experts and researches. However, the potential number of combinations possible for a single application is very large. This issue combined by the speed of the commonly used Full Vectorial Finite Element Method (FV-FEM) causes the task to take significant amount of time. As stated in the previous works, artificial neural networks (ANN) can predict the result of numerical simulations much faster. However, there are two issues with the methods proposed previously. Namely, the required number of samples for training and the overall accuracy of these methods. In this paper, we  propose the use of generative adversarial networks (GAN) to augment the real data set to train an ANN model. Experimental analysis suggest that the proposed combination not only accurately predicts the confinement loss even with limited amount of data but also GAN can be used to improve existing methods in the literature. Finally, it is shown that this system can predict the confinement loss over a range of analytes and wavelengths in a completely new set of geometric configuration.
+Photonic crystal fibers (PCF) for specific applications are designed and optimized by both industry experts and researches. However, the potential number of combinations possible for a single application is very large. This issue combined by the speed of the commonly used Full Vectorial Finite Element Method (FV-FEM) causes the task to take significant amount of time. As stated in the previous works, artificial neural networks (ANN) can predict the result of numerical simulations much faster. However, there are two issues with the methods proposed previously. Namely, the required number of samples for training and the overall accuracy of these methods. In this paper, we  propose the use of generative adversarial networks (GAN) to augment the real dataset to train an ANN model. Experimental analysis suggest that the proposed combination not only accurately predicts the confinement loss even with limited amount of data but also GAN can be used to improve existing methods in the literature. Finally, it is shown that this system can predict the confinement loss over a range of analytes and wavelengths in a completely new set of geometric configuration.
 \end{abstract}
 
 \section{Introduction}
 
 \hl{Importance of PCF and SPR, written by AY or HA}
 	
-Machine Learning (ML) techniques are coming to the forefront of many fields, surpassing human performance in many tasks, namely automatic speech recognition, image recognition, natural language processing, drug discovery and toxicology. Additionally, ANN can approximate any function proven by Universality theorem \cite{HORNIK1991251}. This fact propelled researchers to widen the applications of ANN even further, including the study of nanophotonic structures \cite{kiarashinejad2020knowledge}, optimization of photonic crystal nanocavities \cite{asano2018optimization}, and more recently, computing optical properties of a photonic crystal fiber \cite{paper0}.
+Machine Learning (ML) techniques are becoming a common tool in many fields, surpassing human performance in many tasks, namely automatic speech recognition, image recognition, natural language processing, drug discovery and toxicology. Additionally, ANN can approximate any function proven by Universality theorem \cite{HORNIK1991251}. This fact propelled researchers to widen the applications of ANN even further, including the study of nanophotonic structures \cite{kiarashinejad2020knowledge}, optimization of photonic crystal nanocavities \cite{asano2018optimization}, and more recently, computing optical properties of a photonic crystal fiber \cite{paper0}.
 
 One of the most difficult challenges that deep learning models face is that they benefit from large amounts of data to train, which may be costly to acquire. One of the solutions to overcome this issue is to artificially expand the original training dataset by the means of generative networks. Introduced by Goodfellow et al., Generative Adversarial Networks (GAN) \cite{goodfellow2014generative}, proved to be successful in data generation \cite{schlegl2017unsupervised, zheng2017unlabeled, frid2018synthetic, tanaka2019data, perez2017effectiveness}.
 
@@ -196,6 +196,7 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it i
 
 \begin{table*}
 	\centering
+	\caption{Details of ANN models}
 	\begin{tabular}{l|l|l|l}
 		\textbf{Parameter} & \textbf{Generator} & \textbf{Critic} & \textbf{Regressor} \\\hline
 		Hidden layers & 5 & 5 & 6 \\
@@ -206,7 +207,6 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it i
 		Layer normalization & - & Batch \cite{ioffe2015batch} & Batch \\
 		Loss function & -Critic(generated) & Critic(generated) - Critic(collected) & MSE \\
 	\end{tabular}
-	\caption{Details of ANN models}
 	\label{tbl:anndetails}
 \end{table*}
 
@@ -224,7 +224,7 @@ In proposed system, the ANN is trained using the samples from the original datas
 \section{Photonic crystal fiber design}
 \label{sec:pcf}
 
-A labelled data set of only 432 samples was collected in this work, through simulations using FV-FEM. This data set consists of the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$, taken as our independent variables. The labels are the confinement loss of the PCF. The set consists of nine different configurations of the geometric properties ($ \Lambda $, d1, d2, d3), for each configuration the confinement loss was calculated for three different analytes (Water (n=1.33), Ethanol (n=1.35) and several commercial hydrocarbon mixtures (n=1.36)).
+A labelled dataset of only 432 samples was collected in this work, through simulations using FV-FEM. This dataset consists of the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$, taken as our independent variables. The labels are the confinement loss of the PCF. The set consists of nine different configurations of the geometric properties ($ \Lambda $, d1, d2, d3), for each configuration the confinement loss was calculated for three different analytes (Water (n=1.33), Ethanol (n=1.35) and several commercial hydrocarbon mixtures (n=1.36)).
 
 \hl{We will fix the pattern and geometrical shape of the cladding air holes, and vary the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$. Then the results of this study can be carried to different types of SPR-based PCF sensors, using other suitable deep learning approaches such as Recurrent and Convolutional neural networks. }
 
@@ -235,21 +235,39 @@ A labelled data set of only 432 samples was collected in this work, through simu
 
 \subsection{Experimental setup}
 
-In order to prove the effectiveness of the proposed setup, we have performed multiple experiments over two datasets. We have built the first dataset that is used in the experiments. This is \hl{an SPR PCF configuration ... and collected using FV-FEM.} Details of this dataset is explained in Section \ref{sec:pcf}. Seven configurations were randomly selected for training both the GAN and the ANN, one configuration was held out for validation, and the last one is used for testing. Slicing the data this way allowed us to guide the network to predict the loss on a completely different configuration. Please note that we have applied $log_{10}$ to confinement loss to scale it.
+\def\dszero{Zero}
 
-Additionally, we have used the dataset that has been used in \cite{paper0}. \hl{This dataset contains 1000 samples. Inputs to this data is .... and outputs are ....} We have only used log of confinement loss as the output.
+In order to prove the effectiveness of the proposed setup, we have performed multiple experiments over two datasets. We have built the first dataset that is used in the experiments. This is \hl{an SPR PCF configuration ... and collected using FV-FEM.} Details of this dataset is explained in Section \ref{sec:pcf} and it is referred as SPR dataset. Seven configurations were randomly selected for training both the GAN and the ANN, one configuration was held out for validation, and the last one is used for testing. Slicing the data this way allowed us to guide the network to predict the loss on a completely different configuration. Please note that we have applied $log_{10}$ to confinement loss to scale it.
+
+Additionally, we have used the dataset that has been used in \cite{paper0}. \hl{This dataset contains 1000 samples. Inputs to this data is .... and outputs are ....} We have only used log of confinement loss as the output. This dataset is referred as \dszero. Details of the datasets that are used in the experiments are given in Table \ref{tbl:dataset}.
 
 We have used mean square error as in the comparisons. All algorithms are implemented using TensorFlow library in Python and experiments are performed on laptop with Intel i7-5600 CPU and 8GB of RAM. TensorFlow library is set to use only CPU for the experiments.
 
-In the following subsections, we have performed experiments to show the performance of the base ANN system by its own comparing with the state-of-the-art method in the literature, improvement gained by employing GAN phase, and finally the computational cost of the overall system compared to the simulator. All numeric comparison results are average of 10 executions.
+In the following subsections, we have performed experiments to show the performance of the base ANN system by its own comparing with the state-of-the-art method in the literature, improvement gained by employing GAN phase, and finally the computational cost of the overall system compared to the simulator. All numeric comparison results are averaged over multiple executions.
 
+\begin{table}
+\centering
+\caption{Datasets that are used in experiments}
+\begin{tabular}{l|l|l}
+	~ & SPR & \dszero \\\hline
+	Samples & 432 & 1117\\
+	Configurations & 9 & - \\
+	Parameters & 6 & 5 \\
+	Output & $log_{loss}$ & $log_{loss}$ \\
+	Testing & 48 (1 configuration) & 10\% \\
+	Testing method & 9-fold & 10-fold \\
+\end{tabular}
+\label{tbl:dataset}
+\end{table}
 
-\hl{CK: continue here.}
 
 \subsection{Performance of ANN}
 
-We train the ANN model for more than 2000 epochs, starting from the original data set. Then we augment the latter set by 1000 generated samples by our WGAN-GP, which will be demonstrated in the next subsection, and train again with the new augmented data set. The following table summarizes the hyper-parameters chosen for the ANN model:
-\begin{table}[h]
+In this set of experiments, we have analyzed the performance of the proposed ANN design. The first experiment involves in training loss over SPR dataset. In this experiment, we have trained ANN model for up to 2000 epochs and reported the training loss in Figure \ref{chart:trainingmse}. According to this experiment, training our ANN architecture more than 1000 epochs does not yield any significant improvement. Therefore, we have set the training epoch limit to 1000 in subsequent experiments.
+
+\hl{CK: continue here.}
+
+\begin{table*}[h]
 \centering
 \scalebox{1.5}{
     \begin{tabular}{|l|l|l|l|l|}
@@ -267,64 +285,63 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
     \end{tabular}
 }
 \caption{Hyper-parameters chosen for the ANN model, where $\beta_{1}$ and $\beta_{2}$ are a part of Adam parameters}
-\end{table}
+\end{table*}
 
-\newpage
-The MSE on the training sets ranged from 0.0030 to 0.0050. For all training data sets the MSE decreased in an acceptable manner. Next, we plot the predictions the ANN model made on the test set, after training using only the original set. As shown in the following figure.
+The MSE on the training sets ranged from 0.0030 to 0.0050. For all training datasets the MSE decreased in an acceptable manner. Next, we plot the predictions the ANN model made on the test set, after training using only the original set. As shown in the following figure.
 
-\begin{figure}[h]
-	\hspace*{-0.07\textwidth}
-	\begin{subfigure}{.5\textwidth}
+\begin{figure}
     \begin{tikzpicture}
 		\begin{axis}[
-		xlabel=$Epochs$, 
-		ylabel=$Training \space MSE$,
-		title={Training MSE of the ANN model},
+		xlabel=Epochs, 
+		ylabel=Training \space MSE,
+		width=0.48\textwidth,
 		grid=both,
 		minor grid style={gray!25},
 		major grid style={gray!25},
-		width=1.1\linewidth,
 		no marks]
 		\addplot[line width=1pt,solid,color=blue] %
 		table{tr_loss_ann.txt};
 		\end{axis}
 	\end{tikzpicture}
-	\end{subfigure}\hspace{0.1\textwidth}
-	\begin{subfigure}{.5\textwidth}
-	\begin{tikzpicture}
-			\begin{axis}[
-			legend pos=north west,
-			xlabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $, 
-			ylabel=$Predicted $ $ loss $ $ in $ $ Log(db/cm) $,
-			title={Length of the training dataset = 336 + 0},
-			grid=both,
-			minor grid style={gray!25},
-			major grid style={gray!25},
-			width=1.1\linewidth]
-			\addplot[
-			only marks,
-			mark size=2.9pt, mark=o, color=red, fill=red] %
-			table{dataset_336.txt};
-			\addlegendentry{$Predicted$}
-			\addplot[line width=1pt,solid,color=blue]  %
-			table{y.txt};
-			\addlegendentry{$Actual$}
-			\end{axis}
-			\end{tikzpicture}
-	\end{subfigure}
-	\caption{}
+	\caption{Training MSE of the ANN model}
+	\label{chart:trainingmse}
 \end{figure}
 
-    \newpage
+\begin{figure}
+\begin{tikzpicture}
+	\begin{axis}[
+		legend pos=north west,
+		xlabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $, 
+		ylabel=$Predicted $ $ loss $ $ in $ $ Log(db/cm) $,
+		title={Length of the training dataset = 336 + 0},
+		grid=both,
+		minor grid style={gray!25},
+		major grid style={gray!25},
+		width=0.48\textwidth
+	]
+		\addplot[
+			only marks,
+			mark size=2.9pt, mark=o, color=red, fill=red
+		] table{dataset_336.txt};
+		\addlegendentry{$Predicted$}
+		
+		\addplot[
+			line width=1pt,
+			solid,color=blue
+		] table{y.txt};
+		\addlegendentry{$Actual$}
+		
+	\end{axis}
+\end{tikzpicture}
+\end{figure}
 
 \subsection{Performance boost of GAN}
 
 During training, the metric used to monitor the WGAN-GP is the loss function of the Critic network. Its convergence signals the ending of the training phase, shown in Figure(4).
-In this subsection we discuss the results of augmenting the real data set with generated samples. Figure(4) demonstrates the predictions made by the ANN model after training with different sizes of the data set.
-This might look paradoxical to what we mentioned earlier, that ANN model benefit from large amounts of data. There are several reasons for why our ANN model is driven in the wrong direction. Even though our WGAN-GP seemed well trained, there still a domain gap between the real data and the generated data, or the expansion of data is growing in the wrong direction to that of entirely containing the real data. Furthermore, the generated data might lack realism. Or the sampling strategy adopted is poor. But the most convincing reason is the limited original training data set size of 336 samples, used to train the WGAN model in the first place. After all, with 1000 generated data samples the ANN model made quiet accurate predictions with which we are satisfied, that is we have achieved what we set out to accomplish at the beginning, to improve the accuracy of the ANN model by artificially expanding the original set.
+In this subsection we discuss the results of augmenting the real dataset with generated samples. Figure(4) demonstrates the predictions made by the ANN model after training with different sizes of the dataset.
+This might look paradoxical to what we mentioned earlier, that ANN model benefit from large amounts of data. There are several reasons for why our ANN model is driven in the wrong direction. Even though our WGAN-GP seemed well trained, there still a domain gap between the real data and the generated data, or the expansion of data is growing in the wrong direction to that of entirely containing the real data. Furthermore, the generated data might lack realism. Or the sampling strategy adopted is poor. But the most convincing reason is the limited original training dataset size of 336 samples, used to train the WGAN model in the first place. After all, with 1000 generated data samples the ANN model made quiet accurate predictions with which we are satisfied, that is we have achieved what we set out to accomplish at the beginning, to improve the accuracy of the ANN model by artificially expanding the original set.
 
-\hspace{-0.07\textwidth}
-\begin{figure}[h]
+\begin{figure}
     \begin{subfigure}{.5\textwidth}
 			\begin{tikzpicture}
 			\begin{axis}[
@@ -408,7 +425,7 @@ This might look paradoxical to what we mentioned earlier, that ANN model benefit
 \end{subfigure}
 \caption{}
 \end{figure}
-\newpage
+
 It can readily be seen that by augmenting with 1000 samples the ANN model made the best predictions, which then can be better viewed when we plot the confinement loss of the PCF versus the wavelength($\lambda$) in Figure(5).
 The most important result in these experiments is that the ANN model predicted the correct location of the peak value of the confinement loss distributions for the three different analytes used. 
 \begin{figure}
@@ -479,7 +496,7 @@ The most important result in these experiments is that the ANN model predicted t
 \end{subfigure}
 \caption{}
 \end{figure}
-\newpage
+
 \subsection{Computational performance}
 
 \hl{Training and execution time of ANN versus simulation method}
@@ -503,19 +520,19 @@ By taking advantage of Cloud Computing technology, one does not have to spend la
 
 The code for this work is available at: \url{https://github.com/Aimen-Zelaci/SPRPCF_ANN/}.
 \newline
-The elapsed training time of an ANN model depends on the parameters of the model, for example, the number of hidden layers and hidden neurons, mini batch size, data set size, number of epochs, the framework used to code the model, and of course the specifications of the machine.
-In this work we fixed the number of epochs to 2000 and executed training using Tensorflow(Keras) and Pytorch frameworks. As demonstrated in Tables(5,6). It is worth mentioning the differences between training with full batch or mini batches. In full batch training, the whole data set is passed to the model for each iteration. In contrast, mini-batch-training, the data set is split into small mini batches of equal sizes, then passed to the model seperately, thus for each epoch there will be exactly length  of the data set devided by the mini batch size steps, and hence slowing down the training process. Previous works \cite{masters2018revisiting, keskar2016large} have firmly proved the advantages of using the correct mini batch size as oppose to large batch sizes. Mini batches allow for more frequent gradient calculations, that results in more stable and reliable training. Perhaps one of the main downsides of using large batch size is the poor generalization resulting in a phenomena know as the "generalization gap". Active research \cite{hoffer2017train} is on going to actually use large batch sizes while mainting the performance of the model and shortning the training runtime. A closely related recent work \cite{paper0}, conducted their expirements using full batch to train the model. In this work we will use the latter paper availabe code on Github for Pytorch expirements, with slight modifications to fit our purposes. Finally, we compare the performance of the WGAN model, using Tensorflow(Keras) framework, of CPU based to that of GPU based.
+The elapsed training time of an ANN model depends on the parameters of the model, for example, the number of hidden layers and hidden neurons, mini batch size, dataset size, number of epochs, the framework used to code the model, and of course the specifications of the machine.
+In this work we fixed the number of epochs to 2000 and executed training using Tensorflow(Keras) and Pytorch frameworks. As demonstrated in Tables(5,6). It is worth mentioning the differences between training with full batch or mini batches. In full batch training, the whole dataset is passed to the model for each iteration. In contrast, mini-batch-training, the dataset is split into small mini batches of equal sizes, then passed to the model seperately, thus for each epoch there will be exactly length  of the dataset devided by the mini batch size steps, and hence slowing down the training process. Previous works \cite{masters2018revisiting, keskar2016large} have firmly proved the advantages of using the correct mini batch size as oppose to large batch sizes. Mini batches allow for more frequent gradient calculations, that results in more stable and reliable training. Perhaps one of the main downsides of using large batch size is the poor generalization resulting in a phenomena know as the "generalization gap". Active research \cite{hoffer2017train} is on going to actually use large batch sizes while mainting the performance of the model and shortning the training runtime. A closely related recent work \cite{paper0}, conducted their expirements using full batch to train the model. In this work we will use the latter paper availabe code on Github for Pytorch expirements, with slight modifications to fit our purposes. Finally, we compare the performance of the WGAN model, using Tensorflow(Keras) framework, of CPU based to that of GPU based.
 
 \begin{table}[h]
 \begin{tabular}{lllll}
-    & data set size & mini batch size & Time elapsed (sec) \\
+    & dataset size & mini batch size & Time elapsed (sec) \\
 Mini batches    &336 + 0 & 8 & 214 & \\
     &336 + 1000 & 8 & 744 & \\
     &336 + 2000 & 16 & 685  & \\ 
     &336 + 3000 & 20 & 861  & \\
 \end{tabular}
 \begin{tabular}{lllll}
-   & data set size & Time elapsed (sec) \\
+   & dataset size & Time elapsed (sec) \\
 Full batch    &336 + 0 &  23 & \\
     &336 + 1000 &  34 & \\
     &336 + 2000 &  45 & \\ 
@@ -525,14 +542,14 @@ Full batch    &336 + 0 &  23 & \\
 \end{table}
 \begin{table}[h]
 \begin{tabular}{lllll}
- & data set size & mini batch size & Time elapsed (sec) \\
+ & dataset size & mini batch size & Time elapsed (sec) \\
 Mini batches    & 336 + 0 & 8 & 1315 & \\
     & 336 + 1000 & 8 & 6453  & \\
     & 336 + 2000 & 16 & 4751  & \\ 
     & 336 + 3000 & 20 & 5132 & \\
 \end{tabular}
 \begin{tabular}{lllll}
-   &data set size & Time elapsed (sec) \\
+   &dataset size & Time elapsed (sec) \\
    Full batch &336 + 0 &  36  & \\
     & 336 + 1000 &  98  & \\
     & 336 + 2000 &  195  & \\ 
