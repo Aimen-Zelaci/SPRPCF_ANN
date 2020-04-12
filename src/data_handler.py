@@ -63,8 +63,11 @@ def load_data(fname):
     #print(scaler.mean_)
     #print(scaler.var_)
     #df = scaler.transform(df)
+
+    # Convert to micro meter
     df[:,2] /= 10
     df[:,4:8] /= 10
+
     '''
     scaler = StandardScaler(with_mean=False)
     df_temp = scaler.fit_transform(df)
