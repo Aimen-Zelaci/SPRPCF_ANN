@@ -19,9 +19,13 @@
         │
         │─── va_loss_curves
         │     │───With augmentation
-        │          │───loss_with_augmentation.txt
-        │          │─── va_with_aumentation.txt
-        │
+        │     │     │───loss_with_augmentation.txt
+        │     │     │─── va_with_aumentation.txt
+        │     │
+        │     │───Without augmentation
+        │     │     │───loss_withoutt_augmentation.txt
+        │     │     │─── va_withoutt_aumentation.txt
+        │     │───
         │
         ├── With_augmentation
         │   ├── best_pred_plot          # Best Plot (Prediction vs labels)
