@@ -16,7 +16,7 @@
 - Both expirements folders have similar folder tree
 
 ```
-    expirements_spr-pcf
+    experiments_spr-pcf
         │
         │─── va_loss_curves             # Contains all loss / va curves
         │     │───With augmentation
