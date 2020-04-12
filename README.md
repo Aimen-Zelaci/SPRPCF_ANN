@@ -13,18 +13,24 @@
 - Train kfolds: `python main.py -k_folds`
 
 # Expirements Folder
+- Both expirements folders have similar folder tree
 
 ```
-    expirements
+    expirements_spr-pcf
         │
-        │─── va_loss_curves
+        │─── va_loss_curves             # Contains all loss / va curves
         │     │───With augmentation
-        │     │     │───loss_with_augmentation.txt
-        │     │     │─── va_with_aumentation.txt
+        │     │     │───ann
+        │     │     │    │─── ann_tr_loss.txt
+        │     │     │    │─── ann_va_loss.txt
+        │     │     │
+        │     │     │─── wgan
+        │     │     │     │─── wgan_tr_loss.txt
+        │     │     │───
         │     │
         │     │───Without augmentation
-        │     │     │───loss_withoutt_augmentation.txt
-        │     │     │─── va_withoutt_aumentation.txt
+        │     │     │───ann_loss_without_augment.txt
+        │     │     │─── ann_va_loss_without_augment.txt
         │     │───
         │
         ├── With_augmentation
