@@ -14,38 +14,41 @@
 
 # Expirements Folder
 
-expirements
-    │
-    │─── va_loss_curves
-    │     │───With augmentation
-    │          │───loss_with_augmentation.txt
-    │          │─── va_with_aumentation.txt
-    │
-    │
-    ├── With_augmentation
-    │   ├── best_pred_plot          # Best Plot (Prediction vs labels)
-    │   │   │──── pred_vs_labels.txt    # labels \t predictions.
-    │   │
-    │   │
-    │   .
-    │   .
-    │   .
-    │   │─── kfold-predictions-vs-labels # All plots (for each fold)
-    │   .
-    │   .
-    │   .
-    │   └── kfold-MSEe
-    │   │    │────MSEs.txt       # Fold \t MSE \t values
-    │   .
-    │   .
-    │   .
-    │   │─── hyper_params.json  # Network's hyper params (Wgan + ANN)
-    │
-    ├── Without_augmentation
-    │   └── kfold-MSEe
-    │   │    │────MSEs.txt       # Fold \t MSE \t values
-    │   .
-    │   .
-    │   .
-    │   │
-    │   │─── hyper_params.json  # Network's hyper parameters
+```
+    expirements
+        │
+        │─── va_loss_curves
+        │     │───With augmentation
+        │          │───loss_with_augmentation.txt
+        │          │─── va_with_aumentation.txt
+        │
+        │
+        ├── With_augmentation
+        │   ├── best_pred_plot          # Best Plot (Prediction vs labels)
+        │   │   │──── pred_vs_labels.txt    # labels \t predictions.
+        │   │
+        │   │
+        │   .
+        │   .
+        │   .
+        │   │─── kfold-predictions-vs-labels # All plots (for each fold)
+        │   .
+        │   .
+        │   .
+        │   └── kfold-MSEe
+        │   │    │────MSEs.txt       # Fold \t MSE \t values
+        │   .
+        │   .
+        │   .
+        │   │─── hyper_params.json  # Network's hyper params (Wgan + ANN)
+        │
+        ├── Without_augmentation
+        │   └── kfold-MSEe
+        │   │    │────MSEs.txt       # Fold \t MSE \t values
+        │   .
+        │   .
+        │   .
+        │   │
+        │   │─── hyper_params.json  # Network's hyper parameters
+
+    ```
