@@ -237,7 +237,7 @@ A labelled dataset of only 432 samples was collected in this work, through simul
 
 In order to prove the effectiveness of the proposed setup, we have performed multiple experiments over two datasets. We have built the first dataset that is used in the experiments. This is \hl{an SPR PCF configuration ... and collected using FV-FEM.} Details of this dataset is explained in Section \ref{sec:pcf} and it is referred as SPR dataset. Having nine configurations, we have performed 9-fold testing on this dataset. Each fold tests a single configuration using the other configurations as training data. Slicing the data this way allowed us to guide the network to predict the loss on a completely different configuration. Please note that we have applied $log_{10}$ to confinement loss to scale it.
 
-Additionally, we have used the dataset that has been used in \cite{paper0}. \hl{This dataset contains over 1000 samples. Inputs to this data is .... and outputs are ....} We have only used log of confinement loss as the output. This dataset is referred as \dszero. Details of the datasets that are used in the experiments are given in Table \ref{tbl:dataset}.
+Additionally, we have used the dataset that has been used in \cite{paper0}. \hl{This dataset contains over 1000 samples. Inputs to this data is .... and outputs are ....} We have only used log of confinement loss as the output. This dataset is referred as \dszero. Details of the datasets that are used in the experiments are given in Table \ref{tbl:dataset}. As a final note, the range and domain of these datasets are different; therefore, all comparisons should be drawn within the same dataset.
 
 We have used mean square error as in the comparisons. All algorithms are implemented using TensorFlow library in Python and experiments are performed on laptop with Intel i7-5600 CPU and 8GB of RAM. TensorFlow library is set to use only CPU for the experiments.
 
@@ -333,13 +333,13 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 \begin{subfigure}{0.48\textwidth}
 	\begin{tikzpicture}
 		\begin{axis}[
-			legend pos=north west,
 			xlabel=Actual loss in $log(db/cm)$, 
 			ylabel=Predicted loss in $log(db/cm)$,
 			grid=both,
 			minor grid style={gray!25},
 			major grid style={gray!25},
-			width=\textwidth
+			width=\textwidth,
+			legend pos=south east
 		]
 			\addplot[
 				only marks,
@@ -372,13 +372,13 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 \begin{subfigure}{0.48\textwidth}
     \begin{tikzpicture}
 	\begin{axis}[
-		legend pos=north west,
 		xlabel=Actual loss in $log(db/cm)$, 
 		ylabel=Predicted loss in $log(db/cm)$,
 		grid=both,
 		minor grid style={gray!25},
 		major grid style={gray!25},
-		width=\textwidth
+		width=\textwidth,
+		legend pos=south east
 	]
 		\addplot[
 			only marks,
@@ -415,14 +415,14 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 \begin{subfigure}{\textwidth}
 	\begin{tikzpicture}
 	\begin{axis}[
-		legend pos=north west,
 		xlabel=$Wavelength(\lambda) $  $ in $  $ nm $, 
 		ylabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $,
 		grid=both,
 		minor grid style={gray!25},
 		major grid style={gray!25},
 		title={$n_{analyte=1.34}$},
-		width=0.48\textwidth
+		width=0.48\textwidth,
+		legend pos=north east
 	]
 	\addplot[
 		only marks,
@@ -450,14 +450,14 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 	\end{tikzpicture}
 	\begin{tikzpicture}
 	\begin{axis}[
-		legend pos=north west,
 		xlabel=$Wavelength(\lambda) $  $ in $  $ nm $, 
 		ylabel=$~$,
 		grid=both,
 		minor grid style={gray!25},
 		major grid style={gray!25},
 		title={$n_{analyte=1.35}$},
-		width=0.48\textwidth
+		width=0.48\textwidth,
+		legend pos=north east
 	]
 	\addplot[
 		only marks,
@@ -493,13 +493,16 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 
 \subsection{Performance boost of GAN}
 
-During training, the metric used to monitor the WGAN-GP is the loss function of the Critic network. Its convergence signals the ending of the training phase, shown in Figure(4).
-In this subsection we discuss the results of augmenting the real dataset with generated samples. Figure(4) demonstrates the predictions made by the ANN model after training with different sizes of the dataset.
-This might look paradoxical to what we mentioned earlier, that ANN model benefit from large amounts of data. There are several reasons for why our ANN model is driven in the wrong direction. Even though our WGAN-GP seemed well trained, there still a domain gap between the real data and the generated data, or the expansion of data is growing in the wrong direction to that of entirely containing the real data. Furthermore, the generated data might lack realism. Or the sampling strategy adopted is poor. But the most convincing reason is the limited original training dataset size of 336 samples, used to train the WGAN model in the first place. After all, with 1000 generated data samples the ANN model made quiet accurate predictions with which we are satisfied, that is we have achieved what we set out to accomplish at the beginning, to improve the accuracy of the ANN model by artificially expanding the original set.
+We have performed experiments to showcase the improvement gained by augmenting training samples using a GAN. In Figure ... the results of these experiments has shown. GAN does not only boost the score of the proposed ANN system, but also decreases the MSE on the method proposed in \cite{paper0}. An additional note to take away from this experiment is that the dataset with the least number of samples has the highest improvement, which is demonstrated in a clearer fashion in Table .... This is due the fact that the number of training samples in this dataset is insufficient to train the regressor networks.
+
+\hl{Information about the number of augmented samples.}
 
 
-It can readily be seen that by augmenting with 1000 samples the ANN model made the best predictions, which then can be better viewed when we plot the confinement loss of the PCF versus the wavelength($\lambda$) in Figure(5).
-The most important result in these experiments is that the ANN model predicted the correct location of the peak value of the confinement loss distributions for the three different analytes used. 
+
+
+The final set of experiments shows the stability that GAN phase adds. In Table ... we have listed minimum, maximum, average MSE along with the standard deviation between folds in the testing. It is clear that the GAN phase not only improves the average case but significantly improves the worst case, which is important in a live setting. This added stability can also be observed in Figure \ref{chart:trainingmse}, where the training loss has less fluctuations when the data augmentation is employed.
+
+
 
 \subsection{Computational performance}
 
@@ -516,7 +519,7 @@ The elapsed training time of an ANN model depends on the parameters of the model
 
 In this work we fixed the number of epochs to 2000 and executed training using Tensorflow(Keras) and Pytorch frameworks. As demonstrated in Tables(5,6). It is worth mentioning the differences between training with full batch or mini batches. In full batch training, the whole dataset is passed to the model for each iteration. In contrast, mini-batch-training, the dataset is split into small mini batches of equal sizes, then passed to the model seperately, thus for each epoch there will be exactly length  of the dataset devided by the mini batch size steps, and hence slowing down the training process. Previous works \cite{masters2018revisiting, keskar2016large} have firmly proved the advantages of using the correct mini batch size as oppose to large batch sizes. Mini batches allow for more frequent gradient calculations, that results in more stable and reliable training. Perhaps one of the main downsides of using large batch size is the poor generalization resulting in a phenomena know as the "generalization gap". Active research \cite{hoffer2017train} is on going to actually use large batch sizes while mainting the performance of the model and shortning the training runtime. A closely related recent work \cite{paper0}, conducted their expirements using full batch to train the model. In this work we will use the latter paper availabe code on Github for Pytorch expirements, with slight modifications to fit our purposes. Finally, we compare the performance of the WGAN model, using Tensorflow(Keras) framework, of CPU based to that of GPU based.
 
-\begin{table}[h]
+\begin{table}
 \begin{tabular}{lllll}
     & dataset size & mini batch size & Time elapsed (sec) \\
 Mini batches    &336 + 0 & 8 & 214 & \\
@@ -533,7 +536,7 @@ Full batch    &336 + 0 &  23 & \\
 \end{tabular}
 \caption{Training performance using Tensorflow(Keras). CPU based training.}
 \end{table}
-\begin{table}[h]
+\begin{table}
 \begin{tabular}{lllll}
  & dataset size & mini batch size & Time elapsed (sec) \\
 Mini batches    & 336 + 0 & 8 & 1315 & \\
