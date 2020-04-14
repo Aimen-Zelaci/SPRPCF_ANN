@@ -1,0 +1,2 @@
+model_checkpoint_path: "wgan-1499"
+all_model_checkpoint_paths: "wgan-1499"
