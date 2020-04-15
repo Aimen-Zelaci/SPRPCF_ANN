@@ -10,6 +10,7 @@
 \usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{cite}
+\usepackage{multirow}
 
 %for flowcharts
 \tikzstyle{testing} = [
@@ -96,7 +97,7 @@
 \maketitle
 	
 \begin{abstract}
-Photonic crystal fibers (PCF) for specific applications are designed and optimized by both industry experts and researches. However, the potential number of combinations possible for a single application is very large. This issue combined by the speed of the commonly used Full Vectorial Finite Element Method (FV-FEM) causes the task to take significant amount of time. As stated in the previous works, artificial neural networks (ANN) can predict the result of numerical simulations much faster. However, there are two issues with the methods proposed previously. Namely, the required number of samples for training and the overall accuracy of these methods. In this paper, we  propose the use of generative adversarial networks (GAN) to augment the real dataset to train an ANN model. Experimental analysis suggest that the proposed combination not only accurately predicts the confinement loss even with limited amount of data but also GAN can be used to improve existing methods in the literature. Finally, it is shown that this system can predict the confinement loss over a range of analytes and wavelengths in a completely new set of geometric configuration.
+Photonic crystal fibers (PCF) for specific applications are designed and optimized by both industry experts and researches. However, the potential number of combinations possible for a single application is very large. This issue combined by the speed of the commonly used Full Vectorial Finite Element Method (FV-FEM) causes the task to take significant amount of time. As stated in the previous works, artificial neural networks (ANN) can predict the result of numerical simulations much faster. However, there are two issues with the methods proposed previously: the required number of samples for training and the generality of these methods. In this paper, we  propose the use of generative adversarial networks (GAN) to augment the real dataset to train an ANN model. Experimental analysis suggest that the proposed combination not only accurately predicts the confinement loss even with limited amount of data but also GAN can be used to improve existing methods in the literature. Finally, it is shown that this system can predict the confinement loss over a range of analytes and wavelengths in a completely new set of geometric configuration and generic enough not to require any additional tuning when used in a new dataset.
 \end{abstract}
 
 \section{Introduction}
@@ -162,7 +163,7 @@ In this section details of the proposed method is discussed. Training of the sys
 
 Generative adversarial networks are introduced in \cite{goodfellow2014generative}. We have employed GAN to augment the number of samples that are used in training. A GAN is composed of two neural networks: generator and discriminator. The aim of the generator is to transform fully randomized data into data that follows the distribution of the original dataset. Discriminator assesses the performance of the generator and provides feedback for training. Instead of directly training generator, it is trained through this feedback. This paradigm avoids over-fitting the data.
 
-It is possible to use different metrics for training in GAN [references here], for this project we have selected WGAN Wasserstein distance metric. This variant has been proposed by Arjovsky et al in \cite{arjovsky2017wasserstein}. In this system, discriminator is named as critic and it measures the distance between the generated data and the real data. The reason behind choosing WGAN over other methods is to be able to determine a stopping criteria. In a regular GAN system, training is stopped when the generated data is deemed viable by an observer. Since GAN is often used in generation of image, video or audio, using a human in the loop is effective. However, in our problem, it is not viable for a human to judge the generated data. Automating this procedure to remove the human in-the-loop can lead to over or under-fitting, which in turn degrades the performance. WGAN uses an adaptive stopping criteria that does not have the issue mentioned above. Additionally, we have selected to incorporate Gradient penalty to improve WGAN proposed in \cite{gulrajani2017improved}. This improved WGAN system converges in a stable manner without having to fine tune hyper-parameters of the system. The flowchart of this system is given in Figure \ref{fig:gan}.
+It is possible to use different metrics for training in GAN \hl{[references here]}, for this project we have selected WGAN Wasserstein distance metric. This variant has been proposed by Arjovsky et al in \cite{arjovsky2017wasserstein}. In this system, discriminator is named as critic and it measures the distance between the generated data and the real data. The reason behind choosing WGAN over other methods is to be able to determine a stopping criteria. In a regular GAN system, training is stopped when the generated data is deemed viable by an observer. Since GAN is often used in generation of image, video or audio, using a human in the loop is effective. However, in our problem, it is not viable for a human to judge the generated data. Automating this procedure to remove the human in-the-loop can lead to over or under-fitting, which in turn degrades the performance. WGAN uses an adaptive stopping criteria that does not have the issue mentioned above. Additionally, we have selected to incorporate Gradient penalty to improve WGAN proposed in \cite{gulrajani2017improved}. This improved WGAN system converges in a stable manner without having to fine tune hyper-parameters of the system. The flowchart of this system is given in Figure \ref{fig:gan}.
 
 In this work, both the Critic and the generator are fully connected feed forward MLP models. The details of the networks are given in Table \ref{tbl:anndetails}. The output from this system should be input and output pairs that will be used to train ANN part of the system. In our PCF system we have 6 input parameters and a single output parameter making a total of 7 parameters that will be used in the GAN phase. In Section \ref{sec:exp}, we have experimented using a different PCF system with different inputs, resulting a different number of parameters for the system. The generator is supplied with the same number of parameters as its expected output, that is 7 for our PCF system. These parameters are generated using Gaussian noise and is called latent variable. Once the training phase is complete, the generator and the filter is used to augment the number of training samples that are available for ANN.
 
@@ -201,11 +202,12 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it i
 		\textbf{Parameter} & \textbf{Generator} & \textbf{Critic} & \textbf{Regressor} \\\hline
 		Hidden layers & 5 & 5 & 6 \\
 		Neurons in hidden layers & $ 2^{2}~batchsize $ & $2^{layers}~batchsize$ & 50 \\
+		Batch size & 32 & 32 & 48 \\
 		Activation function & ReLU & Leaky ReLU & ReLU \\
 		Optimizer & Adam \cite{kingma2014adam} & Adam & Adam \\
 		Input normalization & None & Z-score (for collected samples) & Z-score \\
 		Layer normalization & - & Batch \cite{ioffe2015batch} & Batch \\
-		Loss function & -Critic(generated) & Critic(generated) - Critic(collected) & MSE \\
+		Loss function & Critic(generated) & Critic(generated) - Critic(collected) & MSE \\
 	\end{tabular}
 	\label{tbl:anndetails}
 \end{table*}
@@ -214,7 +216,9 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it i
 \subsection{Artificial neural network design}
 \label{ssec:ann}
 
-The ANN model employed in this research is a fully-connected feed-forward Multi Layer Perceptron (MLP) consists of an input layer, an output layer, and 5 hidden layers. The ANN is designed and trained to estimate containment loss in a regression configuration. We have applied $log_{10}$ to confinement loss in order to keep its numeric stability across a wide range. Each hidden layer contains 50 neurons and uses Rectified Linear Unit (ReLU) activation function. Table \ref{tbl:anndetails} summarizes the details of this model. 
+The ANN model employed in this research is a fully-connected feed-forward Multi Layer Perceptron (MLP) consists of an input layer, an output layer, and 5 hidden layers. The ANN is designed and trained to estimate containment loss in a regression configuration. We have applied $log_{10}$ to confinement loss in order to keep its numeric stability across a wide range. Each hidden layer contains 50 neurons and uses Rectified Linear Unit (ReLU) activation function. Table \ref{tbl:anndetails} summarizes the details of this model.
+
+In our model, we have used mini-batch training with 48 samples as the batch size. In contrast to full-batch training, mini-batch training allows more frequent gradient calculations, improving the stability and reliability of the training \cite{masters2018revisiting, keskar2016large}. The downside of using mini-batches are added computational complexity during training. However, it has no adverse effect on the testing phase.
 
 We have adopted Adam \cite{kingma2014adam} as the optimizer and the mean squared error (MSE) as the loss/cost function. In addition, we use Batch Normalization algorithm \cite{ioffe2015batch} to accelerate training, reduce the effects of initial randomized state and mitigate the problem of internal covariate shift. In proposed system, the ANN is trained using the samples from the original dataset and the augmented samples generated by the GAN phase.
 
@@ -261,47 +265,27 @@ In the following subsections, we have performed experiments to show the performa
 
 \subsection{Performance of ANN}
 
-In this set of experiments, we have analyzed the performance of the proposed ANN design. The first experiment involves in training loss over SPR dataset. In this experiment, we have trained ANN model for up to 2000 epochs and reported the training loss in Figure \ref{chart:trainingmse}. According to this experiment, training our ANN architecture more than 1000 epochs does not yield to any significant improvement. Therefore, we have set the training epoch limit to 1000 in subsequent experiments. Additionally, it is clear that the use of augmented samples from the GAN phase reduces the oscillations in the training error.
+In this set of experiments, we have analyzed the performance of the proposed ANN design. The first experiment involves in training loss over SPR dataset. In this experiment, we have trained ANN model for up to 2000 epochs and reported the training loss in Figure \ref{chart:trainingmse}. We have additionally tested the accuracy with different number of epochs in training. According to this experiment, training our ANN architecture more than 2000 epochs does not yield to any improvement. Therefore, we have set the training epoch limit to 2000 in subsequent experiments. However, this number depends on dataset and at times additional training can improve the result. Additionally, it is clear that the use of augmented samples from the GAN phase reduces the oscillations in the training error.
 
 We have performed experiements comparing the proposed ANN architecture with the state-of-the-art method proposed in \cite{paper0}. Results of this experiment is demonstrated in Figure \ref{chart:perfnoaug}. Please note that in the experiment involving SPR dataset, ANN models are predicting a new configuration and the number of samples available for training is lower. Therefore, they both have higher error rate compared to the \dszero{} dataset. 
 
-
-\begin{table*}[h]
-\hl{Needs fixing}
-\caption{Hyper-parameters chosen for the ANN model, where $\beta_{1}$ and $\beta_{2}$ are a part of Adam parameters}
-\centering
-\scalebox{1.5}{
-    \begin{tabular}{|l|l|l|l|l|}
-    \hline
-Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ & $\beta_{2}$\\
-\hline
-336 & $ 1\times10^{-04} $ & 8 & 0.9 & 0.999 \\
-\hline
-336 + 1000 & $ 1\times10^{-04} $ & 8 & 0.9 & 0.999 \\
-\hline
-336 + 2000 & $ 2\times10^{-04} $ & 16 & 0.9 & 0.999 \\
-\hline
-336 + 3000 & $ 2.5\times10^{-04} $ & 20  & 0.9 & 0.999 \\
-\hline
-    \end{tabular}
-}
-\end{table*}
 
 \begin{figure*}
 	\begin{subfigure}{.48\textwidth}
 	\centering
     \begin{tikzpicture}
 		\begin{axis}[
-		xlabel=Epochs, 
-		ylabel=Training \space MSE,
-		width=\textwidth,
-		grid=both,
-		minor grid style={gray!25},
-		major grid style={gray!25},
-		ymax=2,
-		no marks]
+			xlabel=Epochs, 
+			ylabel=Training \space MSE,
+			width=\textwidth,
+			grid=both,
+			minor grid style={gray!25},
+			major grid style={gray!25},
+			ymax=2,
+			no marks
+		]
 		\addplot[line width=1pt,solid,color=blue] %
-		table{../../experiments_spr-pcf/va_loss_curves/With augmentation/ann/ann_tr_loss.txt};
+		table{../../loss_curves_2k/ann_tr_loss_2k_with.txt};
 		\end{axis}
 	\end{tikzpicture}
 	\caption{With augmentation}
@@ -310,16 +294,16 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 	\centering
 	\begin{tikzpicture}
 		\begin{axis}[
-		xlabel=Epochs, 
-		ylabel=Training \space MSE,
-		width=\textwidth,
-		grid=both,
-		minor grid style={gray!25},
-		major grid style={gray!25},
-		ymax=2,
-		no marks]
+			xlabel=Epochs, 
+			width=\textwidth,
+			grid=both,
+			minor grid style={gray!25},
+			major grid style={gray!25},
+			ymax=2,
+			no marks
+		]
 		\addplot[line width=1pt,solid,color=blue] %
-		table{../../experiments_spr-pcf/va_loss_curves/Without augmentation/ann_loss_without_augmt.txt};
+		table{../../loss_curves_2k/ann_tr_loss_2k_without.txt};
 		\end{axis}
 	\end{tikzpicture}
 	\caption{Without augmentation}
@@ -328,6 +312,7 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 	\caption{Training MSE of the ANN model with (a) and without (b) GAN phase obtained from SPR dataset}
 	\label{chart:trainingmse}
 \end{figure*}
+
 
 \begin{figure*}
 \begin{subfigure}{0.48\textwidth}
@@ -384,15 +369,14 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 			only marks,
 			mark size=2.9pt, mark=o, color=red, fill=red
 		] 
-		table{../../experiments_pcf2/Without_augmentation/kfold-predictions-vs-labels/8th/graph_data.txt};
+		table{../../expirrements_pcf2/Our_net/without_augment/kfold-predictions-vs-labels/2nd/graph_data.txt};
 		\addlegendentry{$Proposed$}
 		
 		\addplot[
-			only marks,
-			mark size=2.9pt, mark=x, color=green
+		only marks,
+		mark size=2.9pt, mark=x, color=green
 		] 
-		%table{??};
-		coordinates{(-5, -10)};
+		table{../../expirrements_pcf2/Their_net/without_augment/kfold-predictions-vs-labels/2nd/graph_data.txt};
 		\addlegendentry{\cite{paper0}}
 		
 		\draw[
@@ -428,7 +412,7 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 		only marks,
 		mark size=2.9pt, mark=o, color=red, fill=red
 	]
-	table[x={wave},y={predicted}]{data/vswavelength134_fold1.txt};
+	table[x={wave},y={predicted}]{data/vswavelength134_fold9_noaug.txt};
 	\addlegendentry{$Proposed$}
 	
 	\addplot[
@@ -442,12 +426,12 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 	\addplot[
 		color=blue
 	] 
-	table[x={wave},y={real}]{data/vswavelength134_fold1.txt};
+	table[x={wave},y={real}]{data/vswavelength134_fold9_noaug.txt};
 	coordinates{(6.8, 7.2)};
 	\addlegendentry{Actual}
-	
 	\end{axis}
 	\end{tikzpicture}
+	%
 	\begin{tikzpicture}
 	\begin{axis}[
 		xlabel=$Wavelength(\lambda) $  $ in $  $ nm $, 
@@ -463,7 +447,7 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 		only marks,
 		mark size=2.9pt, mark=o, color=red, fill=red
 	] 
-	table[x={wave},y={predicted}]{data/vswavelength135_fold1.txt};
+	table[x={wave},y={predicted}]{data/vswavelength135_fold9_noaug.txt};
 	\addlegendentry{$Proposed$}
 	            
      \addplot[
@@ -478,7 +462,7 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 	\addplot[
 		color=blue
 	] 
-	table[x={wave},y={real}]{data/vswavelength135_fold1.txt};
+	table[x={wave},y={real}]{data/vswavelength135_fold9_noaug.txt};
 	\addlegendentry{Actual}
 	
 	\end{axis}
@@ -493,80 +477,246 @@ Length of the training data-set & Learning rate& Mini batch size & $\beta_{1}$ &
 
 \subsection{Performance boost of GAN}
 
-We have performed experiments to showcase the improvement gained by augmenting training samples using a GAN. In Figure ... the results of these experiments has shown. GAN does not only boost the score of the proposed ANN system, but also decreases the MSE on the method proposed in \cite{paper0}. An additional note to take away from this experiment is that the dataset with the least number of samples has the highest improvement, which is demonstrated in a clearer fashion in Table .... This is due the fact that the number of training samples in this dataset is insufficient to train the regressor networks.
-
-\hl{Information about the number of augmented samples.}
+The first set of experiments performed on GAN phase is the number of the augmented samples. In these experiments we have started augmentation by using 500 samples, increasing it by another 500 per experiment. According to these experiments we have reached the minimum MSE at 1000 samples. Adding further samples reduces the performance and increases the training time. The results of this experiment is demonstrated in Figure \ref{chart:gansamples}. This number may depend on the dataset that is used. However, in our experiments 1000 augmented samples produce good results in both datasets.
 
 
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[]
+	\begin{axis}[
+	ybar, axis x line=bottom, xlabel=Augmented samples, 
+	xmin=-100,xmax=2100,
+	ymin=0,ymax=1,
+	width=0.48\textwidth, height=6cm,
+	axis y line=left, ylabel=MSE, 
+	legend cell align=left,
+	legend style={draw=none, at={(0.5,-0.25)},anchor=north,/tikz/every even column/.append style={column sep=1.0cm}}, 
+	ylabel near ticks, ylabel shift={-5pt},
+	grid = major, legend columns=4
+	]
+	
+	\pgfplotsset{every axis/.append style={font=\small, thick, tick style={semithick}}}
+	\pgfplotsset{every axis label/.append style={font=\small\sffamily\it}}
+	
+	
+	\addplot[fill=black!90!white] 
+	coordinates {
+		(0, 0.89)
+		(500, 0.37)
+		(1000, 0.31)
+		(1500, 0.5)
+		(2000, 0.38)
+	};
+	            
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Effect of increasing augmented samples on MSE.}
+	\label{chart:gansamples}
+\end{figure}
 
 
-The final set of experiments shows the stability that GAN phase adds. In Table ... we have listed minimum, maximum, average MSE along with the standard deviation between folds in the testing. It is clear that the GAN phase not only improves the average case but significantly improves the worst case, which is important in a live setting. This added stability can also be observed in Figure \ref{chart:trainingmse}, where the training loss has less fluctuations when the data augmentation is employed.
+We have performed experiments to showcase the improvement gained by augmenting training samples using a GAN. In Figure \ref{chart:gan}, the results of these experiments has shown. An additional note to take away from this experiment is that the dataset with the least number of samples has the highest improvement, which is demonstrated in a clearer fashion in Table \ref{tbl:all}. This is due the fact that the number of training samples in this dataset is insufficient to train the regressor network.
 
+
+\begin{figure*}
+\begin{subfigure}{0.48\textwidth}
+	\begin{tikzpicture}
+		\begin{axis}[
+			xlabel=Actual loss in $log(db/cm)$, 
+			ylabel=Predicted loss in $log(db/cm)$,
+			grid=both,
+			minor grid style={gray!25},
+			major grid style={gray!25},
+			width=\textwidth,
+			legend pos=south east
+		]
+			\addplot[
+				only marks,
+				mark size=2.9pt, mark=o, color=red, fill=red
+			] table{../../experiments_spr-pcf/Without_augmentation/kfold-predictions-vs-labels/1st/graph_data.txt};
+			\addlegendentry{With GAN}
+			
+			\addplot[
+				only marks,
+				mark size=2.9pt, mark=x, color=green
+			] %table{??};
+			coordinates{(7.2, 6.8)};
+			\addlegendentry{Without GAN}
+			
+			\draw[
+				line width=1pt,
+				solid,color=blue
+			]
+			(axis cs:\pgfkeysvalueof{/pgfplots/xmin},\pgfkeysvalueof{/pgfplots/xmin}) -- 
+			(axis cs:\pgfkeysvalueof{/pgfplots/xmax},\pgfkeysvalueof{/pgfplots/xmax});
+			\addlegendimage{line legend, 
+				line width=1pt,
+				solid,color=blue}
+			\addlegendentry{$Actual$}
+			
+		\end{axis}
+	\end{tikzpicture}
+	\caption{SPR dataset}
+\end{subfigure}
+\begin{subfigure}{0.48\textwidth}
+    \begin{tikzpicture}
+	\begin{axis}[
+		xlabel=Actual loss in $log(db/cm)$, 
+		ylabel=Predicted loss in $log(db/cm)$,
+		grid=both,
+		minor grid style={gray!25},
+		major grid style={gray!25},
+		width=\textwidth,
+		legend pos=south east
+	]
+		\addplot[
+			only marks,
+			mark size=2.9pt, mark=o, color=red, fill=red
+		] 
+		table{../../expirrements_pcf2/Our_net/without_augment/kfold-predictions-vs-labels/2nd/graph_data.txt};
+		\addlegendentry{With GAN}
+		
+		\addplot[
+		only marks,
+		mark size=2.9pt, mark=x, color=green
+		] 
+		table{../../expirrements_pcf2/Their_net/without_augment/kfold-predictions-vs-labels/2nd/graph_data.txt};
+		\addlegendentry{Without GAN}
+		
+		\draw[
+			line width=1pt,
+			solid,color=blue
+		]
+		(axis cs:\pgfkeysvalueof{/pgfplots/xmin},\pgfkeysvalueof{/pgfplots/xmin}) -- 
+		(axis cs:\pgfkeysvalueof{/pgfplots/xmax},\pgfkeysvalueof{/pgfplots/xmax});
+		\addlegendimage{line legend, 
+			line width=1pt,
+			solid,color=blue}
+		\addlegendentry{$Actual$}
+		
+		\end{axis}
+    \end{tikzpicture}
+    \caption{\dszero{} dataset}
+\end{subfigure}
+\vspace{0.75cm}
+
+\begin{subfigure}{\textwidth}
+	\begin{tikzpicture}
+	\begin{axis}[
+		xlabel=$Wavelength(\lambda) $  $ in $  $ nm $, 
+		ylabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $,
+		grid=both,
+		minor grid style={gray!25},
+		major grid style={gray!25},
+		title={$n_{analyte=1.34}$},
+		width=0.48\textwidth,
+		legend pos=north east
+	]
+	\addplot[
+		only marks,
+		mark size=2.9pt, mark=o, color=red, fill=red
+	]
+	table[x={wave},y={predicted}]{data/vswavelength134_fold9_noaug.txt};
+	\addlegendentry{With GAN}
+	
+	\addplot[
+		only marks,
+		mark size=2.9pt, mark=x, color=green
+	] 
+	%table{??};
+	coordinates{(500, 7)};
+	\addlegendentry{Without GAN}
+	
+	\addplot[
+		color=blue
+	] 
+	table[x={wave},y={real}]{data/vswavelength134_fold9_noaug.txt};
+	coordinates{(6.8, 7.2)};
+	\addlegendentry{Actual}
+	\end{axis}
+	\end{tikzpicture}
+	%
+	\begin{tikzpicture}
+	\begin{axis}[
+		xlabel=$Wavelength(\lambda) $  $ in $  $ nm $, 
+		ylabel=$~$,
+		grid=both,
+		minor grid style={gray!25},
+		major grid style={gray!25},
+		title={$n_{analyte=1.35}$},
+		width=0.48\textwidth,
+		legend pos=north east
+	]
+	\addplot[
+		only marks,
+		mark size=2.9pt, mark=o, color=red, fill=red
+	] 
+	table[x={wave},y={predicted}]{data/vswavelength135_fold9_noaug.txt};
+	\addlegendentry{With GAN}
+	            
+     \addplot[
+		only marks,
+		mark size=2.9pt, mark=x, color=green
+     ]
+     %table{??};
+     coordinates{(500, 7.5)};
+     \addlegendentry{Without GAN}
+	            
+	
+	\addplot[
+		color=blue
+	] 
+	table[x={wave},y={real}]{data/vswavelength135_fold9_noaug.txt};
+	\addlegendentry{Actual}
+	
+	\end{axis}
+	\end{tikzpicture}
+	\caption{Configuration estimation on SPR dataset}
+\end{subfigure}
+\label{chart:gan}
+\caption{GAN Phase experimental results}
+\end{figure*}
+
+We have also applied GAN phase to the network architecture proposed in \cite{paper0}. In this experiment, GAN phase reduced the performance slightly. However, as we have discussed earlier, due to increased number of samples, full batch training strategy is the cause of this. In fact, when we reduce the batch size down to 900 samples, GAN phase starts to improve the score of this architecture.
+
+
+The final set of experiments shows the stability that GAN phase adds. In Table \ref{tbl:all}, we have listed minimum, maximum, average MSE along with the standard deviation between folds in the testing. It is clear that the GAN phase not only improves the average case but significantly improves the worst case, which is important in a live setting. This added stability can also be observed in Figure \ref{chart:trainingmse}, where the training loss has less fluctuations when the data augmentation is employed.
+
+
+\begin{table}
+\caption{Detailed performance analysis}
+\begin{tabular}{l|l|l|l|l|l|l}
+	Method & \multicolumn{4}{c|}{Proposed} & \multicolumn{2}{c}{\cite{paper0}} \\\hline
+	Dataset & \multicolumn{2}{c|}{SPR} & \multicolumn{2}{c|}{\dszero{}} & SPR & \dszero{} \\\hline
+	GAN Phase 			& Yes  & No   & Yes  & No   &  \multicolumn{2}{c}{No} \\\hline
+	Average   			& 0.31 & 0.89 & ???? & ???? & ???? & ???? \\
+	Best      			& ???? & ???? & ???? & ???? & ???? & ???? \\
+	Worst     			& ???? & ???? & ???? & ???? & ???? & ???? \\
+	Std. deviation  	& ???? & ???? & ???? & ???? & ???? & ???? \\
+	Training time (s)  	& ???? & ???? & ???? & ???? & ???? & ???? \\
+	Testing time  (ms) 	& ???? & ???? & ???? & ???? & ???? & ???? \\
+\end{tabular}
+\label{tbl:all}
+\end{table}
 
 
 \subsection{Computational performance}
 
 \hl{Training and execution time of ANN versus simulation method}
 
-
-Epirements conducted on the latter machine will be labeled as GPU based, whereas on the former as CPU based.
-
-By taking advantage of Cloud Computing technology, one does not have to spend large amounts of money to obtain high-specs machine, rather, rent readily available deep learning instances in the cloud for pennies on the dollar. 
-
-The code for this work is available at: \url{https://github.com/Aimen-Zelaci/SPRPCF_ANN/}.
-
-The elapsed training time of an ANN model depends on the parameters of the model, for example, the number of hidden layers and hidden neurons, mini batch size, dataset size, number of epochs, the framework used to code the model, and of course the specifications of the machine.
-
-In this work we fixed the number of epochs to 2000 and executed training using Tensorflow(Keras) and Pytorch frameworks. As demonstrated in Tables(5,6). It is worth mentioning the differences between training with full batch or mini batches. In full batch training, the whole dataset is passed to the model for each iteration. In contrast, mini-batch-training, the dataset is split into small mini batches of equal sizes, then passed to the model seperately, thus for each epoch there will be exactly length  of the dataset devided by the mini batch size steps, and hence slowing down the training process. Previous works \cite{masters2018revisiting, keskar2016large} have firmly proved the advantages of using the correct mini batch size as oppose to large batch sizes. Mini batches allow for more frequent gradient calculations, that results in more stable and reliable training. Perhaps one of the main downsides of using large batch size is the poor generalization resulting in a phenomena know as the "generalization gap". Active research \cite{hoffer2017train} is on going to actually use large batch sizes while mainting the performance of the model and shortning the training runtime. A closely related recent work \cite{paper0}, conducted their expirements using full batch to train the model. In this work we will use the latter paper availabe code on Github for Pytorch expirements, with slight modifications to fit our purposes. Finally, we compare the performance of the WGAN model, using Tensorflow(Keras) framework, of CPU based to that of GPU based.
+In this section we have determined both testing and training time of the proposed system in comparison to the simulation approach. In Table \ref{tbl:timing}, the result of these experiments are published. Training time is total training time while testing is per sample. Please note that he training time is considered offline time; i.e., it is the time that will only be used once before the system is deployed. Once trained, the ANN can work alone without the need for GAN or training again.
 
 \begin{table}
-\begin{tabular}{lllll}
-    & dataset size & mini batch size & Time elapsed (sec) \\
-Mini batches    &336 + 0 & 8 & 214 & \\
-    &336 + 1000 & 8 & 744 & \\
-    &336 + 2000 & 16 & 685  & \\ 
-    &336 + 3000 & 20 & 861  & \\
+\caption{Execution time of algorithms}
+\begin{tabular}{l|l|l}
+Method  &  Training & Testing \\
+Proposed ANN without GAN phase & ??? & ??? \\
+Proposed ANN with GAN phase    & ??? & ??? \\
+\cite{paper0}                  & ??? & ??? \\
+FV-FEM						   & -   & ???
 \end{tabular}
-\begin{tabular}{lllll}
-   & dataset size & Time elapsed (sec) \\
-Full batch    &336 + 0 &  23 & \\
-    &336 + 1000 &  34 & \\
-    &336 + 2000 &  45 & \\ 
-    &336 + 3000 &  57 & \\
-\end{tabular}
-\caption{Training performance using Tensorflow(Keras). CPU based training.}
+\label{table:timing}
 \end{table}
-\begin{table}
-\begin{tabular}{lllll}
- & dataset size & mini batch size & Time elapsed (sec) \\
-Mini batches    & 336 + 0 & 8 & 1315 & \\
-    & 336 + 1000 & 8 & 6453  & \\
-    & 336 + 2000 & 16 & 4751  & \\ 
-    & 336 + 3000 & 20 & 5132 & \\
-\end{tabular}
-\begin{tabular}{lllll}
-   &dataset size & Time elapsed (sec) \\
-   Full batch &336 + 0 &  36  & \\
-    & 336 + 1000 &  98  & \\
-    & 336 + 2000 &  195  & \\ 
-    & 336 + 3000 &  336  & \\
-\end{tabular}
-\caption{Training performance using Pytorch. CPU based training.}
-\end{table}
-
-\begin{table}[h]
-\centering
-\begin{tabular}{l|l}
-      & Time elapsed \\
-      \hline
-    ANN &  0.17 sec \\
-    \hline
-    Simulation &  7872 sec = 2.18 hours  \\
-\end{tabular}
-
-\caption{ANN vs Simulation test runtime performance}
-\end{table}
-\newpage
 
 \section{Conclusion}
 \label{sec:conc}
@@ -581,6 +731,8 @@ Mini batches    & 336 + 0 & 8 & 1315 & \\
 In this work we built a feed forward ANN model that learned the confinement loss given the geometric properties of a SPR-based PCF sensor with fixed pattern and geometrical shape of the cladding air holes. For different types of sensors, Convolutional and Reccurent neural networks can be of great advantage, to discover the spatial insights of variety of patterns and  geometrical shape of the cladding air holes. The latter will be conducted in future work.
 
 Machine learning approaches has an inherit strength on top of classical simulation methods: they could model hidden parameters in a system which we have no knowledge about. Therefore, not only ANN can improve the speed of PCF simulation, but also accuracy of the simulations. However, this final claim requires further analysis and experimentation.
+
+The code for this work is available at: \url{https://github.com/Aimen-Zelaci/SPRPCF_ANN/}.
 
 \bibliographystyle{IEEEtran}
 \bibliography{IEEEabrv,references}	
