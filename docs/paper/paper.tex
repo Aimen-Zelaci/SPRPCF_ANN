@@ -201,7 +201,7 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it i
 	\begin{tabular}{l|l|l|l}
 		\textbf{Parameter} & \textbf{Generator} & \textbf{Critic} & \textbf{Regressor} \\\hline
 		Hidden layers & 5 & 5 & 6 \\
-		Neurons in hidden layers & $ 2^{2}~batchsize $ & $2^{layers}~batchsize$ & 50 \\
+		Neurons in hidden layers & $ 128 $ & 1024 & 50 \\
 		Batch size & 32 & 32 & 48 \\
 		Activation function & ReLU & Leaky ReLU & ReLU \\
 		Optimizer & Adam \cite{kingma2014adam} & Adam & Adam \\
@@ -243,9 +243,9 @@ In order to prove the effectiveness of the proposed setup, we have performed mul
 
 Additionally, we have used the dataset that has been used in \cite{paper0}. \hl{This dataset contains over 1000 samples. Inputs to this data is .... and outputs are ....} We have only used log of confinement loss as the output. This dataset is referred as \dszero. Details of the datasets that are used in the experiments are given in Table \ref{tbl:dataset}. As a final note, the range and domain of these datasets are different; therefore, all comparisons should be drawn within the same dataset.
 
-We have used mean square error as in the comparisons. All algorithms are implemented using TensorFlow library in Python and experiments are performed on laptop with Intel i7-5600 CPU and 8GB of RAM. TensorFlow library is set to use only CPU for the experiments.
+We have used mean square error as in the comparisons. All algorithms are implemented using TensorFlow with Keras library in Python and experiments are performed on laptop with Intel i7-5600 CPU and 8GB of RAM. TensorFlow library is set to use only CPU for the experiments.
 
-In the following subsections, we have performed experiments to show the performance of the base ANN system by its own comparing with the state-of-the-art method in the literature, improvement gained by employing GAN phase, and finally the computational cost of the overall system compared to the simulator. All numeric comparison results are averaged over multiple executions.
+In the following subsections, we have performed experiments to show the performance of the base ANN system by its own comparing with the state-of-the-art method in the literature \cite{paper0}, improvement gained by employing GAN phase, and finally the computational cost of the overall system compared to the simulator. 5000 training epochs are used for the state-of-the-art method as suggested in the original paper. All numeric comparison results are averaged over multiple executions as listed in Table \ref{tbl:dataset}. Non-averaged data used in charts, such as configuration estimation, are selected from non-extreme cases for the compared methods.
 
 \begin{table}
 \centering
@@ -267,7 +267,7 @@ In the following subsections, we have performed experiments to show the performa
 
 In this set of experiments, we have analyzed the performance of the proposed ANN design. The first experiment involves in training loss over SPR dataset. In this experiment, we have trained ANN model for up to 2000 epochs and reported the training loss in Figure \ref{chart:trainingmse}. We have additionally tested the accuracy with different number of epochs in training. According to this experiment, training our ANN architecture more than 2000 epochs does not yield to any improvement. Therefore, we have set the training epoch limit to 2000 in subsequent experiments. However, this number depends on dataset and at times additional training can improve the result. Additionally, it is clear that the use of augmented samples from the GAN phase reduces the oscillations in the training error.
 
-We have performed experiements comparing the proposed ANN architecture with the state-of-the-art method proposed in \cite{paper0}. Results of this experiment is demonstrated in Figure \ref{chart:perfnoaug}. Please note that in the experiment involving SPR dataset, ANN models are predicting a new configuration and the number of samples available for training is lower. Therefore, they both have higher error rate compared to the \dszero{} dataset. 
+We have performed experiements comparing the proposed ANN architecture with the state-of-the-art method proposed in \cite{paper0}. Results of this experiment is demonstrated in Figure \ref{chart:perfnoaug}. Please note that in the experiment involving SPR dataset, ANN models are predicting a new configuration and the number of samples available for training is lower. Therefore, they both have higher error rate compared to the \dszero{} dataset. According to Figure \ref{chart:perfnoaug}-c $n_{analyte} = 1.35$ case, the ANN method proposed in \cite{paper0} does not fit to the curve caused by the change in the wavelength. This can be caused by the fact that this method uses full-batch learning \hl{[??]} and therefore under-fits the model. Regardless of this, both models have similar MSE due to the shift in the curve fit. This shift is caused because the network is never exposed to this particular geometric configuration. 
 
 
 \begin{figure*}
@@ -324,19 +324,20 @@ We have performed experiements comparing the proposed ANN architecture with the 
 			minor grid style={gray!25},
 			major grid style={gray!25},
 			width=\textwidth,
+			ymin=5,ymax=7,xmin=5,xmax=7,
 			legend pos=south east
 		]
 			\addplot[
 				only marks,
 				mark size=2.9pt, mark=o, color=red, fill=red
-			] table{../../experiments_spr-pcf/Without_augmentation/kfold-predictions-vs-labels/1st/graph_data.txt};
+			] table{../../experiments_spr-pcf/Our_net/Without_augmentation/kfold-predictions-vs-labels/8th/graph_data.txt};
 			\addlegendentry{$Proposed$}
 			
 			\addplot[
 				only marks,
 				mark size=2.9pt, mark=x, color=green
-			] %table{??};
-			coordinates{(7.2, 6.8)};
+			] 
+			table{../../experiments_spr-pcf/Their_net/without_augmentation/kfold-predictions-vs-labels/5th/graph_data.txt};
 			\addlegendentry{\cite{paper0}}
 			
 			\draw[
@@ -400,34 +401,34 @@ We have performed experiements comparing the proposed ANN architecture with the 
 	\begin{tikzpicture}
 	\begin{axis}[
 		xlabel=$Wavelength(\lambda) $  $ in $  $ nm $, 
-		ylabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $,
+		ylabel=$ Loss $ $ in $ $ Log(db/cm) $,
 		grid=both,
 		minor grid style={gray!25},
 		major grid style={gray!25},
 		title={$n_{analyte=1.34}$},
 		width=0.48\textwidth,
-		legend pos=north east
+		legend pos=north west
 	]
 	\addplot[
 		only marks,
 		mark size=2.9pt, mark=o, color=red, fill=red
 	]
-	table[x={wave},y={predicted}]{data/vswavelength134_fold9_noaug.txt};
+	table[x={wave},y={predicted}]{data/wave_134_our.txt};
 	\addlegendentry{$Proposed$}
 	
 	\addplot[
 		only marks,
 		mark size=2.9pt, mark=x, color=green
 	] 
-	%table{??};
-	coordinates{(500, 7)};
+	table[x={wave},y={predicted}]{data/wave_134_their.txt};
 	\addlegendentry{\cite{paper0}}
 	
 	\addplot[
 		color=blue
 	] 
-	table[x={wave},y={real}]{data/vswavelength134_fold9_noaug.txt};
-	coordinates{(6.8, 7.2)};
+	table[x={wave},y={real}]{data/wave_134_our.txt};
+	
+
 	\addlegendentry{Actual}
 	\end{axis}
 	\end{tikzpicture}
@@ -441,28 +442,27 @@ We have performed experiements comparing the proposed ANN architecture with the 
 		major grid style={gray!25},
 		title={$n_{analyte=1.35}$},
 		width=0.48\textwidth,
-		legend pos=north east
+		legend pos=north west
 	]
 	\addplot[
 		only marks,
 		mark size=2.9pt, mark=o, color=red, fill=red
 	] 
-	table[x={wave},y={predicted}]{data/vswavelength135_fold9_noaug.txt};
+	table[x={wave},y={predicted}]{data/wave_135_our.txt};
 	\addlegendentry{$Proposed$}
 	            
      \addplot[
 		only marks,
 		mark size=2.9pt, mark=x, color=green
      ]
-     %table{??};
-     coordinates{(500, 7.5)};
+	table[x={wave},y={predicted}]{data/wave_135_their.txt};
      \addlegendentry{\cite{paper0}}
 	            
 	
 	\addplot[
 		color=blue
 	] 
-	table[x={wave},y={real}]{data/vswavelength135_fold9_noaug.txt};
+	table[x={wave},y={real}]{data/wave_135_their.txt};
 	\addlegendentry{Actual}
 	
 	\end{axis}
@@ -473,7 +473,6 @@ We have performed experiements comparing the proposed ANN architecture with the 
 \label{chart:perfnoaug}
 \end{figure*}
 
-\hl{CK: continue here..}
 
 \subsection{Performance boost of GAN}
 
@@ -515,7 +514,9 @@ The first set of experiments performed on GAN phase is the number of the augment
 \end{figure}
 
 
-We have performed experiments to showcase the improvement gained by augmenting training samples using a GAN. In Figure \ref{chart:gan}, the results of these experiments has shown. An additional note to take away from this experiment is that the dataset with the least number of samples has the highest improvement, which is demonstrated in a clearer fashion in Table \ref{tbl:all}. This is due the fact that the number of training samples in this dataset is insufficient to train the regressor network.
+We have performed experiments to showcase the improvement gained by augmenting training samples using a GAN. In Figure \ref{chart:gan}, the results of these experiments has shown. An additional note to take away from this experiment is that the dataset with the limited number of samples has highest improvement, which is demonstrated in a clearer fashion in Table \ref{tbl:all}.  This is due the fact that the number of training samples in this dataset is insufficient to train the regressor network causing reduced performance.
+
+In Figure \ref{chart:gan}-c, prediction capabilities with and without GAN phase is compared. In the case with $n_{analyte} = 133$, the network without GAN phase has failed to predict the curve correctly. Even though GAN boosted network has predicted the curve lower than it is, the peak is in the correct wavelength, which could help PCF designers to pin-point highest loss.
 
 
 \begin{figure*}
@@ -533,15 +534,16 @@ We have performed experiments to showcase the improvement gained by augmenting t
 			\addplot[
 				only marks,
 				mark size=2.9pt, mark=o, color=red, fill=red
-			] table{../../experiments_spr-pcf/Without_augmentation/kfold-predictions-vs-labels/1st/graph_data.txt};
-			\addlegendentry{With GAN}
+			] 
+			table{../../experiments_spr-pcf/Our_net/Without_augmentation/kfold-predictions-vs-labels/3rd/graph_data.txt};
+			\addlegendentry{Without GAN}
 			
 			\addplot[
 				only marks,
 				mark size=2.9pt, mark=x, color=green
-			] %table{??};
-			coordinates{(7.2, 6.8)};
-			\addlegendentry{Without GAN}
+			]
+			table{../../experiments_spr-pcf/Our_net/with_augmentation/kfold-predictions-vs-labels/3rd/graph_data.txt};
+			\addlegendentry{With GAN}
 			
 			\draw[
 				line width=1pt,
@@ -553,7 +555,7 @@ We have performed experiments to showcase the improvement gained by augmenting t
 				line width=1pt,
 				solid,color=blue}
 			\addlegendentry{$Actual$}
-			
+			\legend{}
 		\end{axis}
 	\end{tikzpicture}
 	\caption{SPR dataset}
@@ -573,15 +575,15 @@ We have performed experiments to showcase the improvement gained by augmenting t
 			only marks,
 			mark size=2.9pt, mark=o, color=red, fill=red
 		] 
-		table{../../expirrements_pcf2/Our_net/without_augment/kfold-predictions-vs-labels/2nd/graph_data.txt};
-		\addlegendentry{With GAN}
+		table{../../expirrements_pcf2/Our_net/without_augment/kfold-predictions-vs-labels/4th/graph_data.txt};
+		\addlegendentry{Without GAN}
 		
 		\addplot[
 		only marks,
 		mark size=2.9pt, mark=x, color=green
 		] 
-		table{../../expirrements_pcf2/Their_net/without_augment/kfold-predictions-vs-labels/2nd/graph_data.txt};
-		\addlegendentry{Without GAN}
+		table{../../expirrements_pcf2/Our_net/with_augment/kfold-predictions-vs-labels/4th/graph_data.txt};
+		\addlegendentry{With GAN}
 		
 		\draw[
 			line width=1pt,
@@ -604,35 +606,33 @@ We have performed experiments to showcase the improvement gained by augmenting t
 	\begin{tikzpicture}
 	\begin{axis}[
 		xlabel=$Wavelength(\lambda) $  $ in $  $ nm $, 
-		ylabel=$Actual $ $ loss $ $ in $ $ Log(db/cm) $,
+		ylabel=$Loss $ $ in $ $ Log(db/cm) $,
 		grid=both,
 		minor grid style={gray!25},
 		major grid style={gray!25},
 		title={$n_{analyte=1.34}$},
 		width=0.48\textwidth,
-		legend pos=north east
+		legend pos=north east,
 	]
 	\addplot[
 		only marks,
 		mark size=2.9pt, mark=o, color=red, fill=red
 	]
-	table[x={wave},y={predicted}]{data/vswavelength134_fold9_noaug.txt};
-	\addlegendentry{With GAN}
+	table[x={wave},y={predicted}]{data/wave_134_our.txt};
+	\addlegendentry{Without GAN}
 	
 	\addplot[
 		only marks,
 		mark size=2.9pt, mark=x, color=green
 	] 
-	%table{??};
-	coordinates{(500, 7)};
-	\addlegendentry{Without GAN}
+	table[x={wave},y={predicted}]{data/wave_134_aug.txt};
+	\addlegendentry{With GAN}
 	
 	\addplot[
 		color=blue
 	] 
-	table[x={wave},y={real}]{data/vswavelength134_fold9_noaug.txt};
-	coordinates{(6.8, 7.2)};
-	\addlegendentry{Actual}
+	table[x={wave},y={real}]{data/wave_134_our.txt};
+	\addlegendentry{Actual}\legend{};
 	\end{axis}
 	\end{tikzpicture}
 	%
@@ -643,7 +643,7 @@ We have performed experiments to showcase the improvement gained by augmenting t
 		grid=both,
 		minor grid style={gray!25},
 		major grid style={gray!25},
-		title={$n_{analyte=1.35}$},
+		title={$n_{analyte=1.33}$},
 		width=0.48\textwidth,
 		legend pos=north east
 	]
@@ -651,28 +651,28 @@ We have performed experiments to showcase the improvement gained by augmenting t
 		only marks,
 		mark size=2.9pt, mark=o, color=red, fill=red
 	] 
-	table[x={wave},y={predicted}]{data/vswavelength135_fold9_noaug.txt};
-	\addlegendentry{With GAN}
+	table[x={wave},y={predicted}]{data/wave_133_our.txt};
+	\addlegendentry{Without GAN}
 	            
      \addplot[
 		only marks,
 		mark size=2.9pt, mark=x, color=green
      ]
-     %table{??};
-     coordinates{(500, 7.5)};
-     \addlegendentry{Without GAN}
+     table[x={wave},y={predicted}]{data/wave_133_aug.txt};
+     \addlegendentry{With GAN}
 	            
 	
 	\addplot[
 		color=blue
 	] 
-	table[x={wave},y={real}]{data/vswavelength135_fold9_noaug.txt};
+	table[x={wave},y={real}]{data/wave_133_aug.txt};
 	\addlegendentry{Actual}
-	
+	\legend{}
 	\end{axis}
 	\end{tikzpicture}
 	\caption{Configuration estimation on SPR dataset}
 \end{subfigure}
+
 \label{chart:gan}
 \caption{GAN Phase experimental results}
 \end{figure*}
@@ -680,21 +680,19 @@ We have performed experiments to showcase the improvement gained by augmenting t
 We have also applied GAN phase to the network architecture proposed in \cite{paper0}. In this experiment, GAN phase reduced the performance slightly. However, as we have discussed earlier, due to increased number of samples, full batch training strategy is the cause of this. In fact, when we reduce the batch size down to 900 samples, GAN phase starts to improve the score of this architecture.
 
 
-The final set of experiments shows the stability that GAN phase adds. In Table \ref{tbl:all}, we have listed minimum, maximum, average MSE along with the standard deviation between folds in the testing. It is clear that the GAN phase not only improves the average case but significantly improves the worst case, which is important in a live setting. This added stability can also be observed in Figure \ref{chart:trainingmse}, where the training loss has less fluctuations when the data augmentation is employed.
+The final set of experiments shows the stability that GAN phase adds. In Table \ref{tbl:all}, we have listed minimum, maximum, average MSE along with the standard deviation between folds in the testing. It is clear that the GAN phase not only improves the average case but significantly improves the worst case, which is important in a live setting. Even in a dataset with enough examples to train the network (\dszero), using GAN phase reduces the worst case error by 32\%. This added stability can also be observed in Figure \ref{chart:trainingmse}, where the training loss has less fluctuations when the data augmentation is employed.
 
 
 \begin{table}
 \caption{Detailed performance analysis}
 \begin{tabular}{l|l|l|l|l|l|l}
-	Method & \multicolumn{4}{c|}{Proposed} & \multicolumn{2}{c}{\cite{paper0}} \\\hline
-	Dataset & \multicolumn{2}{c|}{SPR} & \multicolumn{2}{c|}{\dszero{}} & SPR & \dszero{} \\\hline
-	GAN Phase 			& Yes  & No   & Yes  & No   &  \multicolumn{2}{c}{No} \\\hline
-	Average   			& 0.31 & 0.89 & ???? & ???? & ???? & ???? \\
-	Best      			& ???? & ???? & ???? & ???? & ???? & ???? \\
-	Worst     			& ???? & ???? & ???? & ???? & ???? & ???? \\
-	Std. deviation  	& ???? & ???? & ???? & ???? & ???? & ???? \\
-	Training time (s)  	& ???? & ???? & ???? & ???? & ???? & ???? \\
-	Testing time  (ms) 	& ???? & ???? & ???? & ???? & ???? & ???? \\
+	Method & \multicolumn{3}{c|}{SPR} & \multicolumn{3}{c}{\dszero{}} \\\hline
+	Dataset & \multicolumn{2}{c|}{Proposed} & \cite{paper0}  & \multicolumn{2}{c|}{Proposed}   & \cite{paper0} \\\hline
+	GAN Phase 			& Yes            & No    &  No     &   Yes            & No             & No    \\\hline
+	Average   			& \textbf{0.314} & 0.894 & 0.987   &   \textbf{0.134} & 0.156          & 0.167 \\
+	Best      			& \textbf{0.006} & 0.042 & 0.047   &   0.095          & \textbf{0.093} & 0.106 \\
+	Worst     			& \textbf{1.102} & 6.792 & 5.955   &   \textbf{0.181} & 0.265          & 0.416 \\
+	Std. dev.       	& \textbf{0.437} & 2.213 & 1.940   &   \textbf{0.031} & 0.046          & 0.090 \\
 \end{tabular}
 \label{tbl:all}
 \end{table}
@@ -702,20 +700,21 @@ The final set of experiments shows the stability that GAN phase adds. In Table \
 
 \subsection{Computational performance}
 
-\hl{Training and execution time of ANN versus simulation method}
+In this section we have determined both testing and training time of the proposed system in comparison to the simulation approach. In Table \ref{tbl:timing}, the result of these experiments are published. Training time is total training time while testing is per sample. These tests are performed over SPR dataset. Please note that he training time is considered offline time; i.e., it is the time that will only be used once, before the system is deployed. Once trained, the ANN can work alone without the need for GAN or training again. With this information, it is evident that the ANN based methods are far faster than the simulation approach by several orders of magnitude. Even when training is included, total time spent to calculate the confinement loss will be faster on a GAN boosted ANN compared to FV-FEM simulator after only 5 samples.
 
-In this section we have determined both testing and training time of the proposed system in comparison to the simulation approach. In Table \ref{tbl:timing}, the result of these experiments are published. Training time is total training time while testing is per sample. Please note that he training time is considered offline time; i.e., it is the time that will only be used once before the system is deployed. Once trained, the ANN can work alone without the need for GAN or training again.
+The training time difference between ANN systems is caused by the increased depth in the proposed architecture as well as mini-batch training strategy. Training time is dominated by GAN phase; however, this phase does not add any overhead to the testing time. The testing time difference between two networks are caused by the depth of the neural network (6 hidden layers instead of 3). 
 
 \begin{table}
 \caption{Execution time of algorithms}
 \begin{tabular}{l|l|l}
-Method  &  Training & Testing \\
-Proposed ANN without GAN phase & ??? & ??? \\
-Proposed ANN with GAN phase    & ??? & ??? \\
-\cite{paper0}                  & ??? & ??? \\
-FV-FEM						   & -   & ???
+Method    			  &  Training (s) & Testing (ms) \\\hline
+Proposed ANN 		  &  42 & 3.6 \\
+Proposed ANN with GAN & 449 & 3.6 \\
+GAN phase only        & 370 &  -  \\
+\cite{paper0}		  &  20 & 2.7 \\
+FV-FEM		   		  &  -  & 106958
 \end{tabular}
-\label{table:timing}
+\label{tbl:timing}
 \end{table}
 
 \section{Conclusion}
