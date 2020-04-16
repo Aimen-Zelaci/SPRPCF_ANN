@@ -720,16 +720,11 @@ FV-FEM		   		  &  -  & 106958
 \section{Conclusion}
 \label{sec:conc}
 
-\hl{about the improved speed}
+In this paper, we have demonstrated that the use of generative adversarial networks can benefit neural networks that are designed to compute photonic crystal fiber optical properties. Additionally, we have also proposed and demonstrated a superior neural network that is both more generic and more powerful to estimate of confinement loss. The GAN phase also reduces the required samples to fully train the ANN, reducing the work necessary to employ the proposed system. The proposed combination is shown to be general enough that even though it is designed for the SPR dataset built for this research; in the experiments, it surpassed the accuracy of the method proposed in \cite{paper0} on the dataset that this state-of-the-art method is optimized on.
 
-\hl{reduced amount of training samples}
+Another important aspect in this paper is the experiments performed on a dataset that is designed to test the ability of the neural networks to estimate the properties of a new configuration. For this purpose, we have built a database based on Surface Plasmon Resonance with varying geometric configurations. During testing a new configuration that is not used for the training is used. The proposed ANN, augmented with GAN phase is shown to estimate the new configuration to an acceptable error rate. 
 
-\hl{increased generality of the system}
-
-\hl{This Idea is very important}
-In this work we built a feed forward ANN model that learned the confinement loss given the geometric properties of a SPR-based PCF sensor with fixed pattern and geometrical shape of the cladding air holes. For different types of sensors, Convolutional and Reccurent neural networks can be of great advantage, to discover the spatial insights of variety of patterns and  geometrical shape of the cladding air holes. The latter will be conducted in future work.
-
-Machine learning approaches has an inherit strength on top of classical simulation methods: they could model hidden parameters in a system which we have no knowledge about. Therefore, not only ANN can improve the speed of PCF simulation, but also accuracy of the simulations. However, this final claim requires further analysis and experimentation.
+The most important benefit of using machine learning methods instead of simulation is the speed factor. In the experiments it is shown that the machine learning methods works few orders of magnitude faster than the simulation methods. For different types of sensors, Convolutional and Recurrent neural networks can be of great advantage to discover the optimal patterns and geometrical shapes of the cladding air holes. This potential will be explored in a future work.
 
 The code for this work is available at: \url{https://github.com/Aimen-Zelaci/SPRPCF_ANN/}.
 
