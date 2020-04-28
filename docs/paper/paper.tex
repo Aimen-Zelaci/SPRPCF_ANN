@@ -1,4 +1,4 @@
-\documentclass[draft, 10pt]{IEEEtran}
+\documentclass[10pt]{IEEEtran}
 
 \usepackage{color,soul}
 \usepackage{tikz}
@@ -102,7 +102,7 @@ Photonic crystal fibers (PCF) for specific applications are designed and optimiz
 
 \section{Introduction}
 
-\hl{Importance of PCF and SPR, written by AY or HA}
+\hl{Importance of PCF and SPR, written by HA}
 	
 Machine Learning (ML) techniques are becoming a common tool in many fields and surpassing human performance in many tasks, such as automatic speech recognition, image recognition, natural language processing, drug discovery and toxicology. Additionally, ANN can approximate any function proven by the Universality theorem \cite{HORNIK1991251}. This fact propelled researchers to widen the applications of ANN even further, including the study of nanophotonic structures \cite{kiarashinejad2020knowledge}, optimization of photonic crystal nanocavities \cite{asano2018optimization}, and more recently, computing optical properties of a photonic crystal fiber \cite{paper0}.
 
@@ -110,12 +110,12 @@ One of the most difficult challenges that deep learning models face is that they
 
 In this paper, we focus on estimating confinement loss, one of the propagation features of multi-channel Photonic Crystal Fiber (PCF) sensors, using artificial neural networks. \hl{Specifically, we have based our system on Surface Plasmon Resonance (SPR)}. However, in the experiments section we have demonstrated that the designed system is generic enough to be applied to multiple PCF designs. The most important contribution of this research is the use of GAN phase, where the available data is expanded to be used in the training phase.
 
+One of the first works on using artificial neural networks in photonic crystal fibers (PCF) design is presented in \cite{hameed2008accurate}. The results demonstrated the accuracy of the network on a specific PCF design. Another ANN method is employed in \cite{rodriguez2010efficient} to calculate chromatic dispersion of photonic crystal fiber. In \cite{mescia2011refinement}, authors employed a neural network for the refinement and design of Erbium doped photonic crystal fiber. Results showed that conventional methods consume large amount of time compared to the runtime of the neural network. Perhaps the most rigorous experiments about neural network use in PCF design is presented in \cite{paper0}. In this paper, a feed-forward multi-layer perceptron neural network is used to calculate multiple properties of a PCF design. The authors shown that the network can achieve both acceptable accuracy and superior speed compared to the existing numerical methods.
 
-\hl{!! Literature survey !!}
+Authors in \cite{perez2017effectiveness} has explored the possibility of using GAN to boost neural networks, finding it is possible to improve the accuracy of existing image classifiers. Frid-Adar, et. al. \cite{frid2018synthetic} has applied the same method to improve the accuracy of liver lesion classification. The authors has found that balancing the training data using GAN has a higher improvement in accuracy compared to classical data generation strategies. Finally, in \cite{shin2018medical}, authors used the same technique to both augment and anonymize the training data with brain MRI with the similar success of the previous papers.
 
-\hl{Use of ANN in PCF}
 
-\hl{SPR in PCF}
+\hl{Literature survey requires expansion related with SPR and PCF}
 
 This paper is organized as follows. Section \ref{sec:prop} details the use of GAN to generate additional training samples for ANN as well as the proposed neural network architecture. Photonic crystal fiber design that is used for testing is described in details in section \ref{sec:pcf}. Detailed analysis of the experimental results are discussed in section \ref{sec:exp}. Finally, concluding remarks are made in Section \ref{sec:conc}.
 
@@ -226,11 +226,50 @@ We have adopted Adam \cite{kingma2014adam} as the optimizer and mean squared err
 \section{Photonic crystal fiber design}
 \label{sec:pcf}
 
-\hl{PCF design details, written by AY. Following is only for reference}
+\hl{to HA: This section has been written by two different people, should be merged!}
+
+\hl{Aimen:}
 
 A labelled dataset of 432 samples was collected in this work, through simulations using FV-FEM. This dataset consists of the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$, and real part of the refractive index ($n_c$) taken as our independent variables. The labels are the confinement loss of the PCF. The set consists of nine different configurations of the geometric properties ($ \Lambda $, d1, d2, d3), for each configuration the confinement loss was calculated for three different analytes (Water (n=1.33), Ethanol (n=1.35) and several commercial hydrocarbon mixtures (n=1.36)).
 
 \hl{We will fix the pattern and geometrical shape of the cladding air holes, and vary the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$. Then the results of this study can be carried to different types of SPR-based PCF sensors, using other suitable deep learning approaches such as Recurrent and Convolutional neural networks. }
+
+\hl{AY:}
+
+The numerical investigation to build the SPR dataset have been simulated with Comsol Multiphysics software~\cite{comsol_help}, where  the Full Vectorial Finite Element Method (FV-FEM) with perfectly matched layers (PMLs)~\cite{koshiba2002full,saitoh2001full} are used for numerical analysis. 
+
+\begin{figure}[]
+	\centering
+	\includegraphics[width=.6\linewidth]{figures/Figx}
+	\caption{The cross-section of proposed  PCF based SPR sensor.}
+	\label{Figx}
+\end{figure}
+
+
+
+The cross section of proposed PCF based SPR sensor has been shown in Figure~\ref{Figx}. As can be seen from this figure, the sensor consists of analyte channel (sensing medium), metallic layer(Au) and PCF sections. The PCF section consists of nineteen various sized air holes, placed on silica background with hexagonal arrangement.  The diameter of air holes are initially set as; $d_1$ is $0.45 \mu m$, $d_2$ is $0.75 \mu m$ and $d_3$ is $0.35 \mu m$, and  $d_c$ is $0.15$. The distance between air holes ($\Lambda$) also initially  set to be $2 \mu m$. The aim of using different size air holes is, while trapping the light in the core region of PCF (fundamental mode), at the same time allow some amount of light to leak from the bridges between air holes toward the plasmonic layer. Which will match the surface plasmon waves propagating along the metallic surface. Gold (Au) used as plasmonic layer and set to be $40 nm$, where Johnson and Christy Data~\cite{johnson1972optical} used for its permittivity. The Sellmeier Equation (Eq.(\ref{eqn1})) is used for calculating the refractive index of Silica  \cite{bjarklev2003PCF}.
+
+
+\begin{equation}
+n^2(\lambda)=1+\frac{ B_1 (\lambda)^2} {(\lambda)^2-C_1} + \frac{ B_2 (\lambda)^2} {(\lambda)^2-C_2} + \frac{ B_3 (\lambda)^2} {(\lambda)^2-C_3}
+\label{eqn1}
+\end{equation}
+%% 
+
+where $\lambda$ is the operating wavelength, $n$ is the RI, $B_{1,2,3}$ and  $C_{1,2,3}$ are the  Sellmeier constants~\cite{bjarklev2003PCF}.
+
+
+The aim of SPR based sensor are sensing the RI changes at the resonance conditions. The resonace condition is the phase matching between SPWs propagating along metal layer (Au) and the fundamental mode of ligt that is propagating along the PCF core. At that specific time the confinement loss is reaches the highest peak point. Therefore, in SPR based PCF sensors the key parameter is the confinement loss and it is so important to precisely calculate the confinement losses. The Equation~\ref{eqn2} is used in this study for that purpose~\cite{yasli2019effect}.
+
+%%
+\begin{equation}
+\frac{40\pi}{ln(10) \lambda} Im(n_{eff}) \times 10^{4} [dB/cm]
+\label{eqn2}
+\end{equation}
+%%
+
+where the imaginary part of the effective RI shown with Im($n_{eff}$).
+
 
 
 \section{Experiments}
@@ -240,11 +279,11 @@ A labelled dataset of 432 samples was collected in this work, through simulation
 
 \def\dszero{PCF}
 
-In order to prove the effectiveness of the proposed setup, we have performed multiple experiments over two datasets. We have built the first dataset that is used in the experiments. This is \hl{an SPR PCF configuration ... and collected using FV-FEM.} Details of this dataset is explained in Section \ref{sec:pcf} and it is referred as SPR dataset. Having nine configurations, we have performed 9-fold testing on this dataset. Each fold tests a single configuration using the other configurations as training data. Slicing the data this way allowed us to guide the network to predict the loss on a configuration that has not used in training. Please note that we have applied $log_{10}$ to confinement loss to scale it.
+In order to prove the effectiveness of the proposed setup, we have performed multiple experiments over two datasets. We have built the first dataset that is used in the experiments. Details of this dataset is explained in Section \ref{sec:pcf} and it is referred as SPR dataset. Having nine configurations, we have performed 9-fold testing on this dataset. Each fold tests a single configuration using the other configurations as training data. Slicing the data this way allowed us to guide the network to predict the loss on a configuration that has not used in training. Please note that we have applied $log_{10}$ to confinement loss to scale it.
 
 We have used mean square error (MSE) in the comparisons. All algorithms are implemented using TensorFlow with Keras library in Python and experiments are performed on laptop with Intel i7-5600 CPU and 8GB of RAM. TensorFlow library is set to use only CPU for the experiments.
 
-Additionally, we have used the dataset that has been used in \cite{paper0}. \hl{This dataset contains over 1000 samples. Inputs to this data is .... and outputs are ....} We have only used log of confinement loss as the output. This dataset is referred as \dszero. Details of the datasets that are used in the experiments are given in Table \ref{tbl:dataset}. As a final note, the range and domain of these datasets are different; therefore, all numeric comparisons should be drawn within the same dataset.
+Additionally, we have used the dataset that has been used in \cite{paper0}. This dataset contains over 1000 samples. Inputs are refractive index of the core ($n_c$), wavelength ($\lambda$), hole diameter ($d$), pitch ($\Lambda$), and number of rings ($N_r$);  and outputs are effective index ($n_{eff}$), effective mode area ($A_{eff}$), dispersion ($D$), and the confinement loss ($\alpha_c$). We have only used confinement loss as the output. This dataset is referred as \dszero. Details of the datasets that are used in the experiments are given in Table \ref{tbl:dataset}. As a final note, the range and domain of these datasets are different; therefore, all numeric comparisons should be drawn within the same dataset.
 
 In the following subsections, we have performed experiments to show the performance of the base ANN system by its own comparing with the state-of-the-art method in the literature \cite{paper0}, improvement gained by employing GAN phase, and finally the computational advantages of using ANN over the simulator. 5000 training epochs are used for \cite{paper0} as suggested in the original paper. All numeric comparison results are averaged over multiple executions as listed in Table \ref{tbl:dataset}. Non-averaged data used in figures, such as configuration estimation, are selected from non-extreme cases for the compared methods.
 
