@@ -92,7 +92,7 @@
 
 \title{\hl{On the use of Generative adversarial neural networks for computing photonic crystal fiber optical properties}}
 
-\author{Aimen Zelaci, Ahmet Yaşlı, Cem Kalyoncu, and Hüseyin Ademgil}
+\author{Aimen Zelaci, Ahmet Yasli, Cem Kalyoncu, and Huseyin Ademgil}
 
 \maketitle
 	
@@ -102,7 +102,12 @@ Photonic crystal fibers (PCF) for specific applications are designed and optimiz
 
 \section{Introduction}
 
-\hl{Importance of PCF and SPR, written by HA}
+Due to their unique propagation features, Photonic Crystal Fibers (PCFs) have been integrated into a number of optical based devices and applications. Design flexibilities and precise light guidance abilities has made them more promising in comparison to conventional step index fibers in various optical applications including sensing \cite{wang2011selectively}. 
+
+In the last decade, PCF based structures extensively employed as sensing devices. Possibility of filling the cladding holes with gas and liquid analytes makes them favourable in both chemical and biological sensing applications \cite{wang2011selectively,rifat2016highly,caucheteur2015review,dash2014spr}. Moreover, due to adaptable light guidance with possibilities of controlling the confinement loss and the chromatic dispersion at any operating wavelength are distinguishing features of PCF based structures in the literature. These charming propagation features can be achieved by employing, circular, cylindrical and even square and rectangular shaped \cite{wang2015simulation} air holes in the cladding and in the core region of the structures. Furthermore, the cladding pattern arrangements such as hexagonal, octagonal, decagonal square and circular \cite{wang2011selectively,bouk2004dispersion,ademgil2014highly,razzak2007chromatic}  can be engaged to achieve the desired features for preferred applications. The hole-to hole spacing (pitch) and the air hole sizes are critical parameters of tuning the aforementioned propagation characteristics.
+On the other hand, surface plasmon resonance (SPR) is a unique technique that occurs with light and free electrons interaction at metallic boundaries. This interaction results with excitement of surface plasmon polarition (SPP). Relative permittivity variations of the analytes will change the characteristics of the SPP wave, where sensing is triggered. Kretschamann Raether prism geometry is the fundamental construction principle of SPR based sensors \cite{kretschmann1968radiative}. This geometry practises Snell's Total Internal Reflection rule, where still very small amount of light refracts from the metallic layer into the evanescent field.  The refracted photons are coupling with electron charge oscillations (plasmon) at the surface of metallic layer, which are known as surface plasmon waves (SPW). The maximum energy transfer from core mode to SPWs occurs with the effective index equalisation of this corresponding modes. This phenomenon is known as resonance phase matching, where losses are reaching the maximum levels. The possible changes in the analyte index will directly affect the resonance matching wavelengths. These possible variations are the main parameters for sensitivity calculations. The deep research on SPR based sensors have shown that Kretschmann Raether’s prism geometry fails satisfying the remote sensing and miniaturization requirements of critical detecting applications. One of the most common solution of overcoming these limitations are replacing the prism with the core of an optical fiber. Considering the recent technological developments, PCF are offering tremendous amount of design flexibility with the possibilities of complete control of light guidance. Hence, SPR technique can be integrated to this unique microstructured fibers for developing comprehensive multi-purpose sensor \cite{rifat2016highly,yasli2019effect}. Following the exclusive study by Hassani and Skorobogatiy \cite{hassani2006design}, number of structures have reported the merits of PCF based SPR sensors. In the past, structures that contains features such as multi-channel single analyte and multi-channel multi analyte have been investigated \cite{rifat2016highly,yasli2019effect,zhang2011wagon,yasli2019multi,azzam2016multichannel}. Aslo, the effects of various metallic layers such as Au, Ag \cite{yasli2019multi}, Ag- Graphene \cite{rifat2016highly}, Ta2TO5 \cite{otupiri2015multi}, ITO \cite{dash2014spr}, TiO2 \cite{rifat2016highly} with various design paraeters have also been investigated in detailed.
+Several design parameters such as plasmonic material, thickness of the layers, air hole size and positions are decisive on resonance matching wavelength of the SPR based structures. Optimizing and refinement of these parameters are extremely time consuming process with considerable computational time \cite{fornarelli2009neural,abdelaziz2012photonic,paper0}. In the past, genetic algorithms \cite{abdelaziz2012photonic,borel2004topology} method was used to optimize the structural design parameters to achieve better propagation features of photonic devices\cite{rifat2016highly,caucheteur2015review}. Nowadays, in order to optimize such structures, artificial neural networks (ANN) and other machine learning (ML) algorithms are being applied \cite{fornarelli2009neural,paper0,hameed2008accurate}. Although ANNs and ML have been applied to PCFs \cite{fornarelli2009neural,paper0} and SPR structures \cite{fu2018optimization,mcatee2019artificial} independently, to the best of our knowledge, there seems to have been no published papers that investigated the PCF based SPR structures with this well tested methods.
+
 	
 Machine Learning (ML) techniques are becoming a common tool in many fields and surpassing human performance in many tasks, such as automatic speech recognition, image recognition, natural language processing, drug discovery and toxicology. Additionally, ANN can approximate any function proven by the Universality theorem \cite{HORNIK1991251}. This fact propelled researchers to widen the applications of ANN even further, including the study of nanophotonic structures \cite{kiarashinejad2020knowledge}, optimization of photonic crystal nanocavities \cite{asano2018optimization}, and more recently, computing optical properties of a photonic crystal fiber \cite{paper0}.
 
@@ -110,7 +115,7 @@ One of the most difficult challenges that deep learning models face is that they
 
 In this paper, we focus on estimating confinement loss, one of the propagation features of multi-channel Photonic Crystal Fiber (PCF) sensors, using artificial neural networks. \hl{Specifically, we have based our system on Surface Plasmon Resonance (SPR)}. However, in the experiments section we have demonstrated that the designed system is generic enough to be applied to multiple PCF designs. The most important contribution of this research is the use of GAN phase, where the available data is expanded to be used in the training phase.
 
-One of the first works on using artificial neural networks in photonic crystal fibers (PCF) design is presented in \cite{hameed2008accurate}. The results demonstrated the accuracy of the network on a specific PCF design. Another ANN method is employed in \cite{rodriguez2010efficient} to calculate chromatic dispersion of photonic crystal fiber. In \cite{mescia2011refinement}, authors employed a neural network for the refinement and design of Erbium doped photonic crystal fiber. Results showed that conventional methods consume large amount of time compared to the runtime of the neural network. Perhaps the most rigorous experiments about neural network use in PCF design is presented in \cite{paper0}. In this paper, a feed-forward multi-layer perceptron neural network is used to calculate multiple properties of a PCF design. The authors shown that the network can achieve both acceptable accuracy and superior speed compared to the existing numerical methods.
+One of the first works on using artificial neural networks in photonic crystal fibers (PCF) design is presented in \cite{hameed2008accurate}. The results demonstrated the accuracy of the network on a specific PCF design. Another ANN method is employed in \cite{rodriguez2010efficient} to calculate chromatic dispersion of photonic crystal fiber. In Ref. \cite{mescia2011refinement}, authors employed a neural network for the refinement and design of Erbium doped photonic crystal fiber. Results showed that conventional methods consume large amount of time compared to the runtime of the neural network. Perhaps the most rigorous experiments about neural network use in PCF design is presented in \cite{paper0}. In this paper, a feed-forward multi-layer perceptron neural network is used to calculate multiple properties of a PCF design. The authors shown that the network can achieve both acceptable accuracy and superior speed compared to the existing numerical methods.
 
 Authors in \cite{perez2017effectiveness} has explored the possibility of using GAN to boost neural networks, finding it is possible to improve the accuracy of existing image classifiers. Frid-Adar, et. al. \cite{frid2018synthetic} has applied the same method to improve the accuracy of liver lesion classification. The authors has found that balancing the training data using GAN has a higher improvement in accuracy compared to classical data generation strategies. Finally, in \cite{shin2018medical}, authors used the same technique to both augment and anonymize the training data with brain MRI with the similar success of the previous papers.
 
@@ -119,10 +124,10 @@ Authors in \cite{perez2017effectiveness} has explored the possibility of using G
 
 This paper is organized as follows. Section \ref{sec:prop} details the use of GAN to generate additional training samples for ANN as well as the proposed neural network architecture. Photonic crystal fiber design that is used for testing is described in details in section \ref{sec:pcf}. Detailed analysis of the experimental results are discussed in section \ref{sec:exp}. Finally, concluding remarks are made in Section \ref{sec:conc}.
 
-\section{Proposed method}
+\section{Network Architecture}
 \label{sec:prop}
 
-In this section, details of the proposed method is discussed. Training of the system contains two phases: a GAN phase and regression training phase. At the start of the training, a GAN is trained to generate additional data by using training samples. These generated samples are filtered to ensure they fall within the applicable range. Original training samples and generated samples are joined to train a fully-connected feed-forward multi-layer perceptron (MLP) neural network for the regression ask of estimating confinement loss. At the end of the training, the ANN will be used to decide the containment loss of a previously unseen set of input parameters. This architecture is illustrated in Figure \ref{fig:overall}. The details of the proposed GAN and ANN architecture is discussed in the following subsections.
+In this section, details of the proposed method is discussed. Training of the system contains two phases: a GAN phase and regression training phase. At the start of the training, a GAN is trained to generate additional data by using training samples. These generated samples are filtered to ensure the range of application. Original training samples and generated samples are joined to train a fully-connected feedforward multi-layer perceptron (MLP) neural network. This satisfies the regression need for estimating the confinement loss. At the end of the training, the ANN will be used to decide the confinement loss of a previously unexperienced set of input parameters. The illustration of the proposed architecture is presented in  Figure \ref{fig:overall}. The details of the proposed GAN and ANN architecture is discussed in the following subsections.
 
 \begin{figure}
 	\centering
@@ -161,13 +166,13 @@ In this section, details of the proposed method is discussed. Training of the sy
 \subsection{Generative adversarial network design}
 \label{ssec:gan}
 
-Generative adversarial networks are introduced in \cite{goodfellow2014generative}. We have employed GAN to augment the number of samples that are used in training. A GAN is composed of two neural networks: generator and discriminator. The aim of the generator is to transform fully randomized data into data that follows the distribution of the original dataset. The discriminator assesses the performance of the generator and provides feedback for training. Instead of directly training generator, it is trained through this feedback. This paradigm avoids over-fitting the data.
+In our study, GAN is employed to augment the number of samples that are used in training  \cite{goodfellow2014generative}.  A GAN is composed of two neural networks: generator and discriminator. The aim of the generator is to transform fully randomized data into data that follows the distribution of the original dataset. The discriminator assesses the performance of the generator and provides feedback for training. Instead of using the direct training generator, it is trained through this feedback. This paradigm avoids over-fitting the data.
 
-It is possible to use different metrics for training a GAN \cite{goodfellow2014generative, mao2017least, lucic2018gans}; for this project we have selected Wasserstein distance metric called as WGAN. This variant is proposed by Arjovsky et al in \cite{arjovsky2017wasserstein}. In this system, discriminator is named as critic and it measures the distance between the generated  and the real data. The reason behind choosing WGAN over other methods is to be able to determine a stopping criteria. In a regular GAN system, training is stopped when the generated data is deemed viable by an observer. Since GAN is often used in generation of image, video or audio, using a human in the loop is effective. However, in our problem, it is not viable for a human to judge the generated data. Automating this procedure to remove the human in-the-loop can lead to over or under-fitting, which in turn degrades the performance. WGAN uses an adaptive stopping criteria that does not have the issue mentioned above. Additionally, we have selected to incorporate Gradient penalty to improve WGAN as proposed in \cite{gulrajani2017improved}. This improved WGAN system converges in a stable manner without having to fine tune hyper-parameters of the system. The flowchart of this system is given in Figure \ref{fig:gan}.
+The GAN can be trained by diverse metrics  \cite{goodfellow2014generative, mao2017least, lucic2018gans}]. In this work Wasserstein distance metric (WGAN) is selected \cite{arjovsky2017wasserstein}. In this system, discriminator is named as critic and it measures the distance between the generated  and the real data. The reason behind choosing WGAN over other methods is to be able to determine a stopping criteria. In a regular GAN system, training is stopped when the generated data is deemed viable by an observer. Since GAN is frequently used in image, video or audio generation, where human is used effectively in the loop. In our case, it is not viable for a human to judge the generated data, therefore, automating this procedure to remove the human in-the-loop can lead to over or under-fitting, which may degrade the performance. On the other hand, WGAN uses an adaptive stopping criteria that can easily overcome the aforementioned disadvantages. Additionally, Gradient penalty is incorporated to improve the WGAN as described in \cite{gulrajani2017improved}. This proposed enhanced WGAN system converges in a stable manner without requiring further fine tuning the hyper-parameters of the system. The flowchart of this proposed system is illustrated in Figure  \ref{fig:gan}.
 
-In this work, both the Critic and the generator are fully connected feed forward MLP models. The details of the networks are given in Table \ref{tbl:anndetails}. The output from this system should be input and output pairs that will be used to train ANN part of the system. In our SPR system, we have 7 input parameters and a single output parameter, making a total of 8 parameters that will be used in the GAN phase. In Section \ref{sec:exp}, we have experimented using a different PCF system with different inputs, resulting a different number of parameters for the system. The generator is supplied with the same number of parameters as its expected output, that is 8 for our dataset. These parameters are generated using Gaussian noise and is called latent variable. 
+In this work, both the Critic and the generator are fully connected feed forward MLP models. The details of the networks are given in Table \ref{tbl:anndetails}. The output from this system should be input and output pairs that will be used to train ANN part of the system. In our SPR system, we have 7 input parameters and a single output parameter, making a total of 8 parameters that will be used in the GAN phase. In Section \ref{sec:exp}, various PCF structures are tested with different inputs, resulting a different number of system parameters. The generator is supplied with the same number of parameters. These parameters are generated using Gaussian noise and is called latent variable.
 
-Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it is possible for random data augmentation to weaken the performance of the model. Hence, it is important to sample the generated data in way to prevent performance degradation \cite{bhattarai2019sampling}. In the proposed system, we have included a filtering step for the generated data. This step uses a simple condition to discard the values that fall out of the desired range, for both the independent variables ($n_{analyte}, \lambda, \Lambda, d1, d2, d3, n_c$), and the confinement loss. Once the training phase is complete, the generator and the filter is used to augment the number of training samples that are available for ANN to train on.
+Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it is possible for random data augmentation to weaken the performance of the model. Hence, it is important to sample the generated data in way to prevent performance degradation \cite{bhattarai2019sampling}. In our proposed system, we have included a filtering step for the generated data. This step uses a simple condition to discard the values that fall out of the desired range of both the independent variables  ($n_{analyte}, \lambda, \Lambda, d1, d2, d3, n_c$), and the confinement loss. Once the training phase is complete, the generator and the filter is used to augment the number of training samples that are available for ANN to train on.
 
 \begin{figure}
 	\centering
@@ -220,23 +225,15 @@ The ANN model employed in this research is a fully-connected feed-forward Multi 
 
 In our model, we have used mini-batch training with 48 samples as the batch size. In contrast to full-batch training, mini-batch training allows more frequent gradient calculations, improving the stability and reliability of the training \cite{masters2018revisiting, keskar2016large}. The downside of using mini-batches are added computational complexity during training. However, it has no adverse effect on the testing phase.
 
-We have adopted Adam \cite{kingma2014adam} as the optimizer and mean squared error (MSE) as the loss/cost function. In addition, we use Batch Normalization algorithm \cite{ioffe2015batch} to accelerate training, reduce the effects of initial randomized state and mitigate the problem of internal covariate shift. In the proposed system, the ANN is trained using the training samples from the original dataset and the augmented samples generated by the GAN phase.
+We have adopted Adam \cite{kingma2014adam} as the optimizer and mean squared error (MSE) as the loss/cost function. In addition, we use Batch Normalization algorithm \cite{ioffe2015batch} to accelerate training, reduce the effects of initial randomized state and mitigate the problem of internal covariate shift. Also, the ANN is trained using the training samples from the original dataset and the augmented samples generated by the GAN phase.
 
 
 \section{Photonic crystal fiber design}
-\label{sec:pcf}
 
-\hl{to HA: This section has been written by two different people, should be merged!}
+In order to build the desired dataset, the numerical analysis of the proposed sensor structure is carried out with the commercial software package Comsol Multiphysics \cite{comsol_help}. The Full Vectorial Finite Element Method (FV-FEM) with the perfectly matched layers (PMLs) \cite{koshiba2002full,saitoh2001full} are employed.
 
-\hl{Aimen:}
+The cross section of the proposed structure is illustrated in Figure 3. As can be seen from this figure, the sensor consists of analyte channel (sensing medium), plasmonic layer (Au) and various sized cladding air holes. The cladding region is formed by nineteen various sized air holes, sited on silica background with hexagonal lattice arrangement. The diameter of the air holes are set to;  $d_1$= $0.45 \mu m$, $d_2$= $0.75 \mu m$, $d_3$= $0.35 \mu m$, and  $d_c$= $0.15$. The distance between air holes ($\lambda$) are set to $2 \mu m$. Initially, trapping the light (fundamental mode) in to the core region is vital for mode quality. On the other hand, some amount of light needs to be leak towards the plasmonic layer, where the sensitivity measurement occurs. This is the key phenomenon for resonance phase matching occurrence. In this respect, the various sized cladding holes are employed for controlling the light guidance, where each set of air holes are effecting different propagation characteristic of the sensor. The Gold (Au) material is used as plasmonic layer and set to be$40 \mu m$. The Johnson and Christy Data \cite{johnson1972optical} are used the permittivity values. The Sellmeier Equation (Eq.(\ref{eqn1})) is used for calculating the refractive index of Silica material \cite{bjarklev2003PCF}.
 
-A labelled dataset of 432 samples was collected in this work, through simulations using FV-FEM. This dataset consists of the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$, and real part of the refractive index ($n_c$) taken as our independent variables. The labels are the confinement loss of the PCF. The set consists of nine different configurations of the geometric properties ($ \Lambda $, d1, d2, d3), for each configuration the confinement loss was calculated for three different analytes (Water (n=1.33), Ethanol (n=1.35) and several commercial hydrocarbon mixtures (n=1.36)).
-
-\hl{We will fix the pattern and geometrical shape of the cladding air holes, and vary the wavelength $\lambda$, index of refraction $n_{analyte} $, air-hole to air-hole distance $ \Lambda $, and the air holes radii per ring $d1$, $d2$ and $d3$. Then the results of this study can be carried to different types of SPR-based PCF sensors, using other suitable deep learning approaches such as Recurrent and Convolutional neural networks. }
-
-\hl{AY:}
-
-The numerical investigation to build the SPR dataset have been simulated with Comsol Multiphysics software~\cite{comsol_help}, where  the Full Vectorial Finite Element Method (FV-FEM) with perfectly matched layers (PMLs)~\cite{koshiba2002full,saitoh2001full} are used for numerical analysis. 
 
 \begin{figure}[]
 	\centering
@@ -247,8 +244,6 @@ The numerical investigation to build the SPR dataset have been simulated with Co
 
 
 
-The cross section of proposed PCF based SPR sensor has been shown in Figure~\ref{Figx}. As can be seen from this figure, the sensor consists of analyte channel (sensing medium), metallic layer(Au) and PCF sections. The PCF section consists of nineteen various sized air holes, placed on silica background with hexagonal arrangement.  The diameter of air holes are initially set as; $d_1$ is $0.45 \mu m$, $d_2$ is $0.75 \mu m$ and $d_3$ is $0.35 \mu m$, and  $d_c$ is $0.15$. The distance between air holes ($\Lambda$) also initially  set to be $2 \mu m$. The aim of using different size air holes is, while trapping the light in the core region of PCF (fundamental mode), at the same time allow some amount of light to leak from the bridges between air holes toward the plasmonic layer. Which will match the surface plasmon waves propagating along the metallic surface. Gold (Au) used as plasmonic layer and set to be $40 nm$, where Johnson and Christy Data~\cite{johnson1972optical} used for its permittivity. The Sellmeier Equation (Eq.(\ref{eqn1})) is used for calculating the refractive index of Silica  \cite{bjarklev2003PCF}.
-
 
 \begin{equation}
 n^2(\lambda)=1+\frac{ B_1 (\lambda)^2} {(\lambda)^2-C_1} + \frac{ B_2 (\lambda)^2} {(\lambda)^2-C_2} + \frac{ B_3 (\lambda)^2} {(\lambda)^2-C_3}
@@ -258,8 +253,9 @@ n^2(\lambda)=1+\frac{ B_1 (\lambda)^2} {(\lambda)^2-C_1} + \frac{ B_2 (\lambda)^
 
 where $\lambda$ is the operating wavelength, $n$ is the RI, $B_{1,2,3}$ and  $C_{1,2,3}$ are the  Sellmeier constants~\cite{bjarklev2003PCF}.
 
+As mentioned in the introductory part, during the resonance phase matching condition, the confinement losses are reaching the highest rate. Therefore, precise calculation of the confinement losses are critical.  The Equation~\ref{eqn2} is used in this study for that purpose \cite{yasli2019effect}.
 
-The aim of SPR based sensor are sensing the RI changes at the resonance conditions. The resonace condition is the phase matching between SPWs propagating along metal layer (Au) and the fundamental mode of ligt that is propagating along the PCF core. At that specific time the confinement loss is reaches the highest peak point. Therefore, in SPR based PCF sensors the key parameter is the confinement loss and it is so important to precisely calculate the confinement losses. The Equation~\ref{eqn2} is used in this study for that purpose~\cite{yasli2019effect}.
+
 
 %%
 \begin{equation}
@@ -270,6 +266,11 @@ The aim of SPR based sensor are sensing the RI changes at the resonance conditio
 
 where the imaginary part of the effective RI shown with Im($n_{eff}$).
 
+A labelled dataset of 432 samples was provided by FV-FEM numerical analysis. Our dataset contains a number of independent variables such as the operating wavelength $\lambda$, analyte index $n_{analyte}$, hole to hole distance $\Lambda$, the air holes sizes ($d_1$, $d_2$ and $d_3$), and the real part of the refractive index ($n_c$). The labels are specified as the confinement loss of the sensor structure. The set consists of nine different configurations of the geometric properties ($\Lambda$, $d_1$, $d_2$, $d_3$), for each configuration the confinement loss was calculated for three different analytes (Water (n=1.33), Ethanol (n=1.35) and several commercial hydrocarbon mixtures (n=1.36)).
+
+The optimizing and refinement of these above parameters are extremely time-consuming and requires considerable computational time. In order to optimize the structural design parameters and achieve the desired propagation features, we have fixed the geometry of the sensor structure (hexagonal arrangement with circular air holes) and vary the operating wavelength $\lambda$, index of refraction $n_{analyte}$, hole to hole spacing $\Lambda$, and the size of the cladding holes ($d_1$, $d_2$ and $d_3$).
+ 
+\hl {Then the results of this study can be carried to different types of SPR-based PCF sensors, using other suitable deep learning approaches such as Recurrent and Convolutional Neural Networks. (Bu paragrafa cem baksin, sonuc kisminda kullanabiliriz)}
 
 
 \section{Experiments}
@@ -325,7 +326,7 @@ We have performed experiements comparing the proposed ANN architecture with the 
 			no marks
 		]
 		\addplot[line width=1pt,solid,color=blue] %
-		table{../../loss_curves_3k/ann_tr_loss_3k_their_data_without.txt};
+		table{data/ann_tr_loss_3k_their_data_without.txt};
 		\end{axis}
 	\end{tikzpicture}
 	\caption{Without augmentation}
@@ -343,7 +344,7 @@ We have performed experiements comparing the proposed ANN architecture with the 
 			no marks
 		]
 		\addplot[line width=1pt,solid,color=blue] %
-		table{../../loss_curves_3k/ann_tr_loss_3k_their_data_with.txt};
+		table{data/ann_tr_loss_3k_their_data_with.txt};
 		\end{axis}
 	\end{tikzpicture}
 	\caption{With augmentation}
@@ -371,14 +372,14 @@ We have performed experiements comparing the proposed ANN architecture with the 
 				only marks,
 				mark size=2.9pt, mark=o, color=red, fill=red
 			] 
-			table{../../experiments_spr-pcf/Their_net/without_augmentation/kfold-predictions-vs-labels/5th/graph_data.txt};
+			table{data/spr_their_without_5.txt};
 			\addlegendentry{\cite{paper0}}
 						
 			\addplot[
 				only marks,
 				mark size=2.9pt, mark=x, color=green!50!black
 			] 
-			table{../../experiments_spr-pcf/Our_net/Without_augmentation/kfold-predictions-vs-labels/8th/graph_data.txt};
+			table{data/spr_our_without_8.txt};
 			\addlegendentry{$Proposed$}
 			
 			
@@ -413,14 +414,14 @@ We have performed experiements comparing the proposed ANN architecture with the 
 			only marks,
 			mark size=2.9pt, mark=o, color=red, fill=red
 		] 
-		table{../../expirrements_pcf2/Their_net/without_augment/kfold-predictions-vs-labels/2nd/graph_data.txt};
+		table{data/pcf_their_without_2.txt};
 		\addlegendentry{\cite{paper0}}
 		
 		\addplot[
 		only marks,
 		mark size=2.9pt, mark=x, color=green!50!black
 		] 
-		table{../../expirrements_pcf2/Our_net/without_augment/kfold-predictions-vs-labels/2nd/graph_data.txt};
+		table{data/pcf_our_without_2.txt};
 		\addlegendentry{$Proposed$}
 		
 		\draw[
@@ -580,14 +581,14 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 				only marks,
 				mark size=2.9pt, mark=o, color=red, fill=red
 			] 
-			table{../../experiments_spr-pcf/Our_net/Without_augmentation/kfold-predictions-vs-labels/3rd/graph_data.txt};
+			table{data/spr_our_without_3.txt};
 			\addlegendentry{Without GAN}
 			
 			\addplot[
 				only marks,
 				mark size=2.9pt, mark=x, color=green!50!black
 			]
-			table{../../experiments_spr-pcf/Our_net/with_augmentation/kfold-predictions-vs-labels/3rd/graph_data.txt};
+			table{data/spr_our_with_3.txt};
 			\addlegendentry{With GAN}
 			
 			\draw[
@@ -620,14 +621,14 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 			only marks,
 			mark size=2.9pt, mark=o, color=red, fill=red
 		] 
-		table{../../expirrements_pcf2/Our_net/without_augment/kfold-predictions-vs-labels/4th/graph_data.txt};
+		table{data/pcf_our_without_4.txt};
 		\addlegendentry{Without GAN}
 		
 		\addplot[
 		only marks,
 		mark size=2.9pt, mark=x, color=green!50!black
 		] 
-		table{../../expirrements_pcf2/Our_net/with_augment/kfold-predictions-vs-labels/4th/graph_data.txt};
+		table{data/pcf_our_with_4.txt};
 		\addlegendentry{With GAN}
 		
 		\draw[
