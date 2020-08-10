@@ -90,8 +90,7 @@
 
 \begin{document}
 
-\title{\hl{Generative adversarial neural networks model of photonic crystal fiber based Surface Plasmon Resonance Sensor
-}}
+\title{Generative adversarial neural networks model of photonic crystal fiber based Surface Plasmon Resonance Sensor}
 
 \author{Aimen Zelaci, Ahmet Yasli, Cem Kalyoncu, and Huseyin Ademgil}
 
@@ -165,7 +164,7 @@ In our study, GAN is employed to augment the number of samples that are used in 
 
 The GAN can be trained by diverse metrics \cite{goodfellow2014generative, mao2017least, lucic2018gans}]. In this work Wasserstein distance metric (WGAN) is employed \cite{arjovsky2017wasserstein}. In this system, discriminator is named as critic and it measures the distance between the generated and the real data. The distinguishing feature of the WGAN compared to other methods is the ability to determine a stopping criteria. In a regular GAN system, training is stopped when the generated data is deemed viable by an observer. GAN is frequently used in image, video or audio generation, where human is used effectively in the loop. In our case, it is not viable for a human to judge the generated data, therefore, automating this procedure to remove the human in-the-loop can lead to over or under-fitting, which may degrade the performance. On the other hand, WGAN uses an adaptive stopping criteria that can easily overcome the aforementioned disadvantages. Additionally, Gradient penalty is incorporated to improve the WGAN as described in \cite{gulrajani2017improved}. This proposed enhanced WGAN system converges in a stable manner without requiring further fine tuning the hyper-parameters of the system. The flowchart of this proposed system is illustrated in Figure \ref{fig:gan}.
 
-In our work, both the critic and the generator are fully connected to feed forward MLP models. The detailed parameters of the networks are given in Table  \ref{tbl:anndetails}. The output of the system would be input and output pairs that are used to train ANN part of the system. In our proposed model, we have 7 input parameters and a single output parameter, making a total of 8 that will be used in the GAN phase. In Section  \ref{sec:exp}, various PCF structures are tested with different inputs, resulting in a different number of system parameters. The generator is supplied with the same number of parameters. These parameters are generated using Gaussian noise and this input is called latent variable.
+In our work, both the critic and the generator are fully connected to feed forward MLP models. The detailed parameters of the networks are given in Table \ref{tbl:anndetails}. The output of the system would be input and output pairs that are used to train ANN part of the system. In our proposed model, we have 7 input parameters and a single output parameter, making a total of 8 that will be used in the GAN phase. In Section  \ref{sec:exp}, various PCF structures are tested with different inputs, resulting in a different number of system parameters. The generator is supplied with the same number of parameters. These parameters are generated using Gaussian noise and this input is called latent variable.
 
 Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it is possible for random data augmentation to weaken the performance of the model. Hence, it is important to sample the generated data in a way to prevent performance degradation  \cite{bhattarai2019sampling}. In our proposed system, we have included a filtering step for the generated data. This step uses a simple condition to discard the values that fall out of the desired range of both the independent variables  ($n_{analyte}, \lambda, \Lambda, d1, d2, d3, n_c$), and the confinement loss. Once the training phase is completed, the generator and the filter is used to augment the number of training samples that are available for ANN to train on.
 
@@ -206,8 +205,9 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it i
 		Activation function & ReLU & Leaky ReLU & ReLU \\
 		Optimizer & Adam \cite{kingma2014adam} & Adam & Adam \\
 		Input normalization & None & None & None \\
-		Layer normalization & - & Batch \cite{ioffe2015batch} & Batch \\
-		Loss function & $-Critic(generated)$ & $Critic(gen) - Critic(col) + Penalty_{gradient}$ & MSE \\
+		Layer normalization & None & Batch \cite{ioffe2015batch} & Batch \\
+		Loss function & $-Critic\left[gen\right]$ & $Critic\left[gen\right] - Critic\left[col\right] + Penalty_{grad}$ & MSE \\\hline
+		\multicolumn{4}{l}{gen: generated, col: collected, grad: gradient}
 	\end{tabular}
 	\label{tbl:anndetails}
 \end{table*}
