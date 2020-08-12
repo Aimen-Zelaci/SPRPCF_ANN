@@ -1,4 +1,20 @@
-\documentclass[10pt]{IEEEtran}
+\documentclass[journal,twoside,web]{ieeecolor}
+\usepackage{jsen}
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{wrapfig}
+\usepackage{placeins}
+\usepackage[outdir=./]{epstopdf}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\markboth{\journalname, VOL. XX, NO. XX, XXXX 2017}
+{Author \MakeLowercase{\textit{et al.}}: Preparation of Papers for IEEE TRANSACTIONS and JOURNALS (February 2017)}
+\definecolor{abstractbg}{rgb}{0.89804,0.94510,0.83137}
+\setlength{\fboxrule}{0pt}
+\setlength{\fboxsep}{0pt}
 
 \usepackage{color,soul}
 \usepackage{tikz}
@@ -89,16 +105,41 @@
 ]
 
 \begin{document}
-
 \title{Generative adversarial neural networks model of photonic crystal fiber based Surface Plasmon Resonance Sensor}
+\author{
+	Aimen Zelaci, Ahmet Yasli, Cem Kalyoncu, and Huseyin Ademgil, \IEEEmembership{Senior Member, IEEE}
+	\thanks{A. Z. Author is with 
+		the European University of Lefke, Faculty of Engineering, Electrical and Electronics Engineering Department, Lefke, TR-10, Turkey (e-mail: aimen.zelaci@gmail.com).
+	}
+	\thanks{A. Y. Author is with 
+		the European University of Lefke, Faculty of Engineering, Electrical and Electronics Engineering Department, Lefke, TR-10, Turkey (e-mail: ayasli@eul.edu.tr).
+	}
+	\thanks{C. K. Author is with 
+		the European University of Lefke, Faculty of Engineering, Computer Engineering Department, Lefke, TR-10, Turkey (e-mail: ckalyoncu@eul.edu.tr).
+	}
+	\thanks{H. A. Author is with 
+		the European University of Lefke, Faculty of Engineering, Computer Engineering Department, Lefke, TR-10, Turkey (e-mail: hademgil@eul.edu.tr).
+	}
+}
 
-\author{Aimen Zelaci, Ahmet Yasli, Cem Kalyoncu, and Huseyin Ademgil}
 
-\maketitle
-	
+\IEEEtitleabstractindextext{%
+\fcolorbox{abstractbg}{abstractbg}{%
+\begin{minipage}{\textwidth}%
+%\begin{wrapfigure}[12]{r}{3in}%
+%\includegraphics[width=3in]{jsenga.png}%
+%\end{wrapfigure}%
 \begin{abstract}
 Photonic crystal fibers (PCF) for specific applications are designed and optimized by both industry experts and researches. However, the potential number of design combinations and flexible propagation features are offering a wide range of application areas, resulting in an exponential increase in the search space. This issue combined with the speed of the commonly used Full Vectorial Finite Element Method (FV-FEM) simulators causes the task to take a significant amount of time. As stated in the previous works, artificial neural networks (ANN) can be employed to predict the result of numerical simulations much faster. However, there are two issues with the methods proposed previously: the required number of samples for training and the generality of these methods. In this paper, we propose the use of generative adversarial networks (GAN) to augment the real dataset to train an ANN model. The experimental analysis suggested that the proposed combination not only accurately predicts the confinement loss even with limited amounts of data but also GAN can be used to improve existing methods in the literature. Moreover, the proposed system can also predict the confinement loss over a range of analytes and wavelengths in a completely new geometric configuration and generic enough not to require any additional tuning when used in a new dataset. This property is demonstrated by experimenting on an existing PCF dataset, which the proposed system surpassed the accuracy of the method proposed for it.
 \end{abstract}
+
+\begin{IEEEkeywords}
+Artificial neural network (ANN), fiber optic sensor, generative adversarial networks (GAN), machine learning, photonic crystal fiber (PCF), surface plasmon resonance (SPR).
+\end{IEEEkeywords}
+\end{minipage}}}
+
+\maketitle
+
 
 \section{Introduction}
 Due to their unique propagation features, Photonic Crystal Fibers (PCFs) have been integrated into a number of optical based devices and applications. Design flexibilities and precise light guidance abilities has made them more promising in comparison to conventional step index fibers in various optical applications including sensing \cite{wang2011selectively}. 
@@ -301,7 +342,7 @@ In this set of experiments, we have analyzed the performance of the proposed ANN
 
 We have performed experiments comparing the proposed ANN architecture with the state-of-the-art method proposed in \cite{paper0}. Results of this experiment are demonstrated in Figure \ref{chart:perfnoaug}. In the SPR dataset experiment, ANN models are predicting a new configuration and the number of samples available for training is lower. Therefore, they both have higher error rates compared to the PCF dataset. According to Figure \ref{chart:perfnoaug}c, $n_{analyte} = 1.35$ case, the ANN method proposed in \cite{paper0} does not fit to the curve caused by the change in the wavelength. This can be linked to the fact that this method uses full-batch learning and therefore under-fits the model \cite{keskar2016large}. Regardless of this, both models have similar MSE due to the shift in the curve fit. Since the network is never exposed to this particular geometric configuration shift in the curve fit occurs.
 
-\begin{figure*}
+\begin{figure}
 	\begin{subfigure}{.48\textwidth}
 	\centering
     \begin{tikzpicture}
@@ -313,6 +354,7 @@ We have performed experiments comparing the proposed ANN architecture with the s
 			minor grid style={gray!25},
 			major grid style={gray!25},
 			ymax=3,
+			height=6cm,
 			no marks
 		]
 		\addplot[line width=1pt,solid,color=blue] %
@@ -326,11 +368,13 @@ We have performed experiments comparing the proposed ANN architecture with the s
 	\begin{tikzpicture}
 		\begin{axis}[
 			xlabel=Epochs, 
+			ylabel=Training \space MSE,
 			width=\textwidth,
 			grid=both,
 			minor grid style={gray!25},
 			major grid style={gray!25},
 			ymax=3,
+			height=6cm,
 			no marks
 		]
 		\addplot[line width=1pt,solid,color=blue] %
@@ -342,7 +386,7 @@ We have performed experiments comparing the proposed ANN architecture with the s
 		
 	\caption{Training MSE of the ANN model with (a) and without (b) GAN phase obtained from SPR dataset}
 	\label{chart:trainingmse}
-\end{figure*}
+\end{figure}
 
 
 \begin{figure*}
@@ -354,7 +398,8 @@ We have performed experiments comparing the proposed ANN architecture with the s
 			grid=both,
 			minor grid style={gray!25},
 			major grid style={gray!25},
-			width=\textwidth,
+			width=\textwidth,			
+			height=8cm,
 			ymin=5,ymax=7,xmin=5,xmax=7,
 			legend pos=south east
 		]
@@ -398,6 +443,7 @@ We have performed experiments comparing the proposed ANN architecture with the s
 		minor grid style={gray!25},
 		major grid style={gray!25},
 		width=\textwidth,
+		height=8cm,
 		legend pos=south east
 	]
 		\addplot[
@@ -441,6 +487,7 @@ We have performed experiments comparing the proposed ANN architecture with the s
 		major grid style={gray!25},
 		title={$n_{analyte=1.34}$},
 		width=0.48\textwidth,
+		height=8cm,
 		legend pos=north west
 	]
 	\addplot[
@@ -477,6 +524,7 @@ We have performed experiments comparing the proposed ANN architecture with the s
 		major grid style={gray!25},
 		title={$n_{analyte=1.35}$},
 		width=0.48\textwidth,
+		height=8cm,
 		legend pos=north west
 	]
 	\addplot[
@@ -564,6 +612,7 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 			minor grid style={gray!25},
 			major grid style={gray!25},
 			width=\textwidth,
+%			height=6cm,
 			legend pos=south east
 		]
 			\addplot[
@@ -604,6 +653,7 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 		minor grid style={gray!25},
 		major grid style={gray!25},
 		width=\textwidth,
+%		height=6cm,
 		legend pos=south east
 	]
 		\addplot[
@@ -648,6 +698,7 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 		title={$n_{analyte=1.34}$},
 		width=0.48\textwidth,
 		legend pos=north east,
+%		height=6cm
 	]
 	\addplot[
 		only marks,
@@ -680,7 +731,8 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 		major grid style={gray!25},
 		title={$n_{analyte=1.33}$},
 		width=0.48\textwidth,
-		legend pos=north east
+		legend pos=north east,
+%		height=6cm
 	]
 	\addplot[
 		only marks,
@@ -711,12 +763,15 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 \label{chart:ganperf}
 \end{figure*}
 
+
+
 We have also applied the GAN phase to the network architecture proposed in \cite{paper0}. In this experiment, the GAN phase reduced the performance slightly. However, as we have discussed earlier, full batch training strategy is the cause of this due to increased number of samples. In fact, when we reduce the batch size down to 900 samples, the GAN phase starts to improve the score of this architecture.
 
 The final set of experiments shows the stability that the GAN phase adds. In Table \ref{tbl:all},we have listed minimum, maximum, average MSE along with the standard deviation between folds in the testing. It is clear that the GAN phase not only improves the average case but significantly improves the worst case while reducing the deviation, which is important in a live setting. Even in a dataset with enough examples to train the network (PCF), using the GAN phase reduces the worst case error by  32\%. This added stability can also be observed in Figure \ref{chart:trainingmse}, where the training loss has less fluctuations when the data augmentation is employed.
 
 \begin{table}
 \caption{Detailed performance analysis}
+\centering
 \begin{tabular}{l|l|l|l|l|l|l}
 	Method & \multicolumn{3}{c|}{SPR} & \multicolumn{3}{c}{\dszero{}} \\\hline
 	Dataset & \multicolumn{2}{c|}{Proposed} & \cite{paper0}  & \multicolumn{2}{c|}{Proposed}   & \cite{paper0} \\\hline
@@ -740,6 +795,7 @@ We have also experimented with TensorFlow using GPU via an additional system tha
 
 \begin{table}
 \caption{Execution time of algorithms}
+\centering
 \begin{tabular}{l|l|l}
 Method    			  &  Training (s) & Testing (ms) \\\hline
 Proposed ANN 		  &  42 & 3.6 \\
@@ -759,7 +815,6 @@ In this paper, we have demonstrated that the use of generative adversarial netwo
 Another important aspect in this work is the experiments performed on a dataset that is designed to test the ability of artificial neural networks to estimate the properties of a new configuration. For this purpose, we have built a database based on Surface Plasmon Resonance with varying geometric configurations. During the testing, a new configuration that is not used for the training is employed. The proposed ANN, augmented with the GAN phase is shown to estimate the new configuration to an acceptable error rate.
 
 The most vital advantage of using machine learning methods instead of numerical simulation is the speed factor. In the experiments it is shown that the machine learning methods work few orders of magnitude faster than the simulation method. For different types of sensors, Convolutional and Recurrent neural networks can be of great advantage to discover the optimal patterns and geometrical shapes of the cladding air holes. This potential will be explored in a future work.
-
 
 The code for this work is available at: \url{https://github.com/Aimen-Zelaci/SPRPCF_ANN/}.
 
