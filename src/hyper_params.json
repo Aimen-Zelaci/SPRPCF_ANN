@@ -23,7 +23,7 @@
     "num_neurons": 50,
     "batch_norm": true,
     "epochs": 2500,
-    "batch_size": 32,
+    "batch_size": 48,
     "learning_rate": 1e-3,
     "augment_size": 1000,
     "save_dir": "./trained-nets/model1000.h5",
