@@ -98,8 +98,7 @@ def train_model(model, tr_data, tr_labels, va_data, va_labels, flags):
     # TensorBoard
     tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
     # Save the best va_loss file
-    checkpointer = keras.callbacks.ModelCheckpoint(filepath=chkdir, verbose=1,
-                                                   save_best_only=True)
+    #checkpointer = keras.callbacks.ModelCheckpoint(filepath=chkdir, verbose=1, save_best_only=True)
     # Define optimizers
     Adam = keras.optimizers.Adam(learning_rate=
                                  lr, beta_1=0.9, beta_2=0.999)
@@ -107,7 +106,7 @@ def train_model(model, tr_data, tr_labels, va_data, va_labels, flags):
     # Train
     model.compile(optimizer=Adam, loss='mean_squared_error')
     hist = model.fit(tr_data, tr_labels, epochs=epochs,
-                     validation_data=(va_data, va_labels), callbacks=[checkpointer, tensorboard_callback],
+                     validation_data=(va_data, va_labels), callbacks=[tensorboard_callback],
                      batch_size=batch_size)
     # Post training
     model.save(save_dir)
@@ -357,16 +356,17 @@ class Wgan_optim(object):
 
     @staticmethod
     def filter_1(data):
-        # Noise filter
-        pve = sum(int(o <= 0.0) for o in data[:7])
-        #nve = sum(int(t <= 0.0) for t in p[1:6])
-        return pve
+        # Noise filter for the SPR set
+        cd1 = sum(int(o >= 1.0) for o in data[3:7])
+        cd2 = sum(int(t <= 0.0) for t in p)
+        return [cd1, cd2]
 
     @staticmethod
     def filter_2(data):
-        pve = sum(int(o <= 0.0) for o in data[:6])
+        # Noise filter for PCF set
+        cd1 = sum(int(o <= 0.0) for o in data[:6])
         #nve = sum(int(t <= 0.0) for t in p[1:6])
-        return pve
+        return cd1
 
     def generate_data(self,load=True):
         logger.info('\n*****\n GENERATING DATA ... \n****\n')
@@ -379,11 +379,16 @@ class Wgan_optim(object):
         for _ in tqdm(range(self.flags.gen_iterations)):
             predictions = self.sess.run(self.g_samples,
                                         feed_dict={self.z: self.sample_z(num=self.num_examples_to_generate)})
-            # print(predictions)
             for p in predictions:
-                # sp.savetxt(r'gen_data_pcf.txt', p, delimiter=',')
-                if not self.filter_1(p):
-                    _df = np.concatenate((_df, p.reshape(1, self.noise_dim)), axis=0)
+                if(elf.flags.data_set = "SPR"):
+                    cd1, cd2 = self.filter_1(p)
+                    if not cd1 and not cd2:
+                        _df = np.concatenate((_df, p.reshape(1, self.noise_dim)), axis=0)
+                if(self.flags.data_set = "PCF"):
+                    cd1 = self.filter_2(p)
+                    if not cd1:
+                        _df = np.concatenate((_df, p.reshape(1, self.noise_dim)), axis=0)
+
         _df = pd.DataFrame(_df, index=None)
         _df = _df.drop(0, axis=0)
         _df.to_csv('.\gen_data\gen_data2.txt', index=False)
@@ -393,6 +398,8 @@ class Wgan_optim(object):
         logger.info('* Reading checkpoint...')
         checkpoint_dir = self.flags.load_wga_model_dir
         checkpoint = tf.train.get_checkpoint_state(checkpoint_dir)
+        print(checkpoint_dir)
+        print(checkpoint)
         if checkpoint and checkpoint.model_checkpoint_path:
             ckpt_name = os.path.basename(checkpoint.model_checkpoint_path)
             self.saver.restore(self.sess, os.path.join(checkpoint_dir, ckpt_name))
@@ -406,7 +413,7 @@ class Wgan_optim(object):
             logger.info('* Load Failed')
 
 
-############################# Wgan with KERAS ############################
+############################# Wgan with KERAS. For comparasion purposes ############################
 
 class Wgan_unoptim(object):
     def __init__(self, flags):
@@ -568,13 +575,14 @@ class Wgan_unoptim(object):
         for _ in tqdm(range(iterations)):
             seed = tf.random.normal([self.num_examples_to_generate, self.noise_dim])
             predictions = generator(seed, training=training)
+            print(predictions)
             if (training == False):
                 for p in predictions:
                     # Noise filter
-                    ones = sum(int(o >= 1.0) for o in p[:6])
-                    zeros = sum(int(z < 0.1) for z in p)
+                    ones = sum(int(o >= 1.0) for o in p[1:6])
+                    #zeros = sum(int(z < 0.1) for z in p)
                     # sp.savetxt(r'gen_data_pcf.txt', p, delimiter=',')
-                    if (ones == 0 and zeros == 0):
+                    if (1):
                         _df = np.concatenate((_df, tf.reshape(p, [1, 7])), axis=0)
         _df = pd.DataFrame(_df, index=None)
         _df = _df.drop(0, axis=0)

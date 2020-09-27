@@ -48,6 +48,12 @@ tf.flags.DEFINE_string('model_to_test', ann_flags['model_to_test'], 'Test model 
 tf.flags.DEFINE_integer('augment_size', ann_flags['augment_size'], 'data augmentation size, default:1000')
 tf.flags.DEFINE_integer('gen_iterations', wgan_flags['gen_iterations'], 'iteration of data generation, default:1000')
 
+tf.flags.DEFINE_integer('no_spr_samples_per_analyte',data_flags['no_spr_samples_per_analyte'], 'Number of samples per analyte')
+tf.flags.DEFINE_integer('no_spr_samples',data_flags['no_spr_samples_per_analyte'], 'Number of samples per analyte')
+tf.flags.DEFINE_integer('no_spr_analytes',data_flags['no_spr_analytes'], 'Number of Analytes')
+tf.flags.DEFINE_integer('no_spr_configs',data_flags['no_spr_configs'], 'Number of SPR geometric configurations')
+
+tf.flags.DEFINE_string('data_set', data_flags['data_set'], 'The dataset used to train the system: PCF or SPR')
 tf.flags.DEFINE_string('gen_data_dir', data_flags['gen_data_dir'],
                        'generated data directory,default:gen_data/gen_data.txt')
 tf.flags.DEFINE_string('data', data_flags['data'], 'SPR-PCF data directory')

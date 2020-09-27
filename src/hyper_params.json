@@ -1,11 +1,11 @@
 [
   {
     "COMMENT": "WGAN PARAMS",
-    "BATCH_SIZE": 20,
-    "epochs": 600,
+    "BATCH_SIZE": 32,
+    "epochs": 2000,
     "save_step": 600,
-    "noise_dim": 7,
-    "num_critic_input": 7,
+    "noise_dim": 8,
+    "num_critic_input": 8,
     "n_critic": 5,
     "grad_penalty_weight": 10,
     "num_examples_to_generate": 8,
@@ -17,8 +17,8 @@
   },
   {
     "COMMENT": "ANN PARAMS",
-    "num_layers": 6,
-    "num_inputs": 6,
+    "num_layers": 5,
+    "num_inputs": 7,
     "num_outputs": 1,
     "num_neurons": 50,
     "batch_norm": true,
@@ -31,7 +31,11 @@
     "model_to_test": "./trained-weights/weights1000.hdf5"
   },
   {
-    "COMMENT": "DATA PATHS",
+    "COMMENT": "DATA PARAMS",
+    "data_set":"SPR",
+    "no_spr_samples_per_analyte":16,
+    "no_spr_configs":9,
+    "no_spr_analytes":3,
     "gen_data_dir": "./gen_data/gen_data2.txt",
     "shuffled_data": "./data/shuffled_df.xlsx",
     "data": "./data/data.xlsx",
