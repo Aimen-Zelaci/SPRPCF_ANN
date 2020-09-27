@@ -12,7 +12,7 @@ src/trained-weights/
 __pycache__
 training_checkpoints
 .idea
-.experiments_spr-pcf
-.expirements_pcf2
-loss_curves_2k
-loss_curves_3k
+.\\experiments_spr-pcf
+.\\expirements_pcf2
+.\\loss_curves_2k
+.\\loss_curves_3k
