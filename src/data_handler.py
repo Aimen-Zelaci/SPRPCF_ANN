@@ -54,8 +54,7 @@ def load_spr_data(fname):
 
     df = df.reshape(no_spr_configs, no_spr_analytes, no_spr_samples,  -1)
     sp.random.shuffle(df)
-    df = df.reshape(no_spr_configs * no_spr_samples * no_spr_analytes, no_spr_configs, -1)
-    print(df.shape)
+    df = df.reshape(no_spr_configs * no_spr_samples * no_spr_analytes, -1)
     '''
     Tried different normalization techniques
     scaler = StandardScaler()

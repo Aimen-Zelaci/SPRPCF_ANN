@@ -380,11 +380,11 @@ class Wgan_optim(object):
             predictions = self.sess.run(self.g_samples,
                                         feed_dict={self.z: self.sample_z(num=self.num_examples_to_generate)})
             for p in predictions:
-                if(elf.flags.data_set = "SPR"):
+                if(self.flags.data_set == "SPR"):
                     cd1, cd2 = self.filter_1(p)
                     if not cd1 and not cd2:
                         _df = np.concatenate((_df, p.reshape(1, self.noise_dim)), axis=0)
-                if(self.flags.data_set = "PCF"):
+                if(self.flags.data_set == "PCF"):
                     cd1 = self.filter_2(p)
                     if not cd1:
                         _df = np.concatenate((_df, p.reshape(1, self.noise_dim)), axis=0)
