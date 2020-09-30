@@ -14,19 +14,28 @@
 \textcolor{green}{ANSWER: } In line 91 in their code: \\
 $ scaler_datafile_1 = scaler1.transform(datafile_1) $  \\
  $X = scaler_datafile_1[:,range(0,6)]$                 input variables columns\\
-$y = scaler_datafile_1[:,range(6,11)] $                  output variables columns\\      
+$y = scaler_datafile_1[:,range(6,11)] $                  output variables columns\\    
+
+Line 130:
+
+$ input_dim = 6   $                                   \ no. of input variables columns\\
+$ output_dim = no_of_output_nodes $                     \ no. of output variables columns\\
+$from collections import OrderedDict $  \\
 
 Shows that they have used 6 inputs.
 
 It is a typo in our paper, "7" should be changed to "6". And the we should add "the clad-ref-index".	\\
-\textcolor{red}{ CK's comment: We should be much more careful about these. Mistakes like these damage our projection of surety.}
+\textcolor{red}{ CK's comment: We should be much more careful about these. Mistakes like these damage our projection of surety.}\\
+
+\textcolor{green}{ AZ: I am sure that I used the same inputs in our experiments.}
 	
 	\item \textbf{-TRIVIAL-} Also, have you used the dataset of [18] along with your own data making it finally as 1117+432 data samples. If yes, how did you merge both datasets as proposed manuscript (d1,d2,d3,etc) data sets has different inputs parameters than [18]. What happens to non-common columns like number of rings input feature as mentioned in [18].     \\
-	\textcolor{green}{ANSWER: } No, we have not. \textcolor{red}{ CK's comment: Don't do that yet. We will talk about it later.}
+	\textcolor{green}{ANSWER: } No, we have not. 
 		
 		
 \item \textbf{-TRIVIAL-} Page 7, Line 43, Right Column- Github link for the code is broken. I hope you will correct it. Looking forward to check your code along with data samples you have used  to obtain results in this manuscript. \\
-\textcolor{green}{ANSWER: } I forgot to make the repo public. I will make it public as soon as we finish with the revision.
+\textcolor{green}{ANSWER: } I forgot to make the repo public. I will make it public as soon as we finish with the revision. \\ 
+\textcolor{red}{ CK's comment: Don't do that yet. We will talk about it later.}
     
     \item \textbf{-TRIVIAL-} Please, reread the paper to correct some misspelling words. For example, Abstract (line 3): should it be "researchers"? Another example in "Introduction", page 1, column 2, line 35: "Snell's Total" instead of "Snell?s Total". \\
     \textcolor{green}{ANSWER AZ: To be resolved by HA} \\ \textcolor{red}{ CK's comment: HA will not be able to do this as this is a word to latex issue.}
