@@ -16,6 +16,11 @@
 \usepackage{cite}
 \usepackage{multirow}
 
+\tikzstyle directed=[postaction={decorate,decoration={markings, 
+		mark=at position 1 with {\arrow[arrowstyle]{stealth}}}}]
+
+\tikzstyle arrowstyle=[scale=1]
+
 %for flowcharts
 \tikzstyle{testing} = [
 thick,
@@ -114,7 +119,7 @@ line width=0.5mm
 
 
 % The paper headers
-\markboth{Journal of Journal of Lightwave Technology,~Vol.~14, No.~8, August~2015}%
+\markboth{ Journal of Lightwave Technology,~Vol.~14, No.~8, August~2015}%
 {Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for IEEE Journals}
 
 
@@ -275,7 +280,7 @@ We have adopted Adam \cite{kingma2014adam}as the optimizer and mean squared erro
 
 In order to build the desired dataset, the numerical analysis of the proposed sensor structure is carried out with the commercial software package Comsol Multiphysics  \cite{comsol_help}. The Full Vectorial Finite Element Method (FV-FEM) with the perfectly matched layers (PMLs) \cite{koshiba2002full,saitoh2001full} are employed.
 
-The cross section of the proposed structure is illustrated in Figure 3. As can be seen from this figure, the sensor consists of an analyte channel (sensing medium), plasmonic layer (Au)and various sized cladding air holes. The cladding region is formed by nineteen various sized air holes, sited on silica background with hexagonal lattice arrangement. The air hole diameters are set to;  $d_1$= $0.45 \mu m$, $d_2$= $0.75 \mu m$, $d_3$= $0.35 \mu m$, and  $d_c$= $0.15$. The distance between air holes ($\lambda$) are fixed to $2 \mu m$. Initially, trapping the light (fundamental mode) into the core region is vital for mode quality. On the other hand, some amount of light needs to be leaked towards the plasmonic layer, where the sensitivity measurement occurs. This is the key phenomenon for resonance phase matching occurrence. In this respect, the various sized cladding holes are employed for controlling the light guidance, where each set of air holes are affecting different propagation characteristics of the sensor. The Gold (Au) material is used as a plasmonic layer and set to be $40 \mu m$. The Johnson and Christy Data \cite{johnson1972optical} are used for the permittivity values. The Sellmeier Equation (Eq.(\ref{eqn1})) is used for calculating the refractive index of Silica material \cite{bjarklev2003PCF}.
+The cross section of the proposed structure is illustrated in Figure 3. As can be seen from this figure, the sensor consists of an analyte channel (sensing medium), plasmonic layer (Au)and various sized cladding air holes. The cladding region is formed by nineteen various sized air holes, sited on silica background with hexagonal lattice arrangement. The air hole diameters are set to;  $d_1$= $0.45 \mu m$, $d_2$= $0.75 \mu m$, $d_3$= $0.35 \mu m$, and  $d_c$= $0.15$. The distance between air holes ($\Lambda$) are fixed to $2 \mu m$. Initially, trapping the light (fundamental mode) into the core region is vital for mode quality. On the other hand, some amount of light needs to be leaked towards the plasmonic layer, where the sensitivity measurement occurs. This is the key phenomenon for resonance phase matching occurrence. In this respect, the various sized cladding holes are employed for controlling the light guidance, where each set of air holes are affecting different propagation characteristics of the sensor. The Gold (Au) material is used as a plasmonic layer and set to be $40 \mu m$. The Johnson and Christy Data \cite{johnson1972optical} are used for the permittivity values. The Sellmeier Equation (Eq.(\ref{eqn1})) is used for calculating the refractive index of Silica material \cite{bjarklev2003PCF}.
 
 \begin{figure}[]
 	\centering
@@ -360,16 +365,16 @@ We have performed experiments comparing the proposed ANN architecture with the s
 		grid=both,
 		minor grid style={gray!25},
 		major grid style={gray!25},
-		ymax=0.2,
+		ymax=3,
 		height=6cm,
 		no marks
 		]
 		\addplot[line width=1pt,solid,color=blue] %
-		table{data/ann_tr_loss_3k_our_data_without.txt};
+		table{data/ann_tr_loss_3k_their_data_without.txt};
 		\addlegendentry{Without GAN}
 		
 		\addplot[line width=1pt,solid,color=red] %
-		table{data/ann_tr_loss_3k_our_data_with.txt};
+		table{data/ann_tr_loss_3k_their_data_with.txt};
 		\addlegendentry{With GAN}
 		\end{axis}
 		\end{tikzpicture}
@@ -502,13 +507,19 @@ We have performed experiments comparing the proposed ANN architecture with the s
 		color=blue
 		] 
 		table[x={wave},y={real}]{data/wave_134_our.txt};
-		
+
 		% their mse: 0.08721
 		% our mse: 0.18869
-		
-		
-		\addlegendentry{Actual}
+	
 		\legend{}
+				legend style={anchor=north east,draw=none,fill=none,font=\tiny, at={(axis cs:670,1.55)}},
+	
+		]
+		
+		\addlegendimage{first}\addlegendentry{\cite{paper0} MSE: 0.08721}
+		\addlegendimage{second}\addlegendentry{Proposed MSE: 0.18869 }
+		
+		
 		\end{axis}
 		\end{tikzpicture}
 		%
@@ -546,6 +557,13 @@ We have performed experiments comparing the proposed ANN architecture with the s
 		\legend{}
 		% our: 0.37049
 		% their: 0.17491
+		legend style={anchor=north west,draw=none,fill=none,font=\tiny, at={(axis cs:670,1.55)}},
+		legend cell align=left,
+		]
+		
+		\addlegendimage{first}\addlegendentry{\cite{paper0} MSE:0.17491}
+		\addlegendimage{second}\addlegendentry{Proposed MSE:0.37049 }
+	
 		\end{axis}
 		\end{tikzpicture}
 		\caption{Configuration estimation on SPR dataset.}
@@ -564,7 +582,7 @@ The first set of experiments performed on the GAN phase is the number of the aug
 	\begin{tikzpicture}[]
 	\begin{axis}[
 	ybar, axis x line=bottom, xlabel=Augmented samples, 
-	xmin=-100,xmax=3100,
+	xmin=-100,xmax=2100,
 	ymin=0,ymax=1,
 	width=0.48\textwidth, height=5cm,
 	axis y line=left, ylabel=MSE, 
@@ -581,15 +599,10 @@ The first set of experiments performed on the GAN phase is the number of the aug
 	\addplot[fill=black!90!white] 
 	coordinates {
 		(0, 0.89)
-		(250, 0.72)
 		(500, 0.37)
-		(750, 0.43)
 		(1000, 0.31)
-		(1250, 0.37)
 		(1500, 0.5)
 		(2000, 0.38)
-		(2500, 0.53)
-		(3000, 0.92)
 	};
 	
 	\end{axis}
@@ -724,6 +737,12 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 		
 		%w/o: 0.18869
 		%w/g: 0.11670
+		legend style={anchor=north west,draw=none,fill=none,font=\tiny, at={(axis cs:690,1.55)}},
+	
+		]
+		
+		\addlegendimage{first}\addlegendentry{Without GAN:0.18869}
+		\addlegendimage{second}\addlegendentry{With GAN:0.11670 }
 		
 		\end{axis}
 		\end{tikzpicture}
@@ -763,6 +782,12 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 		table[x={wave},y={real}]{data/wave_133_aug.txt};
 		\addlegendentry{Actual}
 		\legend{}
+				legend style={anchor=north west,draw=none,fill=none,font=\small, at={(axis cs:690,1.55)}},
+		
+		]
+		
+		\addlegendimage{first}\addlegendentry{Without GAN:0.32373}
+		\addlegendimage{second}\addlegendentry{With GAN:0.08664 }
 		\end{axis}
 		\end{tikzpicture}
 		\caption{Configuration estimation on SPR dataset}
