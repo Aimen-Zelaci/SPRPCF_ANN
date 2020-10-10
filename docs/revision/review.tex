@@ -95,7 +95,7 @@ It was also mentioned in the text.
    
 	\item \textbf{-EASY-} Page 5, Line 46, Left Column- "This can be linked to the fact that this method uses full-batch learning and therefore under-fits the model[46]"- There is no surity of this reason if the above comment/query in line 43 is logical. So reframe/reconsider this statement. \\
 	
-	\textcolor{darkgreen}{ANSWER: } We can safely drop this argument, or reframe in a way that we are not absolutely sure as more research is required on this topic. \textcolor{red}{Following CK comment: Will be reframed as to what we have seen.}
+	\textcolor{darkgreen}{ANSWER: } We can safely drop this argument, or reframe in a way that we are not absolutely sure as more research is required on this topic. \textcolor{red}{Following CK comment: Will be reframed as to what we have seen.} CK: I have removed the sentence as the explanation could have easily extended to 4-5 lines. In the reply we can talk about doing experiments about this. \fixed
 
 	\item \textbf{-EASY-} I suggest that the authors give more information about the stopping criteria of the GAN. As the author pointed out, human judgment has an important role in the generation of images and audio. So, could the known physical laws about PCF and SPR be used to replace the human role in the GAN system to improve the performance? How does the author verify the validity of the augmented samples? \\
 	\textcolor{darkgreen}{ANSWER: } When it comes to physical quantities it is difficult to visually interpret the generated samples. I can not answer the first question. However, this is the mainpoint why we chose the WGAN, because the loss function is interpretable as it measures the distance between the distrubutions of real and generated data in a stable manner. I can provide the loss curve of the WGAN which shows that it is indeed converging and that to a high degree of certainty (probabilistically speaking) that our generated data is valid. In a future research it is possible that we implement a system that validates the generated samples according to the physical laws. \textcolor{red}{CK's comment: We explained this in the paper. We will rephrase it in the reply. } \\ \textcolor{blue}{AZ: The loss curve of the wgan is ready.}
@@ -119,10 +119,13 @@ $Re(neff) = 1.45; Pitch = 0.15 um ; d1 = 0.25 um; d2= 0.55um; d3 = 0.15um $ \\
 
  \item \textbf{-MEDIUM-} Page 5, Line 43, Left Column- You have stated that [18]'s model has been failing in Figure 4c. It looks to me that the blue line in Figure 4c is for your proposed PCF structure design, while [18]'s PCF design was a simple hexagonal structure with varying rings. Also, there was no analyte (but you have used refractive index 1.35 as shown in this manuscript) in [18]. So if you compare ML models (your's and [18]) only on the criteria of wavelength as stated in Figure 4c, then [18] model is supposed to fail. This comparison doesn't make much sense as both designs and input features are different. If you disagree, then explain this comparison in more detail and mention the design specification values.
 The similar comparison (your's and [18]) explanation is required for Figure 6. //
-\textcolor{darkgreen}{ANSWER:} \textcolor{red}{Following CK comment: } \\ AZ: Even if we say that we changed the number of inputs in [18], our argument is still very weak, because [18]'s model is designed specifically for one dataset. We can definitely compare our model to [18] on their data, but on our data I believe we should just say: \textcolor{red} {We have changed the number of inputs and trained [18]'s on our dataset. Figure 4c indeed proves that their model is specifically designed for one dataset and it is normal and very natural, actually it is supposed to fail on other datasets.} \\ \textcolor{red}{CK's comment: We will have to reword this, it is not supposed to fail, it is not designed to succeed. However, we need to show that the design of the ANN is important for generality. .} \\ \textcolor{blue}{AZ: I still have my doubts. The thing is they did not claim generality in their paper, their ANN is designed specifically for that dataset ...}
+\textcolor{darkgreen}{ANSWER:} \textcolor{red}{Following CK comment: } \\ AZ: Even if we say that we changed the number of inputs in [18], our argument is still very weak, because [18]'s model is designed specifically for one dataset. We can definitely compare our model to [18] on their data, but on our data I believe we should just say: \textcolor{red} {We have changed the number of inputs and trained [18]'s on our dataset. Figure 4c indeed proves that their model is specifically designed for one dataset and it is normal and very natural, actually it is supposed to fail on other datasets.} \\ \textcolor{red}{CK's comment: We will have to reword this, it is not supposed to fail, it is not designed to succeed. However, we need to show that the design of the ANN is important for generality. .} \\ \textcolor{blue}{AZ: I still have my doubts. The thing is they did not claim generality in their paper, their ANN is designed specifically for that dataset ...} 
+
+\textcolor{red}{CK: That is our claim. We are saying any random ANN cannot generalize to other planes, ours can. Also, in real life you don't have a dataset to design your ANN for. Optimizing an ANN for a single database is considered cheating as this never happens in reality.}
 
 \item \textbf{-MEDIUM-} Page 7, Line 45, Left Column- "In our experiments, due to optimized dataset the accuracy of the method proposed in Ref. [18] is also improved."- Following from the previous comments- if the comparison is not for the similar designs then you can't state this improvement. So please elaborate on this. \\
 \textcolor{red}{Following CK comment: A fix added by HA, to be unfixed}
+\fixed{} We have to explain the problem in the reply.
 
 \item \textbf{-MEDIUM-} Page 7, Line 40, Right Column- Recurrent Neural Networks (RNN) generally rely memory to recognise patterns like in speech recognition or text generation and tells what should/will come after. How do you state/propose here than RNN can be used to discover optimal geometrical shapes?- because all the geometrical shapes might be independent of each other. \\
 \textcolor{darkgreen}{ANSWER: } I believe we should drop this argument. The reviewer is right, if the shapes are independent then an RNN won't be of advantage in this case. \\
@@ -134,6 +137,8 @@ The similar comparison (your's and [18]) explanation is required for Figure 6. /
 
 \textcolor{red}{CK: Not really that hard. We can state we have started using the state-of-the-art as the base and made modifications that are deemed beneficial to this particular domain. We should tell him that the ANN structure may not be the most optimal}
 
+\reply
+
 \item \textbf{-HARD-} The authors wrote, "The most important contribution of this research is the use of
 the GAN phase, where the available data is expanded to be
 used in the training phase". Why use a Generative adversarial network? What would be the advantages and disadvantages of a GAN approach over other possible data generators, such as evolutionary mutation functions? The authors should provide a comparison methodology and discuss differences between GAN and other data generators. \\
@@ -142,6 +147,8 @@ used in the training phase". Why use a Generative adversarial network? What woul
 
 \item \textbf{-HARD-} In Fig 5, the MSE increase when the augmented samples exceed 1000. Why does more samples cause performance degradation? \\ 
 \textcolor{darkgreen}{ANSWER: AZ I agree with CK's comment}\\ \textcolor{red}{CK comment: This is simple. Augmentation is not perfect. If we keep adding more augmented data, it dialutes the importance of the real data. Initially this is not a problem as the low number of samples is a larger issue. Therefore, there is a balance to be struck here.} 
+
+\fixed
 
 
 \item \textbf{-NOT CLEAR-} In Fig 6, in the case of SPR, the calculated loss spectrum has a large deviation under some specific parameters. Could the authors discuss the reasons for the deviation and how to judge the validity of the calculation result?
