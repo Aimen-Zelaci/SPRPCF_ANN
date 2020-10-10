@@ -131,6 +131,9 @@ The similar comparison (your's and [18]) explanation is required for Figure 6. /
 \textcolor{darkgreen}{ANSWER: } I believe we should drop this argument. The reviewer is right, if the shapes are independent then an RNN won't be of advantage in this case. \\
 
 \textcolor{red}{Following CK comment: The argument will be dropped}
+\textcolor{darkgreen}{AZ: The argument is dropped; commented out in the latex file 'paper.tex' line 860}
+
+\fixed{}
 
 \item \textbf{-HARD-} How did the authors find the ANN architectures? How long did it take to find the ANN designs suitable for the problem being addressed? \\
 \textcolor{darkgreen}{ANSWER: } The choice for this regression problem given the type of data we have in the feature space was quite trivial: Multi Layer Perceptron was chosen over other architechtures such as CNN and RNN which might not be suitable for this particular problem. Relying on the results attained in [18] and after efficiently training different MLPs (with different layers, tuning the other parameters ... etc) we were able to find an adequate ANN. As to how long; this is unclear as I do not remember and I believe it should be considered as an offline time.\\   
@@ -142,13 +145,15 @@ The similar comparison (your's and [18]) explanation is required for Figure 6. /
 \item \textbf{-HARD-} The authors wrote, "The most important contribution of this research is the use of
 the GAN phase, where the available data is expanded to be
 used in the training phase". Why use a Generative adversarial network? What would be the advantages and disadvantages of a GAN approach over other possible data generators, such as evolutionary mutation functions? The authors should provide a comparison methodology and discuss differences between GAN and other data generators. \\
-\textcolor{darkgreen}{ANSWER: } To be investigated in future research.\\ \textcolor{red}{CK comment: We can talk about this in here and maybe in paper. I am not sure he is requesting experiments. We can avoid experiments by adding it to future works.}
+\textcolor{darkgreen}{ANSWER: } To be investigated in future research.\\ \textcolor{red}{CK comment: We can talk about this in here and maybe in paper. I am not sure he is requesting experiments. We can avoid experiments by adding it to future works.} \\
+\textcolor{blue}{AZ: We already mentioned and gave references demonstrating the effectiveness and flexibility of GANs. As they are becoming very common method in data augmentation, we have investigated its power to solve the problem at hand. Furthermore, our study was not comparative in nature with regards to data augmentation methods. \\
+Concerning other methods, more experiments , which are beyond the scope of this study, will be conducted to select the the optimal technique.}
 
 
 \item \textbf{-HARD-} In Fig 5, the MSE increase when the augmented samples exceed 1000. Why does more samples cause performance degradation? \\ 
 \textcolor{darkgreen}{ANSWER: AZ I agree with CK's comment}\\ \textcolor{red}{CK comment: This is simple. Augmentation is not perfect. If we keep adding more augmented data, it dialutes the importance of the real data. Initially this is not a problem as the low number of samples is a larger issue. Therefore, there is a balance to be struck here.} 
 
-\fixed
+\fixed{}
 
 
 \item \textbf{-NOT CLEAR-} In Fig 6, in the case of SPR, the calculated loss spectrum has a large deviation under some specific parameters. Could the authors discuss the reasons for the deviation and how to judge the validity of the calculation result?
