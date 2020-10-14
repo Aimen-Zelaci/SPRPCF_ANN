@@ -1,0 +1,74 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\begin{document}
+
+	We would like to thank the respected reviewer for their valuable comments that helped us to improve the quality of this article. We would also like to state that we were unable to add all the requested details directly to the paper due to the page limitation. However, in this reply, we have tried to address all points that are raised by the reviewers to the best of our ability. Also due to small changes in the manuscript, reference numbers have shifted. We have used the reference numbers as discussed by the reviewers and offered the new reference number at the end of each reply.
+	
+	~
+	
+	{\bfseries\large Reviewer 1}
+	
+	\begin{quote}
+	Page 3, Line 13, Right Column- Why you have specifically used 5 hidden layers? What will be the impact on performance when using less or more hidden layers and neurons?
+	\end{quote}
+	
+	During our initial studies, we have studied the effect of the network architecture on the accuracy. During these studies we have found 5 layers are necessary for ANN to be able estimate the loss curve. Specifically, in SPR dataset, this requirement is evident. Higher number of layers increases the required number of samples to train causing further problems. Similar situation exists for the number of neurons. However, it is possible that there might be a better combination of layers and neurons as we have not performed any exhaustive optimization on the neural network.
+	
+	A summary of this reply has been added to the paper in Section II-B at the end of the first paragraph.
+	
+	\begin{quote}
+	Page 4, Line 43, Right Column- The paper cited [18] doesn't have 7 inputs as looking from the dataset file (from github) and the mauscript itself. It looks to me that there are 5 inputs. Can you recheck this?
+	\end{quote}
+	
+	We want to thank the reviewer for his keen eyes. Indeed the number of features were wrongly listed in the paper even though there were 5 features listed in that sentence. The mistake is fixed and highlighted in the revised manuscript.
+	
+	\begin{quote}
+	Also, have you used the dataset of [18] along with your own data making it finally as 1117+432 data samples. If yes, how did you merge both datasets as proposed manuscript (d1,d2,d3,etc) data sets has different inputs parameters than [18]. What happens to non-common columns like number of rings input feature as mentioned in [18].
+	\end{quote}
+	
+	Both datasets are treated separately during experiments. Input neurons of the ANN systems are adjusted depending on the dataset used in a particular experiment without altering the rest of the architecture.
+	
+	
+	\begin{quote}
+	Figure 4c, Figure 6- Give more details about the paramaters (d1,d2,d3,refrative index,etc) at which this particular actual blue line graph is obtained.
+	\end{quote}
+
+	Requested information is added to the respective figures.
+	
+	
+	\begin{quote}
+	Page 5, Line 43, Left Column- You have stated that [18]'s model has been failing in Figure 4c. It looks to me that the blue line in Figure 4c is for your proposed PCF structure design, while [18]'s PCF design was a simple hexagonal structure with varying rings. Also, there was no analyte (but you have used refractive index 1.35 as shown in this manuscript) in [18]. So if you compare ML models (your's and [18]) only on the criteria of wavelength as stated in Figure 4c, then [18] model is supposed to fail. This comparison doesn't make much sense as both designs and input features are different. If you disagree, then explain this comparison in more detail and mention the design specification values.
+	The similar comparison (your's and [18]) explanation is required for Figure 6.
+	\end{quote}
+	
+	As the respected reviewer pointed out, we have used our SPR dataset in Figure 4c as well as Figure 4a which includes all configurations. The aim here is to show that the changes in the state-of-the-art is necessary to enable the ANN architecture to handle more complex systems. We should point out in here that this improved network is not the focus of our research, it is merely a prerequisite to the more important contribution of GAN phase, which in turn allows us to tackle the this more difficult problem. In Figure 6, the comparison is drawn using the proposed architecture with and without GAN phases. The method in [18] is excluded in this graph as the improvement that can obtained by applying GAN phase to the network proposed in [18] does not yield any net benefit. In the text below we would like to explain our rationale for modifying the state-of-the-art to the proposed architecture.
+	
+	The newly added average MSE values in the Figure 4 shows that the method in [18] is actually better at minimizing the error in these particular cases. Additionally, in the detailed performance analysis table (Table II), it is evident that the method at [18] and proposed method without the GAN phase has comparable results. However, Figure 4c shows that the error rate of both methods are accumulated differently. Even with the limited samples, the method at [18] is a good predictor of the real curve, except the shape of the curve does not actually model the real output; but a very rough estimation of it. The proposed ANN structure predicts the shape of the curve much better, however, it clearly requires more samples to fit that curve to the real output. Therefore, method at [18] cannot be refined further with less-than-ideal generated samples, on the other hand, the proposed architecture can benefit from increased number of samples. This was our aim when designing the proposed architecture. In fact, in our experiments, we have found that GAN phase has nearly no positive effect on the method proposed in [18]. We have excluded these experiments from the paper as it is already over the page limit. One last point we would like to show is that in Table II, in the SPR dataset, the reduction in error achieved by changing the network is less than 10\%, however, when GAN phase is also included, reduction reaches 68\%.
+	
+	
+	\begin{quote}
+	Page 5, Line 46, Left Column- "This can be linked to the fact that this method uses full-batch learning and therefore under-fits the model[46]"- There is no surity of this reason if the above comment/query in line 43 is logical. So reframe/reconsider this statement.
+	\end{quote}
+	
+	We have tried both full-batch and mini-batch learning models during our experiments. Mini-batch training generally had an edge over the full-batch training during these experiments. However, we agree with the reviewer that without a comprehensive experiment and its reported results, this claim has no basis. Therefore, we have decided to retract this statement.
+	
+	\begin{quote}
+	Page 7, Line 45, Left Column- "In our experiments, due to optimized dataset the accuracy of the method proposed in Ref. [18] is also improved."- Following from the previous comments- if the comparison is not for the similar designs then you can't state this improvement. So please elaborate on this.
+	\end{quote}
+	
+	We thank the respected reviewer for catching this sentence. We believe the meaning of this sentence has been completely altered during language editing. We have fixed this mix up. 
+	
+	\begin{quote}
+	Page 7, Line 40, Right Column- Recurrent Neural Networks (RNN) generally rely memory to recognise patterns like in speech recognition or text generation and tells what should/will come after. How do you state/propose here than RNN can be used to discover optimal geometrical shapes?- because all the geometrical shapes might be independent of each other.
+	\end{quote}
+	
+	After an internal debate, we have understood the concern of the respected reviewer and decided to drop this claim.
+	
+	\begin{quote}
+	Page 7, Line 43, Right Column- Github link for the code is broken. I hope you will correct it. Looking forward to check your code along with data samples you have used  to obtain results in this manuscript.
+	\end{quote}
+	
+	The given link is our current working repository that includes the paper. We will alter and publish the repository after the acceptance according to the requirements of the journal preprint policies.
+	
+\end{document}

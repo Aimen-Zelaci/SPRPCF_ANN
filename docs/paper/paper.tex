@@ -602,7 +602,7 @@ Regardless of this, both models have similar MSE due to the shift in the curve f
 		\end{tikzpicture}
 		\captionsetup{justification=centering}
 		\caption{Configuration estimation on SPR dataset.
-		\\\hl{$ n_{analyte} = 1.34 $ $ n_{eff} = 1.46$ $ \Lambda = 0.24 $ $ d1 = 0.45 um $ $ d2= 0.75 um$ $ d3 = 0.35 um $.}\\ \hl{ $ n_{analyte} = 1.35 $	$ n_{eff} = 1.45 $ $ \Lambda = 0.15 um $ $ d1 = 0.25 um $ $ d2= 0.75um $ $ d3 = 0.35um $.}		
+		\\\hl{Left: $ n_{analyte} = 1.34 $ $ n_{eff} = 1.46$ $ \Lambda = 0.24 $ $ d1 = 0.45 um $ $ d2= 0.75 um$ $ d3 = 0.35 um $.}\\ \hl{Right: $ n_{analyte} = 1.35 $	$ n_{eff} = 1.45 $ $ \Lambda = 0.15 um $ $ d1 = 0.25 um $ $ d2= 0.75um $ $ d3 = 0.35um $.}		
 		  }
 	\end{subfigure}
 	\caption{Testing results without GAN augmentation phase}
@@ -834,7 +834,7 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 		\end{tikzpicture}
 		\captionsetup{justification=centering}
 		\caption{Configuration estimation on SPR dataset. 
-		\\ \hl{$n_{analyte} = 1.34$ $ n_{eff} = 1.46 $ $ \Lambda = 0.24 um $ $ d1 = 0.45 um $ $ d2= 0.75um $ $ d3 = 0.35um $.} \\ \hl{$n_{analyte} = 1.33 $ $ n_{eff} = 1.45 $ $ \Lambda = 0.15 um $ $ d1 = 0.25 um $ $ d2= 0.55um $ $ d3 = 0.15um $.} 
+		\\ \hl{Left: $n_{analyte} = 1.34$ $ n_{eff} = 1.46 $ $ \Lambda = 0.24 um $ $ d1 = 0.45 um $ $ d2= 0.75um $ $ d3 = 0.35um $.} \\ \hl{Right: $n_{analyte} = 1.33 $ $ n_{eff} = 1.45 $ $ \Lambda = 0.15 um $ $ d1 = 0.25 um $ $ d2= 0.55um $ $ d3 = 0.15um $.} 
 		}
 	\end{subfigure}
 	\caption{GAN Phase experimental results}
@@ -888,7 +888,7 @@ We have also experimented with TensorFlow using GPU via an additional system tha
 \section{Conclusion}
 \label{sec:conc}
 
-In this paper, we have demonstrated that the use of generative adversarial networks can be beneficial to neural networks that are designed to compute propagation characteristics of PCF devices. Additionally, we have also proposed and demonstrated a neural network that is both more generic and more accurate to estimate the confinement loss compared to the state-of-the-art network. The GAN phase also reduces the required samples to fully train the ANN, reducing the work necessary to employ the proposed system. The proposed combination is shown to be general enough that even though it is designed for the SPR dataset built for this research article. \hl{The proposed combination is shown to be general enough that even though it is designed for the SPR dataset built for this research; in the experiments, it surpassed the accuracy of the method proposed in }\cite{paper0}\hl{ on the dataset that method is optimized on.}
+In this paper, we have demonstrated that the use of generative adversarial networks can be beneficial to neural networks that are designed to compute propagation characteristics of PCF devices. Additionally, we have also proposed and demonstrated a neural network that is both more generic and more accurate to estimate the confinement loss compared to the state-of-the-art network. The GAN phase also reduces the required samples to fully train the ANN, reducing the work necessary to employ the proposed system. The proposed combination is shown to be general enough that even though it is designed for the SPR dataset built for this research article. \hl{The proposed combination is shown to be general enough that even though it is designed and optimized for the SPR dataset; in the experiments, it surpassed the accuracy of the method proposed in }\cite{paper0}\hl{ on the dataset that method is optimized on.}
 
 Another important aspect in this work is the experiments performed on a dataset that is designed to test the ability of artificial neural networks to estimate the properties of a new configuration. For this purpose, we have built a database based on Surface Plasmon Resonance with varying geometric configurations. During the testing, a new configuration that is not used for the training is employed. The proposed ANN, augmented with the GAN phase is shown to estimate the new configuration to an acceptable error rate.
 
