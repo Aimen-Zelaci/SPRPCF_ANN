@@ -9,8 +9,9 @@
 \definecolor{purple}{RGB}{128, 0, 128}
 
 \newcommand{\fix}{\large \textcolor{blue}{ \textbf{Fix:} }}
-\newcommand{\fixed}{\Large \textcolor{purple}{ \underline{\textbf{Fixed}} }}
-\newcommand{\reply}{\large \textcolor{blue}{ \textbf{Reply will be written} }}
+\newcommand{\fixed}{\textcolor{purple}{ \Large \underline{\textbf{Fixed}} }}
+\newcommand{\reply}{\textcolor{blue}{ \large \textbf{Reply will be written} }}
+\newcommand{\written}{ \textcolor{purple}{\large Reply is written}}
 
 \title{Review questions list}
 \begin{document}
@@ -43,11 +44,13 @@ It is a typo in our paper, "7" should be changed to "6". And the we should add "
 
 \fixed
 
+\written
+
 	
 	\item \textbf{-TRIVIAL-} Also, have you used the dataset of [18] along with your own data making it finally as 1117+432 data samples. If yes, how did you merge both datasets as proposed manuscript (d1,d2,d3,etc) data sets has different inputs parameters than [18]. What happens to non-common columns like number of rings input feature as mentioned in [18].     \\
 	\textcolor{darkgreen}{ANSWER: } No, we have not. 
 	
-	\reply
+	\reply \written
 		
 		
 \item \textbf{-TRIVIAL-} Page 7, Line 43, Right Column- Github link for the code is broken. I hope you will correct it. Looking forward to check your code along with data samples you have used  to obtain results in this manuscript. \\
@@ -90,7 +93,8 @@ It was also mentioned in the text.
     \item \textbf{-EASY-} Page 3, Line 13, Right Column- Why you have specifically used 5 hidden layers? What will be the impact on performance when using less or more hidden layers and neurons?\\
     \textcolor{darkgreen}{ANSWER: } After several experiments, we noticed that using less than 5 hidden layers will cause the model to under fit, while using more increased the training run-time of the model. Also, using more hidden layers led the model over fit as the number of parameters was very high compared to the number of variables in the feature space.  \\ \textcolor{red}{ CK's comment: Sure, we will need to reword this, and others too.}
     
-    \reply
+    \fixed
+    \reply \written
 
    
 	\item \textbf{-EASY-} Page 5, Line 46, Left Column- "This can be linked to the fact that this method uses full-batch learning and therefore under-fits the model[46]"- There is no surity of this reason if the above comment/query in line 43 is logical. So reframe/reconsider this statement. \\
@@ -107,7 +111,7 @@ It was also mentioned in the text.
 \textcolor{darkgreen}{ANSWER: } \textcolor{red}{Following CK comment: } The reviewer is asking for the input planes used; \\
 \begin{enumerate}
 \item Figure 4c, analyte 1.34: \\
-$Re(neff) = 1.46; Pitch = 0.24 um ; d1 = 0.45 um; d2= 0.75um; d3 = 0.35um $ \\
+$Re(neff): 1.46~Pitch = 0.24 \mu m~d1 = 0.45 \mu m ~ d2= 0.75\mu m ~ d3 = 0.35 \mu m $ \\
 \item Figure 4c, analyte 1.35: \\
 $Re(neff) = 1.45; Pitch = 0.15 um ; d1 = 0.25 um; d2= 0.75um; d3 = 0.35um $ \\
 \item Figure 6, analyte 1.34: \\
