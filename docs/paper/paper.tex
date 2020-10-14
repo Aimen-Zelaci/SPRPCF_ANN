@@ -350,7 +350,7 @@ In the following subsections, we have performed experiments to show the performa
 
 \subsection{Performance of ANN}
 
-In this set of experiments, we have analyzed the performance of the proposed ANN design. The first experiment involves training loss over the SPR dataset. In this experiment, we have trained the ANN model for up to 3000 epochs and reported the training loss in Figure \ref{chart:trainingmse}. According to this experiment, training our ANN architecture more than 2500 epochs does not yield any improvement. Therefore, the training epoch limit is set to 2500 in all subsequent experiments. However, this number depends on the dataset and additional training may improve the results. Additionally, the benefit of augmented samples from the GAN phase is evident even at the training as they reduce the oscillations in the training loss.
+In this set of experiments, we have analyzed the performance of the proposed ANN design. The first experiment involves training loss over the SPR dataset. In this experiment, we have trained the ANN model for up to 3000 epochs and reported the training loss in Figure \ref{chart:trainingmse}. According to this experiment, training our ANN architecture more than 2500 epochs does not yield any improvement. Therefore, the training epoch limit is set to 2500 in all subsequent experiments. However, this number depends on the dataset and additional training may improve the results. Additionally, the benefit of augmented samples from the GAN phase is evident even at the training as they reduce the \hl{fluctuations in the training loss and validation MSE}.
 
 We have performed experiments comparing the proposed ANN architecture with the state-of-the-art method proposed in \cite{paper0}. Results of this experiment are demonstrated in Figure \ref{chart:perfnoaug}. In the SPR dataset experiment, ANN models are predicting a new configuration and the number of samples available for training is lower. Therefore, they both have higher error rates compared to the PCF dataset. According to Figure \ref{chart:perfnoaug}c, $n_{analyte} = 1.35$ case, the ANN method proposed in \cite{paper0} does not fit to the curve caused by the change in the wavelength. 
 %This can be linked to the fact that this method uses full-batch learning and therefore under-fits the model \cite{keskar2016large}.
@@ -386,6 +386,38 @@ Regardless of this, both models have similar MSE due to the shift in the curve f
 	\caption{Training MSE of the ANN model}
 	\label{chart:trainingmse}
 \end{figure}
+
+\begin{figure}
+	\begin{subfigure}{.48\textwidth}
+		\centering
+		\begin{tikzpicture}
+		\begin{axis}[
+		xlabel=Epochs, 
+		ylabel=Validation \space MSE,
+		width=\textwidth,
+		grid=both,
+		minor grid style={gray!25},
+		major grid style={gray!25},
+		ymax=3,
+		height=6cm,
+		no marks
+		]
+		\addplot[line width=1pt,solid,color=blue] %
+		table{data/va_loss_3k_our_data_without.txt};
+		\addlegendentry{Without GAN}
+		
+		\addplot[line width=1pt,solid,color=red] %
+		table{data/va_loss_3k_our_data_with.txt};
+		\addlegendentry{With GAN}
+		\end{axis}
+		\end{tikzpicture}
+	\end{subfigure}	
+	
+	
+	\caption{\hl{Validation MSE of the ANN model}}
+	\label{chart:validationmse}
+\end{figure}
+
 
 
 \begin{figure*}
@@ -568,7 +600,10 @@ Regardless of this, both models have similar MSE due to the shift in the curve f
 	
 		\end{axis}
 		\end{tikzpicture}
-		\caption{Configuration estimation on SPR dataset.}
+		\captionsetup{justification=centering}
+		\caption{Configuration estimation on SPR dataset.
+		\\\hl{$ n_{analyte} = 1.34 $ $ n_{eff} = 1.46$ $ \Lambda = 0.24 $ $ d1 = 0.45 um $ $ d2= 0.75 um$ $ d3 = 0.35 um $.}\\ \hl{ $ n_{analyte} = 1.35 $	$ n_{eff} = 1.45 $ $ \Lambda = 0.15 um $ $ d1 = 0.25 um $ $ d2= 0.75um $ $ d3 = 0.35um $.}		
+		  }
 	\end{subfigure}
 	\caption{Testing results without GAN augmentation phase}
 	\label{chart:perfnoaug}
@@ -797,7 +832,10 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 		\addlegendimage{second}\addlegendentry{With GAN:0.08664 }
 		\end{axis}
 		\end{tikzpicture}
-		\caption{Configuration estimation on SPR dataset}
+		\captionsetup{justification=centering}
+		\caption{Configuration estimation on SPR dataset. 
+		\\ \hl{$n_{analyte} = 1.34$ $ n_{eff} = 1.46 $ $ \Lambda = 0.24 um $ $ d1 = 0.45 um $ $ d2= 0.75um $ $ d3 = 0.35um $.} \\ \hl{$n_{analyte} = 1.33 $ $ n_{eff} = 1.45 $ $ \Lambda = 0.15 um $ $ d1 = 0.25 um $ $ d2= 0.55um $ $ d3 = 0.15um $.} 
+		}
 	\end{subfigure}
 	\caption{GAN Phase experimental results}
 	\label{chart:ganperf}
