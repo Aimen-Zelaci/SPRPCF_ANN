@@ -80,31 +80,48 @@
 	 Please, reread the paper to correct some misspelling words. For example, Abstract (line 3): should it be "researchers"? Another example in "Introduction", page 1, column 2, line 35: "Snell's Total" instead of "Snell?s Total".
 	\end{quote}
 	
+	\hl{We would to thank the respected reviewer for his sharpness. We have reread the manuscript and corrected spelling errors as well as grammatical errors, as much as we could. }
+	
 	\begin{quote}
 	The authors wrote, "The most important contribution of this research is the use of
 the GAN phase, where the available data is expanded to be
 used in the training phase". Why use a Generative adversarial network? What would be the advantages and disadvantages of a GAN approach over other possible data generators, such as evolutionary mutation functions? The authors should provide a comparison methodology and discuss differences between GAN and other data generators.
 	\end{quote}
 	
+	\hl{Though the respected reviewer makes a valid point regarding data augmentation techniques, however, our study was not comparative in nature, thus, other data augmentation techniques will be investigated in future work. Furthermore, we have chosen GAN due to its effectiveness and popularity, as we the references we provided demonstrate.}
+	
 	\begin{quote}
 	How did the authors find the ANN architectures? How long did it take to find the ANN designs suitable for the problem being addressed?
 	\end{quote}
+	
+	\hl{By using [18] as a starting point and carrying systematic experimentations, the ANN architecture was structured as the one which stabilized the loss curve and general enough to have acceptable validation errors on both data sets.}
 	
 	\begin{quote}
 	Which kind of performance metric the authors are measuring in Table II? Is it MSE? Please, define it.
 	\end{quote}
 	
+	\hl{We would like to thank the reviewer for noticing the ill defined Table. Yes, the metric is the MSE, as shown in the tilte of Table II in the new manuscript.}
+	
 	\begin{quote}
 	Please, define which is RI (page 4, column 1, line 38).
 	\end{quote}
+	
+	\hl{We very much appreciate the reviewer's remark on the missing the full form of RI. RI referes to the Refractive Index as it is indicated in the same line in the new manuscript. }	
+	
 	
 	\begin{quote}
 	How do the authors know the ANN is not overfitting in Fig. 3? Have the authors employed any validation during training? Please, provide the ANN models' performance on the validation by showing the validation MSE during training.
 	\end{quote}
 	
+	\hl{During our experiments we used part of the data to validate training. In an attempt to stay within the maximum page limits, we had decided to not include the validation curves.
+	 The ANN's performance on the validation is provided in Figure 4 in the new manuscript.}
+	
 	\begin{quote}
 	Please provide the test MSEs for comparison between the proposed method and the ref. [18] (illustrated in Fig. 4).
 	\end{quote}
+	
+	\hl{The requested MSEs are provided on the graphs in the new manuscript.} \\
+	\textcolor{red}{AZ: CK Should we discuss the MSEs here? I think you provided the same answer for Reviewer 1 - Q5.}
 	
 	~
 	
@@ -113,14 +130,22 @@ used in the training phase". Why use a Generative adversarial network? What woul
 	\begin{quote}
 	I suggest that the authors give more information about the stopping criteria of the GAN. As the author pointed out, human judgment has an important role in the generation of images and audio. So, could the known physical laws about PCF and SPR be used to replace the human role in the GAN system to improve the performance? How does the author verify the validity of the augmented samples?
 	\end{quote}
+
+	\hl{We strongly agree with the reviewer's valuable suggestion. In fact the very reason that propelled us to choose WGAN is its stopping criteria. The loss curve of the WGAN converges in a stable manner indicating the end of the training phase, as it measures the distance between the distrubutions of real and generated data, which in return, to a high degree of certainty - probabilistically speaking-, validates our generated data. Due to the number of pages limitation, we decided not to include the loss graph of the WGAN, however, experiments showed that the curve converges in a stable manner to 0.}	
 	
 	\begin{quote}
 	 In GAN and ANN, how many training samples and test samples are used respectively? How are the test samples selected?
 	\end{quote}
 	
+	\hl{For the purpose of saving space we have not included the corresponding table, which includes detailed information about the data sets. 
+	For the SPR set,  for the 9 folds, we used 336 samples to train the GAN and the ANN, 48 for validation and 48 for testing. Please note that each geometric configuration has 16 data point per analyte making up to 48 for the 3 analytes used.
+	For the PCF set: for the 10 folds, we used about 10$\%$ for testing, about 10$\%$ for validation and the rest for training the ANN and GAN.}	
+	
 	\begin{quote}
 	In Fig 5, the MSE increase when the augmented samples exceed 1000. Why does more samples cause performance degradation?
 	\end{quote}
+	
+	\hl{The importance of real data dilutes as the number of generated data increases, thus, there is a balance to strive for. To support our claim we conducted further experiments and added the correspoding MSEs to the bar chart of Fugure 6.}
 	
 	\begin{quote}
 	In Fig 6, in the case of SPR, the calculated loss spectrum has a large deviation under some specific parameters. Could the authors discuss the reasons for the deviation and how to judge the validity of the calculation result?
