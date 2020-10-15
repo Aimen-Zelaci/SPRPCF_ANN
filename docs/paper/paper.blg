@@ -1,23 +1,16 @@
-This is BibTeX, Version 0.99d (TeX Live 2019/W32TeX)
-Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
-The top-level auxiliary file: paper.aux
+This is BibTeX, Version 0.99dThe top-level auxiliary file: paper.aux
 The style file: IEEEtran.bst
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
-Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: IEEEabrv.bib
 Database file #2: references.bib
-Repeated entry---line 899 of file references.bib
+Repeated entry---line 450 of file references.bib
  : @article{hameed2008accurate
  :                            ,
 I'm skipping whatever remains of this entry
-"=" immediately follows a field part---line 987 of file references.bib
+"=" immediately follows a field part---line 494 of file references.bib
  :  url = file:///C:/COMSOL34/doc/multiphysics/wwhelp/wwhimpl/js/html/wwhelp.htm?href
  :                                                                                   =quickguide.3.2.html#545846},
 I'm skipping whatever remains of this entry
-Repeated entry---line 1085 of file references.bib
+Repeated entry---line 543 of file references.bib
  : @article{yasli2019effect
  :                         ,
 I'm skipping whatever remains of this entry
@@ -27,45 +20,4 @@ I'm skipping whatever remains of this entry
 Warning--empty journal in ravuri2019seeing
 
 Done.
-You've used 50 entries,
-            4087 wiz_defined-function locations,
-            1626 strings with 27631 characters,
-and the built_in function-call counts, 42000 in all, are:
-= -- 3444
-> -- 1082
-< -- 376
-+ -- 618
-- -- 218
-* -- 2029
-:= -- 6067
-add.period$ -- 105
-call.type$ -- 50
-change.case$ -- 51
-chr.to.int$ -- 852
-cite$ -- 51
-duplicate$ -- 2982
-empty$ -- 3186
-format.name$ -- 234
-if$ -- 9834
-int.to.chr$ -- 0
-int.to.str$ -- 50
-missing$ -- 505
-newline$ -- 175
-num.names$ -- 52
-pop$ -- 1142
-preamble$ -- 1
-purify$ -- 0
-quote$ -- 2
-skip$ -- 3258
-stack$ -- 0
-substring$ -- 2195
-swap$ -- 2548
-text.length$ -- 92
-text.prefix$ -- 0
-top$ -- 5
-type$ -- 50
-warning$ -- 1
-while$ -- 178
-width$ -- 52
-write$ -- 515
 (There were 3 error messages)
