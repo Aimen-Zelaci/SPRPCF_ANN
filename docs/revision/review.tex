@@ -84,6 +84,9 @@ It was also mentioned in the text.
 
 \reply regarding the validation curves if we do not have space.
 
+\written
+
+\fixed{}
 
 \item \textbf{-EASY-} Please provide the test MSEs for comparison between the proposed method and the ref. [18] (illustrated in Fig. 4).   \\
 \textcolor{darkgreen}{ANSWER: }  \textcolor{red}{To be calculated by CK using the data used to plot the graphs.}
@@ -103,9 +106,13 @@ It was also mentioned in the text.
 
 	\item \textbf{-EASY-} I suggest that the authors give more information about the stopping criteria of the GAN. As the author pointed out, human judgment has an important role in the generation of images and audio. So, could the known physical laws about PCF and SPR be used to replace the human role in the GAN system to improve the performance? How does the author verify the validity of the augmented samples? \\
 	\textcolor{darkgreen}{ANSWER: } When it comes to physical quantities it is difficult to visually interpret the generated samples. I can not answer the first question. However, this is the mainpoint why we chose the WGAN, because the loss function is interpretable as it measures the distance between the distrubutions of real and generated data in a stable manner. I can provide the loss curve of the WGAN which shows that it is indeed converging and that to a high degree of certainty (probabilistically speaking) that our generated data is valid. In a future research it is possible that we implement a system that validates the generated samples according to the physical laws. \textcolor{red}{CK's comment: We explained this in the paper. We will rephrase it in the reply. } \\ \textcolor{blue}{AZ: The loss curve of the wgan is ready.}
+	
+\written
 
 \item \textbf{-EASY-} In GAN and ANN, how many training samples and test samples are used respectively? How are the test samples selected? \\
 \textcolor{darkgreen}{ANSWER: } For the SPR set: for the 9 folds, we used 336 samples to train the gan and the ann, 48 for validation and 48 for testing. For the PCF set: for the 10 folds, we used about 10\% for testing, about 10\% for validation and the rest for training. \textcolor{red}{CK's comment: We had a table containing this, we removed it to save space.}
+
+\written
 
 \item \textbf{-MEDIUM-} Figure 4c, Figure 6- Give more details about the paramaters (d1,d2,d3,refrative index,etc) at which this particular actual blue line graph is obtained.\\
 \textcolor{darkgreen}{ANSWER: } \textcolor{red}{Following CK comment: } The reviewer is asking for the input planes used; \\
@@ -129,6 +136,8 @@ The similar comparison (your's and [18]) explanation is required for Figure 6. /
 
 \textcolor{red}{CK: That is our claim. We are saying any random ANN cannot generalize to other planes, ours can. Also, in real life you don't have a dataset to design your ANN for. Optimizing an ANN for a single database is considered cheating as this never happens in reality.}
 
+\written
+
 \item \textbf{-MEDIUM-} Page 7, Line 45, Left Column- "In our experiments, due to optimized dataset the accuracy of the method proposed in Ref. [18] is also improved."- Following from the previous comments- if the comparison is not for the similar designs then you can't state this improvement. So please elaborate on this. \\
 \textcolor{red}{Following CK comment: A fix added by HA, to be unfixed}
 \fixed{} We have to explain the problem in the reply.
@@ -148,12 +157,16 @@ The similar comparison (your's and [18]) explanation is required for Figure 6. /
 
 \reply
 
+\written
+
 \item \textbf{-HARD-} The authors wrote, "The most important contribution of this research is the use of
 the GAN phase, where the available data is expanded to be
 used in the training phase". Why use a Generative adversarial network? What would be the advantages and disadvantages of a GAN approach over other possible data generators, such as evolutionary mutation functions? The authors should provide a comparison methodology and discuss differences between GAN and other data generators. \\
 \textcolor{darkgreen}{ANSWER: } To be investigated in future research.\\ \textcolor{red}{CK comment: We can talk about this in here and maybe in paper. I am not sure he is requesting experiments. We can avoid experiments by adding it to future works.} \\
 \textcolor{blue}{AZ: We already mentioned and gave references demonstrating the effectiveness and flexibility of GANs. As they are becoming very common method in data augmentation, we have investigated its power to solve the problem at hand. Furthermore, our study was not comparative in nature with regards to data augmentation methods. \\
 Concerning other methods, more experiments , which are beyond the scope of this study, will be conducted to select the the optimal technique.}
+
+\written
 
 
 \item \textbf{-HARD-} In Fig 5, the MSE increase when the augmented samples exceed 1000. Why does more samples cause performance degradation? \\ 
