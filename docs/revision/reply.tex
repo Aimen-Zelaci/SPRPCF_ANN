@@ -22,20 +22,23 @@
 	Page 4, Line 43, Right Column- The paper cited [18] doesn't have 7 inputs as looking from the dataset file (from github) and the mauscript itself. It looks to me that there are 5 inputs. Can you recheck this?
 	\end{quote}
 	
-	We want to thank the reviewer for his keen eyes. Indeed the number of features were wrongly listed in the paper even though there were 5 features listed in that sentence. The mistake is fixed and highlighted in the revised manuscript.
+	We want to thank the reviewer for his keen eyes. Indeed the number of features were wrongly listed in the paper even though there were 5 features listed in that sentence. The mistake is fixed and highlighted in the revised manuscript. \\
+	\textbf{NB: [18] has been shifted to [13] in the revised manuscript}
 	
 	\begin{quote}
 	Also, have you used the dataset of [18] along with your own data making it finally as 1117+432 data samples. If yes, how did you merge both datasets as proposed manuscript (d1,d2,d3,etc) data sets has different inputs parameters than [18]. What happens to non-common columns like number of rings input feature as mentioned in [18].
 	\end{quote}
 	
-	Both datasets are treated separately during experiments. Input neurons of the ANN systems are adjusted depending on the dataset used in a particular experiment without altering the rest of the architecture.
+	Both datasets are treated separately during experiments. Input neurons of the ANN systems are adjusted depending on the dataset used in a particular experiment without altering the rest of the architecture.\\
+	\textbf{NB: [18] has been shifted to [13] in the revised manuscript.}
 	
 	
 	\begin{quote}
 	Figure 4c, Figure 6- Give more details about the paramaters (d1,d2,d3,refrative index,etc) at which this particular actual blue line graph is obtained.
 	\end{quote}
 
-	Requested information is added to the respective figures.
+	Requested information is added to the respective figures.\\
+	\textbf{NB: Fig. 4c, Fig. 6 have been shifted to Fig. 5c, Fig. 7 respectively in the revised manuscript.}
 	
 	
 	\begin{quote}
@@ -45,8 +48,9 @@
 	
 	As the respected reviewer pointed out, we have used our SPR dataset in Figure 4c as well as Figure 4a which includes all configurations. The aim here is to show that the changes in the state-of-the-art is necessary to enable the ANN architecture to handle more complex systems. We should point out in here that this improved network is not the focus of our research, it is merely a prerequisite to the more important contribution of GAN phase, which in turn allows us to tackle this more difficult problem. In Figure 6, the comparison is drawn using the proposed architecture with and without GAN phases. The method in [18] is excluded in this graph as the improvement that can obtained by applying GAN phase to the network proposed in [18] does not yield any net benefit. In the text below we would like to explain our rationale for modifying the state-of-the-art to the proposed architecture.
 	
-	The newly added average MSE values in the Figure 4 shows that the method in [18] is actually better at minimizing the error in these particular cases. Additionally, in the detailed performance analysis table (Table II), it is evident that the method at [18] and proposed method without the GAN phase has comparable results. However, Figure 4c shows that the error rate of both methods are accumulated differently. Even with the limited samples, the method at [18] is a good predictor of the real curve, except the shape of the curve does not actually model the real output; but a very rough estimation of it. The proposed ANN structure predicts the shape of the curve much better, however, it clearly requires more samples to fit that curve to the real output. Therefore, method at [18] cannot be refined further with less-than-ideal generated samples, on the other hand, the proposed architecture can benefit from increased number of samples. This was our aim when designing the proposed architecture. In fact, in our experiments, we have found that GAN phase has nearly no positive effect on the method proposed in [18]. We have excluded these experiments from the paper as it is already over the page limit. One last point we would like to show is that in Table II, in the SPR dataset, the reduction in error achieved by changing the network is less than 10\%, however, when GAN phase is also included, reduction reaches 68\%.
+	The newly added average MSE values in the Figure 4 shows that the method in [18] is actually better at minimizing the error in these particular cases. Additionally, in the detailed performance analysis table (Table II), it is evident that the method at [18] and proposed method without the GAN phase has comparable results. However, Figure 4c shows that the error rate of both methods are accumulated differently. Even with the limited samples, the method at [18] is a good predictor of the real curve, except the shape of the curve does not actually model the real output; but a very rough estimation of it. The proposed ANN structure predicts the shape of the curve much better, however, it clearly requires more samples to fit that curve to the real output. Therefore, method at [18] cannot be refined further with less-than-ideal generated samples, on the other hand, the proposed architecture can benefit from increased number of samples. This was our aim when designing the proposed architecture. In fact, in our experiments, we have found that GAN phase has nearly no positive effect on the method proposed in [18]. We have excluded these experiments from the paper as it is already over the page limit. One last point we would like to show is that in Table II, in the SPR dataset, the reduction in error achieved by changing the network is less than 10\%, however, when GAN phase is also included, reduction reaches 68\%. \\
 	
+	\textbf{NB: [18], Fig. 4c, Fig. 6 has been shifted to [13], Fig. 5c, Fig. 7 respectively in the revised manuscript.}
 	
 	\begin{quote}
 	Page 5, Line 46, Left Column- "This can be linked to the fact that this method uses full-batch learning and therefore under-fits the model[46]"- There is no surity of this reason if the above comment/query in line 43 is logical. So reframe/reconsider this statement.
@@ -58,7 +62,8 @@
 	Page 7, Line 45, Left Column- "In our experiments, due to optimized dataset the accuracy of the method proposed in Ref. [18] is also improved."- Following from the previous comments- if the comparison is not for the similar designs then you can't state this improvement. So please elaborate on this.
 	\end{quote}
 	
-	We thank the respected reviewer for catching this sentence. We believe the meaning of this sentence has been completely altered during language editing. We have fixed this mix up. 
+	We thank the respected reviewer for catching this sentence. We believe the meaning of this sentence has been completely altered during language editing. We have fixed this mix up. \\
+	\textbf{NB: [18] has been shifted to [13] in the revised manuscript.}
 	
 	\begin{quote}
 	Page 7, Line 40, Right Column- Recurrent Neural Networks (RNN) generally rely memory to recognise patterns like in speech recognition or text generation and tells what should/will come after. How do you state/propose here than RNN can be used to discover optimal geometrical shapes?- because all the geometrical shapes might be independent of each other.
@@ -92,13 +97,15 @@
 	How did the authors find the ANN architectures? How long did it take to find the ANN designs suitable for the problem being addressed?
 	\end{quote}
 	
-	We have used the networks described in [18] as a starting point and applied changes that are known to solve the issues that are surfaced when this method is applied to a more difficult dataset. While we cannot give an exact time frame to the solution, we have spent at least several weeks adapting the ANN for this difficult problem.
+	We have used the networks described in [18] as a starting point and applied changes that are known to solve the issues that are surfaced when this method is applied to a more difficult dataset. While we cannot give an exact time frame to the solution, we have spent at least several weeks adapting the ANN for this difficult problem. \\
+	
+	\textbf{NB: [18] has been shifted to [13] in the revised manuscript.}
 	
 	\begin{quote}
 	Which kind of performance metric the authors are measuring in Table II? Is it MSE? Please, define it.
 	\end{quote}
 	
-	We would like to thank the reviewer for noticing the missing metric in the table, it is indeed MSE. We have updated the table title to include the metric.
+	We would like to thank the reviewer for noticing the missing metric in the table, it is indeed the MSE. We have updated the table title to include the metric.
 	
 	\begin{quote}
 	Please, define which is RI (page 4, column 1, line 38).
@@ -116,7 +123,9 @@
 	Please provide the test MSEs for comparison between the proposed method and the ref. [18] (illustrated in Fig. 4).
 	\end{quote}
 	
-	The requested MSEs are provided on the graphs in the new manuscript. \\
+	The requested MSEs are provided on the graphs in the revised manuscript. \\
+	
+	\textbf{NB: [18], Fig. 4 has been shifted to [13], Fig. 5 respectively in the revised manuscript.}
 	
 	~
 	
@@ -153,6 +162,7 @@
 	
 	There are two reasons for the deviation in Fig 6a. The first and most important is the fact that SPR dataset experiments is much more difficult compared to PCF dataset experiments. The most important difference here is the testing strategy. In PCF dataset, the testing samples are selected randomly from all the samples in the dataset. However, in SPR dataset, testing samples are from a completely new geometric configuration, in other words, we never show the testing configuration to the ANN system and expect it to estimate its loss function. Additionally, SPR dataset contains far fewer samples. The second reason for the variation is the range of the experiments, SPR experiment output is constrained in a small region, accentuating the deviation. There is certainly more variation the SPR dataset, however, the difference is not as high as Fig 6 suggests.
 	
-	Finally, it is possible to verify the results from Fig 6c as these are two of the individual geometric configurations that the ANN systems estimated. Even though there still is a deviation from the ground truth, ANN trained with the help of augmented samples is good at estimating the location of the peak.
+	Finally, it is possible to verify the results from Fig 6c as these are two of the individual geometric configurations that the ANN systems estimated. Even though there still is a deviation from the ground truth, ANN trained with the help of augmented samples is good at estimating the location of the peak. \\
 	
+	\textbf{NB: Fig. 6 has been shifted to Fig. 7 in the revised manuscript.}
 \end{document}
