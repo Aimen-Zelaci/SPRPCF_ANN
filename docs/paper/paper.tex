@@ -269,7 +269,7 @@ Previous works \cite{ravuri2019seeing, shmelkov2018good}, demonstrated that it i
 \subsection{Artificial neural network design}
 \label{ssec:ann}
 
-The ANN model employed in this work is a fully connected feed-forward MLP network consisting of an input layer, an output layer, and 5 hidden layers. The ANN is designed and trained to estimate the confinement loss in a regression configuration. We have applied  $log_{10}$ to confinement loss calculation in order to keep its numeric stability across a wide range \cite{paper0}. Each hidden layer contains 50 neurons and uses Rectified Linear Unit (ReLU) activation function. Table  \ref{tbl:anndetails} summarizes the details of this model. \hl{The number of hidden layers and neurons are empirically determined to be able to estimate the loss curve while keeping the complexity of the network to a minimum.}
+The ANN model employed in this work is a fully connected feed-forward MLP network consisting of an input layer, an output layer, and 5 hidden layers. The ANN is designed and trained to estimate the confinement loss in a regression configuration. We have applied  $log_{10}$ to confinement loss calculation in order to keep its numeric stability across a wide range \cite{paper0}. Each hidden layer contains 50 neurons and uses Rectified Linear Unit (ReLU) activation function. Table  \ref{tbl:anndetails} summarizes the details of this model. \hl{The number of hidden layers and neurons are empirically determined to be able to estimate the loss curve while keeping the complexity of the network to a minimum. With these changes, the proposed network is able to predict more complex functions, however, it will also require more training samples.}
 
 In our model, we have used mini-batch training with 48 samples as the batch size. In contrast to full-batch training, mini-batch training allows more frequent gradient calculations, improving the stability and reliability of the training \cite{masters2018revisiting, keskar2016large}. The weakness of using mini-batches is added computational complexity during training. However, it has no adverse effect on the testing phase.
 
@@ -352,9 +352,9 @@ In the following subsections, we have performed experiments to show the performa
 
 In this set of experiments, we have analyzed the performance of the proposed ANN design. The first experiment involves training loss over the SPR dataset. In this experiment, we have trained the ANN model for up to 3000 epochs and reported the training loss in Figure \ref{chart:trainingmse}. According to this experiment, training our ANN architecture more than 2500 epochs does not yield any improvement. Therefore, the training epoch limit is set to 2500 in all subsequent experiments. However, this number depends on the dataset and additional training may improve the results. Additionally, the benefit of augmented samples from the GAN phase is evident even at the training as they reduce the \hl{fluctuations in the training loss and validation MSE}.
 
-We have performed experiments comparing the proposed ANN architecture with the state-of-the-art method proposed in \cite{paper0}. Results of this experiment are demonstrated in Figure \ref{chart:perfnoaug}. In the SPR dataset experiment, ANN models are predicting a new configuration and the number of samples available for training is lower. Therefore, they both have higher error rates compared to the PCF dataset. According to Figure \ref{chart:perfnoaug}c, $n_{analyte} = 1.35$ case, the ANN method proposed in \cite{paper0} does not fit to the curve caused by the change in the wavelength. 
+We have performed experiments comparing the proposed ANN architecture with the state-of-the-art method proposed in \cite{paper0}. Results of this experiment are demonstrated in Figure \ref{chart:perfnoaug}. In the SPR dataset experiment, ANN models are predicting a new configuration and the number of samples available for training is lower. Therefore, they both have higher error rates compared to the PCF dataset. \hl{According to Figure} \ref{chart:perfnoaug}c, $n_{analyte} = 1.35$ \hl{case, the ANN method proposed in }\cite{paper0}\hl{ is not a good predictor of the shape of the curve caused by the change in the wavelength, even though it fits this curve much better than the proposed method, showing that the proposed method requires more samples for training.}
 %This can be linked to the fact that this method uses full-batch learning and therefore under-fits the model \cite{keskar2016large}.
-Regardless of this, both models have similar MSE due to the shift in the curve fit. Since the network is never exposed to this particular geometric configuration shift in the curve fit occurs.
+Regardless of this, both models have similar MSE due to the shift in the curve fit. Since the network is never exposed to this particular geometric configuration shift in the curve fit occurs. 
 
 \begin{figure}
 	\begin{subfigure}{.48\textwidth}
@@ -506,26 +506,26 @@ Regardless of this, both models have similar MSE due to the shift in the curve f
 		\end{tikzpicture}
 		\caption{\dszero{} dataset}
 	\end{subfigure}
-	\vspace{0.75cm}
+	\vspace{0.5cm}
 	
 	\begin{subfigure}{\textwidth}
 		\begin{tikzpicture}
 		\begin{axis}[
-		xlabel=$Wavelength(\lambda) $  $ in $  $ nm $ ({$n_{analyte=1.34}$}), 
+		xlabel=$Wavelength(\lambda) $  $ in $  $ nm $, 
 		ylabel=$ Loss $ $ in $ $ Log(db/cm) $,
 		grid=both,
 		minor grid style={gray!25},
 		major grid style={gray!25},
 		width=0.48\textwidth,
 		height=6cm,
-		legend pos=north west
+		legend pos=north east,
+		legend style={font=\footnotesize}
 		]
 		\addplot[
 		only marks,
 		mark size=2.9pt, mark=o, color=red, fill=red
 		]
 		table[x={wave},y={predicted}]{data/wave_134_their.txt};
-		\addlegendentry{\cite{paper0}}
 		
 		
 		
@@ -535,7 +535,6 @@ Regardless of this, both models have similar MSE due to the shift in the curve f
 		mark size=2.9pt, mark=x, color=green!50!black
 		]
 		table[x={wave},y={predicted}]{data/wave_134_our.txt};
-		\addlegendentry{$Proposed$}
 		
 		\addplot[
 		color=blue
@@ -545,13 +544,12 @@ Regardless of this, both models have similar MSE due to the shift in the curve f
 		% their mse: 0.08721
 		% our mse: 0.18869
 	
-		\legend{}
-				legend style={anchor=north east,draw=none,fill=none,font=\tiny, at={(axis cs:670,1.55)}},
+		\addlegendimage{first}\addlegendentry{\cite{paper0} MSE: 0.09}
+		\addlegendimage{second}\addlegendentry{Proposed MSE: 0.19 }
+			
 	
 		]
 		
-		\addlegendimage{first}\addlegendentry{\cite{paper0} MSE: 0.08721}
-		\addlegendimage{second}\addlegendentry{Proposed MSE: 0.18869 }
 		
 		
 		\end{axis}
@@ -559,14 +557,15 @@ Regardless of this, both models have similar MSE due to the shift in the curve f
 		%
 		\begin{tikzpicture}
 		\begin{axis}[
-		xlabel=$Wavelength(\lambda) $  $ in $  $ nm $ ($n_{analyte=1.35}$), 
+		xlabel=$Wavelength(\lambda) $  $ in $  $ nm $, 
 		ylabel=$~$,
 		grid=both,
 		minor grid style={gray!25},
 		major grid style={gray!25},
 		width=0.48\textwidth,
 		height=6cm,
-		legend pos=north west
+		legend pos=north west,
+		legend style={font=\footnotesize}
 		]
 		\addplot[
 		only marks,
@@ -595,14 +594,13 @@ Regardless of this, both models have similar MSE due to the shift in the curve f
 		legend cell align=left,
 		]
 		
-		\addlegendimage{first}\addlegendentry{\cite{paper0} MSE:0.17491}
-		\addlegendimage{second}\addlegendentry{Proposed MSE:0.37049 }
+		\addlegendimage{first}\addlegendentry{\cite{paper0} MSE:0.17}
+		\addlegendimage{second}\addlegendentry{Proposed MSE:0.37 }
 	
 		\end{axis}
 		\end{tikzpicture}
 		\captionsetup{justification=centering}
-		\caption{Configuration estimation on SPR dataset.
-		\\\hl{Left: $ n_{analyte} = 1.34 $ $ n_{eff} = 1.46$ $ \Lambda = 0.24 \mu m$ $ d_1 = 0.45 \mu m $ $ d_2= 0.75 \mu m$ $ d_3 = 0.35 \mu m $.}\\ \hl{Right: $ n_{analyte} = 1.35 $	$ n_{eff} = 1.45 $ $ \Lambda = 0.15 \mu m $ $ d_1 = 0.25 \mu m $ $ d_2= 0.75 \mu m $ $ d_3 = 0.35 \mu m  $.}		
+		\caption{Configuration estimation on SPR dataset. \hl{Left: $ n_{analyte} = 1.34 $ $ n_{eff} = 1.46$ $ \Lambda = 0.24 \mu m$ $ d_1 = 0.45 \mu m $ $ d_2= 0.75 \mu m$ $ d_3 = 0.35 \mu m $.} \hl{Right: $ n_{analyte} = 1.35 $	$ n_{eff} = 1.45 $ $ \Lambda = 0.15 \mu m $ $ d_1 = 0.25 \mu m $ $ d_2= 0.75 \mu m $ $ d_3 = 0.35 \mu m  $.}		
 		  }
 	\end{subfigure}
 	\caption{Testing results without GAN augmentation phase}
@@ -742,7 +740,7 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 		\end{tikzpicture}
 		\caption{\dszero{} dataset}
 	\end{subfigure}
-	\vspace{0.75cm}
+	\vspace{0.5cm}
 	
 	\begin{subfigure}{\textwidth}
 		\begin{tikzpicture}
@@ -752,10 +750,10 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 		grid=both,
 		minor grid style={gray!25},
 		major grid style={gray!25},
-		title={$n_{analyte=1.34}$},
 		width=0.48\textwidth,
 		legend pos=north east,
-		height=6cm
+		height=6cm,
+		legend style={font=\footnotesize}
 		]
 		\addplot[
 		only marks,
@@ -783,8 +781,8 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 	
 		]
 		
-		\addlegendimage{first}\addlegendentry{Without GAN:0.18869}
-		\addlegendimage{second}\addlegendentry{With GAN:0.11670 }
+		\addlegendimage{first}\addlegendentry{Without GAN:0.19}
+		\addlegendimage{second}\addlegendentry{With GAN:0.12 }
 		
 		\end{axis}
 		\end{tikzpicture}
@@ -796,10 +794,10 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 		grid=both,
 		minor grid style={gray!25},
 		major grid style={gray!25},
-		title={$n_{analyte=1.33}$},
 		width=0.48\textwidth,
 		legend pos=north east,
-		height=6cm
+		height=6cm,
+		legend style={font=\footnotesize}
 		]
 		\addplot[
 		only marks,
@@ -828,13 +826,12 @@ In Figure \ref{chart:ganperf}c, prediction of new configuration with and without
 		
 		]
 		
-		\addlegendimage{first}\addlegendentry{Without GAN:0.32373}
-		\addlegendimage{second}\addlegendentry{With GAN:0.08664 }
+		\addlegendimage{first}\addlegendentry{Without GAN:0.32}
+		\addlegendimage{second}\addlegendentry{With GAN:0.09 }
 		\end{axis}
 		\end{tikzpicture}
 		\captionsetup{justification=centering}
-		\caption{Configuration estimation on SPR dataset. 
-		\\ \hl{Left: $n_{analyte} = 1.34$ $ n_{eff} = 1.46 $ $ \Lambda = 0.24 \mu m $ $ d_1 = 0.45 \mu m $ $ d_2= 0.75 \mu m $ $ d_3 = 0.35 \mu m $.} \\ \hl{Right: $n_{analyte} = 1.33 $ $ n_{eff} = 1.45 $ $ \Lambda = 0.15 \mu m $ $ d_1 = 0.25 \mu m $ $ d_2= 0.55 \mu m $ $ d_3 = 0.15 \mu m $.} 
+		\caption{Configuration estimation on SPR dataset. \hl{Left: $n_{analyte} = 1.34$ $ n_{eff} = 1.46 $ $ \Lambda = 0.24 \mu m $ $ d_1 = 0.45 \mu m $ $ d_2= 0.75 \mu m $ $ d_3 = 0.35 \mu m $.} \hl{Right: $n_{analyte} = 1.33 $ $ n_{eff} = 1.45 $ $ \Lambda = 0.15 \mu m $ $ d_1 = 0.25 \mu m $ $ d_2= 0.55 \mu m $ $ d_3 = 0.15 \mu m $.} 
 		}
 	\end{subfigure}
 	\caption{GAN Phase experimental results}
