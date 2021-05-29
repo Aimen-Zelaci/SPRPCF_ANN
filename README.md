@@ -1,3 +1,7 @@
+# Licenses and Copyright
+
+Licensed under the [GNU General Public License, version 3 (GPLv3)](https://github.com/Aimen-Zelaci/SPRPCF_ANN/src/license.txt).
+
 # SPR based PCF sensor ANN
 
 - Train the wgan: `python main.py -train_wgan`
