@@ -1,6 +1,6 @@
 # Licenses and Copyright
 
-Licensed under the [GNU General Public License, version 3 (GPLv3)](https://github.com/Aimen-Zelaci/SPRPCF_ANN/src/license.txt).
+Licensed under the [GNU General Public License, version 3 (GPLv3)](https://github.com/Aimen-Zelaci/SPRPCF_ANN/blob/master/src/license).
 
 # SPR based PCF sensor ANN
 
